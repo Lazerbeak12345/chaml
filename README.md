@@ -64,7 +64,13 @@ also call import. See *export* for more info.
 
 #### useSyntax
 
-UGLY, SMELLY, EVAL, INJECTION, SECURITY, DO NOT USE, TODO
+What I'm going for here is a clean way where the file "imports" a library, and
+that library then allows for alien syntax below.
+
+- Takes 1 arg, a string with the same requirements as arg 0 of *import*
+- Use RegExp?
+
+EVAL?, TODO (below)
 
 - Takes 1 arg, a string with the same requirements as arg 0 of *import*
 - Calls the function passed into *declareSyntax*, passing in the entirety of
@@ -82,5 +88,16 @@ understand.
 
 #### declareSyntax
 
-same idea as *export* but it can only take a function as its
-argument. See *useSyntax* for more info.
+Same idea as *export*, but takes 1 arg, a function that takes the entire file
+following the *useSyntax* call as it's only argument, returning the modified
+code to be ran.
+
+OR:
+
+same idea as *export* but it can only take an object as its argument. See
+*useSyntax* for more info. The object is as follows:
+
+- *regexp* an instance of *Regexp*
+- ??
+
+#### Regexp
