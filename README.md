@@ -10,11 +10,10 @@ I've been thinking about for some time.
 These features are core to the design, and are very unlikely to change very
 much.
 
-- No keywords, everything is a function.
-- Literals of anything, with the exeptions of primitive literals, are syntax
-modules.
-  - These modules are included at the begginning of the file, much like imports
-- Any operator may be applied to any variable, at all.
+- No keywords, everything is a function. - note, I am still not sure about
+  whether primitives should be functions.
+- Syntax modules included at the begginning of the file, much like imports
+- Any operator may be applied to any variable, at all. (incuding `()`)
   - EX: while `7*10` returns `70`, a function that returns 7 multipled by a
 function that returns 10 returns a function that returns the result of that
 operator applied to each value, respectively.
@@ -25,27 +24,230 @@ operator applied to each value, respectively.
 - Object inheritance
   - Planned to be much like TypeScript, but with functions at the top of the
 tree.
-  - To be implemented by importing a library
-- Functions
-  - Much like TypeScript `=>` arrow functions.
-  - No native support for `function` keyword.
+  - To be implemented by importing a library. This ipmlementation may even have
+  a syntax module availiable.
 - Keywords, inline xml, obj syntax sugar all to be syntax modules.
 
-## Breakdown
+### Syntax
 
-- No keywords
-- Everything? is a function (including would-be keywords)
+#### Comments
+
+```text
+//Single-line C++ style
+
+/*
+Along with muli line C style are both supported
+*/
+```
+
+#### Variables
+
+```text
+newVar=3; // local only variable
+```
+
+#### Operators
+
+These are the closest to operators I am willing to steep to.
+
+- Add with `+`
+- Subtract with `-`
+- Multiply with `*`
+- Divide with `/`
+- Iterate with `++` (prefix v postfix act the same as in C)
+
+Unless noted, they don't apply to anything.
+
+#### Functions
+
+##### Defining
+
+supports 6 ways of being defined.
+
+###### No args
+
+```text
+anyVariableHere={
+  //do something upon invoction
+}
+```
+
+###### No args One line
+
+```text
+anyVariableHere=()=> 72;
+```
+
+###### One Arg
+
+```text
+anyVariableHere= in => {
+  =< in*2;
+};
+```
+
+###### One arg One Line
+
+```text
+anyVariableHere= in => in*2;//single line treated like a code block
+```
+
+###### Multi-arg
+
+```test
+anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
+  //The => is optional when inbetween an endparen and an opening curly
+  =< a+FEW+dif_frent+var5+h$er3
+}
+```
+
+###### Multi-arg One line
+
+```test
+anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a+FEW+dif_frent+var5+h$er3;
+```
+
+##### scoping
+
+```text
+//can be modified above theFunc
+//can be modified within theFunc
+//can be modified below theFunc
+a=1947;
+theFunc=(e)=>{
+  //can't be modified above theFunc
+  //can be modified within theFunc
+  //can't be modified below theFunc
+  b=28142;
+  //can't be modified above theFunc
+  //can be modified within theFunc
+  //can be modified below theFunc
+  .c=4234;
+
+  e++;
+}
+//can't be modified above theFunc
+//can't be modified within theFunc
+//can be modified below theFunc
+d=324;
+
+
+/* here's how to modify this var too.
+ * note that it isn't initialized till there is a value set to it.
+ * If you read this variable on the first line of `theFunc` it would read `7`*/
+theFunc.c=7;
+
+
+//can't be modified above theFunc
+//can be modified within theFunc
+//can be modified below theFunc (but only after this call)
+anotherVar=99;
+
+theFunc(anotherVar);
+
+//anotherVar now equals 100
+```
+
+###### When var names collide
+
+Sometimes, variable names are unintentially reused. Here's an example of
+functional, yet poorly written code.
+
+```text
+conflicingName=849234;
+funcName=conflictingName=> conflicingName();
+
+funcName(() => 21); //returns 21
+
+anotherName=(conflicingName) => {
+  =<++conflictingName;
+}
+
+k=3;
+anotherName(k)//returns 3
+//k is now 4
+
+//conflictingName is still 849234
+```
+
+##### Returning
+
+###### From iside a one-liner
+
+```text
+returnsNumber1=()=> 1;
+returnsArgTimesTwo=arg=>arg*2;
+returnsTheSumOfArgs=(a,b)=>a+b;
+```
+
+###### From a block function
+
+```text
+returnsNumber1={
+  =<1;
+};
+returnsArgTimesTwo=arg=>{
+  =<arg*2;
+}
+returnsTheSumOfArgs=(a,b) => {
+  =<a+b;
+}
+```
+
+##### Calling convention
+
+```text
+a=()=>1;
+b=a=>1
+c=(a,b)=>
+```
+
+##### Stupid
+
+```text
+functionsAreStoredWithinVariables={
+  localVar=100;
+  this.varAccessibleFromOutside=7;
+  =<100;//optional, but this is how you return. Elsewhise, no return is made.
+}
+
+/*
+functionsAreStoredWithinVariables.varAccessibleFromOutside
+
+can be read &/or modified from outside forces
+
+localVar can't
+*/
+
+functionsAreStoredWithinVariables(); // returns 100
+
+anotherButWithOneArgAndNoBlock=A=>A*2;
+
+anotherButWithOneArgAndNoBlock(9); //returns 18
+
+multAbyB=(A,B)=> A*B;
+
+multAandBbyPI=(A,B) => {
+  PI=3.1415;
+  =< multAbyB(A,B)*PI;
+}
+```
 
 ### Reserved functions
 
 #### if
 
 - Takes 2 args, a boolean and a function called when boolean is true.
-- Returns an object with these methods:
-  - *elif* Takes 2 args, a boolean and a function called when boolean is
-ue, and no previous items in this chain are called.
-  - *else* Takes 1 arg, a function called when no previous items in this
-chain are called.
+- An optional third arg is another function, called if boolean is false.
+
+If returns a function that resolves itself. Untill this is run, the if is not
+evaluated.
+
+```text
+if(true,{
+  //code if true
+})()
+```
 
 #### import
 
@@ -73,7 +275,7 @@ that library then allows for alien syntax below.
 EVAL?, TODO (below)
 
 - Takes 1 arg, a string with the same requirements as arg 0 of *import*
-- Calls the function passed into *declareSyntax*, passing in the entirety of
+- Calls the function passed into *declareSyntax*, passing in the entirety of 
 the source code. The return of the function (a string) will then be treated as
 the new code, and the next call to this particular *useSyntax* within this file
 will be ignored, thus preventing recursion. (Note that this means that all code
@@ -88,16 +290,25 @@ understand.
 
 #### declareSyntax
 
+##### declareSyntax Proposal 1
+
 Same idea as *export*, but takes 1 arg, a function that takes the entire file
 following the *useSyntax* call as it's only argument, returning the modified
 code to be ran.
 
-OR:
+##### declareSyntax Proposal 2
 
 same idea as *export* but it can only take an object as its argument. See
-*useSyntax* for more info. The object is as follows:
+*useSyntax* for more info. The object is as follows (in psudo jsonc):
 
-- *regexp* an instance of *Regexp*
-- ??
+```text
+"NameOfSyntaxConversion":[/regexpThin/g,(entiretyOfTheLine_s_thatMatched) {
+  //return a string to replace it
+}]
+```
 
 #### Regexp
+
+?? only if needed by declareSyntax proposal 2
+
+A new regexp element.
