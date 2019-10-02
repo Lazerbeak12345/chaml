@@ -75,19 +75,14 @@ Variables may be set to the following (`Generator` is the constructor):
     - bin `0b11`
     - hex `0xf4`
     - octal `012`
-  - Assumes the smallest size for every number type possible. When size needs to
-  be bigger, it goes the next size up. (in bits; 8, 16, 32, 64). It also will be
-  unsigned by default, and change signage.
-    - These changes may cause lag
-    - are irreversable
-    - Will effect other vars, as when operations are done on two vars, they are
-    both casted to the larger bitsize of the two.
-    - Signage changes will be computed seperatly in all operations excluding
-    addition and subtraction
+    - the underscore may be used for readability anywhere but the first or last
+    characters.
+  - Assumes to be a signed 64 bit double.
 - `Char` (C-style)
 - `Array` (C-style)
-- `String` (C-style)
 - `Bool` (C-style)
+
+Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
 
 Naming conventions are identical to JavaScript; they may contain any number,
 upper or lowercase letter, or these: `$_`. They cannot start with a number.
@@ -96,18 +91,18 @@ upper or lowercase letter, or these: `$_`. They cannot start with a number.
 newVar=3; // number
 anotherVar=()=>3; //function returning a number
 _yetanoth3rVar='c'; // this is just a char, but can be cast to and from a number
-$another="Note that this is basically just a C-string";
+arrofnums=[3,5,3,2,5,64,5,64,3];
+$another="This is shorthand for an array of chars";
 theLast1=true;//And here's a bool.
 ```
 
-##### Variables proposal 1
+#### Variables proposal 2
 
-Make `String` a syntax module?
+Names may include any character otherwise not used in that syntax.
 
 #### Typecasting
 
-Variables are never cast automatically, with the exeption of numbers
-automaticaly increasing their bitsize (see above).
+Variables are never cast automatically.
 
 To cast use the constructor like so:
 `joinOfStringAndNum="The number is "+String(37)`
@@ -116,8 +111,8 @@ To cast use the constructor like so:
   - `Boolean` duplicate of original boolean
   - `Char` error thrown: `Casting error: Cannot cast Char to Boolean`
   - `Number` true only if equal to `0` or `-0`
-  - `Array` error thrown: `Casting error: Cannot cast Array to Boolean`
-  - `String` error thrown: `Casting error: Cannot cast String to Boolean`
+  - `Array` If array is len of 1 and it is a bool, then that bool, else error
+  thrown: `Casting error: Cannot cast Array to Boolean`
   - `Function` error thrown: `Casting error: Cannot cast Function to Boolean`
 - To `Char`
   - `Boolean` `'t'` if true, `'f'` if false
@@ -125,8 +120,8 @@ To cast use the constructor like so:
   - `Number` local charcode conversion to char. If invalid, throw sensible error
   like `Casting error: Cannot cast Number(`insert num here`) to Char` as it is
   value dependant.
-  - `Array` error thrown: `Casting error: Cannot cast Array to Char`
-  - `String` error thrown: `Casting error: Cannot cast String to Char`
+  - `Array` If array is len of 1 and it is a char, then that char, else error
+  thrown: `Casting error: Cannot cast Array to Char`
   - `Function` error thrown: `Casting error: Cannot cast Function to Char`
 - To `Number`
   - empty, throw `Casting error: Number constructor takes 1 argument`
@@ -135,29 +130,21 @@ To cast use the constructor like so:
   like `Casting error: Cannot cast Char(`insert char here`) to Number` as it is
   value dependant.
   - `Number` duplicate of original num
-  - `Array` error thrown: `Casting error: Cannot cast Array to Number`
+  - `Array` If array is len of 1 and it is a number, then that number, else
+  error thrown: `Casting error: Cannot cast Array to Number`
   - `String` If the string is what would pass for a valid in-line literal of any
   type (decimal, hex, etc.) then resolve it, elsewhise, throw:
   `Casting error: Cannot cast String(`insert string here`) to Number`
   - `Function` error thrown: `Casting error: Cannot cast Function to Number`
 - To `Array`
   - empty, array len of 0
-  - `Boolean` error thrown: `Casting error: Cannot cast Boolean to Array`
-  - `Char` error thrown: `Casting error: Cannot cast Char to Array`
-  - `Number` empty array of the length of that number. If not enough memory,
-  error thrown: `Casting error: Cannot cast Number(`insert num here`) to Array`
-  - `Array` duplicate of origianl array
-  - `String` Array of chars of original string.
-  - `Function` error thrown: `Casting error: Cannot cast Function to Number
-- To `String`
-  - Empty, empty string.
   - `Boolean` `"True"` if true, `"False"` if false.
   - `Char` The char is turned into a string with len of 1
-  - `Number` Best representation of data as a string via `Number.toString()`
-  - `Array` if the array is only chars, convert it, elsewise,
-  error thrown: `Casting error: Cannot cast non Char Array to String.`
-  - `String` duplicate of original string
-  - `Function` error thrown: `Casting error: Cannot cast Function to String`
+  - `Number` empty array of the length of that number.
+    - Optional 2nd arg: what to fill it with.
+    - If not enough memory, error thrown: `Casting error: Cannot cast Number(`insert num here`) to Array`
+  - `Array` duplicate of origianl array
+  - `Function` error thrown: `Casting error: Cannot cast Function to Array`
 - To `Function` all cases: return a function that returns the input, unless it
 is empty, then throw `Casting error: Function constructor takes 1 argument`
 
@@ -193,6 +180,7 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - Not equal `!=`
 - SET `=`
 - Invert bool `!`
+- Call b, then pass it to a (`a@b`) `@`
 
 #### Functions
 
@@ -378,7 +366,6 @@ c(3,7); //returns 10
 
 - Takes 2 args,
   - a boolean
-    - If it's a function, then it needs to return a boolean.
   - a function called when boolean is true.
 - An optional third arg is another function, called if boolean is false.
 
@@ -390,7 +377,7 @@ if(true,{
   //code if true
 })();
 
-if(()=> 1>0),{
+if(() => 1>0,{
   //code if true
 })();
 
@@ -420,9 +407,6 @@ file (extention not needed), or to a URL resorce that the OS can handle.
 gennerally treated as its own seperate, private program. Said module may
 also call import. Furthermore, the module is logically wrapped around a
 function, witch is what logically becomes the return of `import`.
-
-```text
-```
 
 #### useSyntax
 
@@ -474,7 +458,7 @@ replaces the regexp match.
 
 take an object as follows (in psudo json):
 
-```text
+```json
 "NameOfSyntaxConversion":[/regexpThin/g,(entiretyOfTheLine_s_thatMatched) {
   //return a string to replace it
 }]
@@ -482,8 +466,28 @@ take an object as follows (in psudo json):
 
 > Still has possibility for injection, but simplifies a few steps.
 
+##### declareSyntax Proposal 3
+
+pass something into one of the comp/int stage components
+
 #### Regexp
 
 ?? only if needed by declareSyntax proposal 2
 
 A new regexp element.
+
+### Interpretation/Comipliation stages
+
+#### Lexer
+
+#### Syntax Analizer
+
+#### Semantic Analizer
+
+#### Intermediate Code Generator
+
+#### Machine Independant Code optimizer
+
+#### Code generator
+
+#### Mashine Dependant code optimizer
