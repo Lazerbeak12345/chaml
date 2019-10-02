@@ -1,8 +1,8 @@
 # (UNNAMED PROTO LANGUAGE)
 
 This is a prototype of a programming language that implements a few features
-I've been thinking about for some time.
-It is designed mostly for thinking about.
+I've been thinking about for some time. It is designed mostly for thinking
+about.
 
 ## Proposed feature listing
 
@@ -190,6 +190,7 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - OR `||`
 - XOR `^`
 - Equal `==`
+- Not equal `!=`
 - SET `=`
 - Invert bool `!`
 
@@ -375,7 +376,10 @@ c(3,7); //returns 10
 
 #### if
 
-- Takes 2 args, a boolean and a function called when boolean is true.
+- Takes 2 args,
+  - a boolean
+    - If it's a function, then it needs to return a boolean.
+  - a function called when boolean is true.
 - An optional third arg is another function, called if boolean is false.
 
 If returns a function that resolves itself. Untill this is run, the if is not
@@ -384,7 +388,25 @@ evaluated.
 ```text
 if(true,{
   //code if true
-})()
+})();
+
+if(()=> 1>0),{
+  //code if true
+})();
+
+if(false,{
+  //code if true
+},{
+  //code if false
+})();
+
+if(99==93,{
+  //code if first true
+},if(false,{
+  //code if 2nd true
+},{
+  //code if 1 & 2 false
+}))();
 ```
 
 #### import
@@ -392,10 +414,15 @@ if(true,{
 - Takes 2 args
   - A string that must refer to either a module name, a Unix-style url to a
 file (extention not needed), or to a URL resorce that the OS can handle.
-- Returns a promise (think JavaScript promise) - TODO
+  - An optional callback
+- Returns the value
 - When module is called, the module has no access to anything else and is
 gennerally treated as its own seperate, private program. Said module may
-also call import. Furthermore, the module exports by returning at the top level.
+also call import. Furthermore, the module is logically wrapped around a
+function, witch is what logically becomes the return of `import`.
+
+```text
+```
 
 #### useSyntax
 
