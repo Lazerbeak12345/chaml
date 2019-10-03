@@ -1,0 +1,24 @@
+tst=import("./testLib");
+tst.suite("Core",{
+	tst.test("Export & Import was done correctly",{
+		tst.assert(0,0);
+	});
+	tst.test("Single line comments are good.",{
+		//Let's see
+		tst.assert(0,0);
+	});
+	tst.test("Multi line comments are good.",{
+		count=3;
+		/* one */
+		--count;
+		/* another
+		*/
+		--count;
+		/** /
+		another
+		*/
+		--count;
+		tst.assert(count,0);
+	});
+});
+tst.run();

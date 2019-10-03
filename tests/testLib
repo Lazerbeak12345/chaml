@@ -1,0 +1,35 @@
+print=import("print");
+JSON=import("JSON");
+suites=[];
+self.suite=suite(name,callback) {
+	callback.name=name;
+	suites.push(callback);
+};
+tests=[];
+self.test=(name,callback) {
+	callback.name=name;
+	tests.push(callback);
+};
+self.assert=(a,b) {
+	if(a!=b,{
+		self.throw("Assert failed! Expected:\n"+JSON.stringify(a)+
+			"\ngot\n"+JSON.stringify(b));
+	})();
+};
+self.run={
+	suites.assyncEach((index,suite) {
+		print("Now running suite \""+suite.name+"\"\n");
+		try({
+			tests.assyncForEach((index,test) {
+				print("\tNow running test \""+test.name+"\"\n");
+				try({
+					test();
+				},(err){
+					print.err("\tSuite \""+test.name+"\" failed with err: \n"+err.msg"\n");
+				});
+			});
+		},err => {
+			print.err("Suite \""+suite.name+"\" failed with err: \n"+err.msg"\n");
+		});
+	});
+};

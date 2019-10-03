@@ -77,9 +77,19 @@ Variables may be set to the following (`Generator` is the constructor):
     - octal `012`
     - the underscore may be used for readability anywhere but the first or last
     characters.
-  - Assumes to be a signed 64 bit double.
+  - Assumes to be a 64 bit number (a C++ double). Signing the value when using
+  more then 63 bits will throw
+  `Number overflow error: Tried to change sign of huge number`.
 - `Char` (C-style)
-- `Array` (C-style)
+  - Stored in memory nearly exactly the same as a number. (type signage is the
+  only difference)
+- `Array` variable length list of items.
+  - Representation in memory should be a B* tree, where the order of said tree
+  is implementation specific, but possiblly overridable.
+    - This is so as to allow very large array sizes, and hopefully very small
+    array sizes.
+  - If the length is over a certian threshhold, it is suggested that
+  implementations create an index.
 - `Bool` (C-style)
 
 Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
@@ -98,14 +108,34 @@ theLast1=true;//And here's a bool.
 
 #### Variables proposal 2
 
-Names may include any character otherwise not used in that syntax.
+Names may include any character otherwise not used in any syntax.
+
+#### Variables proposal 3
+
+Make `Array` fixed length, and have an importable `Vector` that is a B* tree as
+described in `Array` above.
 
 #### Typecasting
 
 Variables are never cast automatically.
 
 To cast use the constructor like so:
-`joinOfStringAndNum="The number is "+String(37)`
+`joinOfStringAndNum=+("The number is ",String(37))`.
+Or `joinOfStringAndNum=+("The number is ",37.to.String()))`
+
+One can overload casting by doing something like this:
+
+```text
+//Overload casting of Array to Boolean in all cases
+Array.to.Boolean={
+  //Return what you want the value to be. `self` is the current value.
+}
+//Overload instance only
+myNumber=4234
+myNumber.to.Char={
+  //Same as before, return what you want the value to be,
+}
+```
 
 - To `Boolean`
   - `Boolean` duplicate of original boolean
