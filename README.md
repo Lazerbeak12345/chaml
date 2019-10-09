@@ -1,17 +1,29 @@
-# (UNNAMED PROTO LANGUAGE)
+# The Chameleon Programming Language Standard
 
 This is a prototype of a programming language that implements a few features
 I've been thinking about for some time. It is designed mostly for thinking
 about.
 
-## Proposed feature listing
+<!--Look at https://vim.fandom.com/wiki/Creating_your_own_syntax_files later-->
+<!--Look at https://stackoverflow.com/questions/38148857/customizing-syntax-highlighting-in-visual-studio-code-->
 
-### Core features
+## File extention
+
+The file extention should be `.chaml`
+
+## Development tools
+
+None yet, but in this repo there are a few implementations.
+Just look in the `implementations` directory.
+
+## Core features
 
 These features are core to the design, and are very unlikely to change very
 much.
 
 - No keywords
+  - Also try to avoid things like them. (Operators and Types are to be used
+  sparingly)
 - A sleek, secure way of having per-file syntax overloading.
   - Syntax modules included at the beginning of the file, much like imports
 - Don't have some stupid feature such as lazy eval forced; allow for devs to
@@ -21,15 +33,29 @@ much.
   function that returns 10 returns a function that returns the result of that
   operator applied to each value, respectively.
 
-#### CORE PROPOSAL 1
-
-Add "everything is a function - excluding natives"
-
-#### CORE PROPOSAL 2
+### CORE PROPOSAL 2
 
 Add "everything is a function - including natives"
 
-### Other features
+### CORE PROPOSAL 3
+
+Add
+
+```md
+- Arguments to a function are to be evaluated lazily, and booleans should
+  short-circut, but the rest of the program is eager.
+```
+
+Instead of
+
+```md
+- Don't have some stupid feature such as lazy eval forced; allow for devs to
+  wrap everything in a function if they wanted to.
+```
+
+(Or at least make the wording less harsh)
+
+## Other features
 
 - Object inheritance
   - Planned to be much like TypeScript, but with functions at the top of the
@@ -38,9 +64,9 @@ Add "everything is a function - including natives"
   a syntax module availiable.
 - Keywords, inline xml, obj syntax sugar all to be syntax modules.
 
-### Syntax
+## Syntax
 
-#### Comments
+### Comments
 
 ```text
 //Single-line C++ style.
@@ -64,7 +90,7 @@ And_thus="this line is still reached and evaluated";
  */
 ```
 
-#### Variables
+### Variables
 
 Variables may be set to the following (`Generator` is the constructor):
 
@@ -83,13 +109,7 @@ Variables may be set to the following (`Generator` is the constructor):
 - `Char` (C-style)
   - Stored in memory nearly exactly the same as a number. (type signage is the
   only difference)
-- `Array` variable length list of items.
-  - Representation in memory should be a B* tree, where the order of said tree
-  is implementation specific, but possiblly overridable.
-    - This is so as to allow very large array sizes, and hopefully very small
-    array sizes.
-  - If the length is over a certian threshhold, it is suggested that
-  implementations create an index.
+- `Array` fixed-length list of items
 - `Bool` (C-style)
 
 Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
@@ -106,16 +126,16 @@ $another="This is shorthand for an array of chars";
 theLast1=true;//And here's a bool.
 ```
 
-#### Variables proposal 2
+### Variables proposal 2
 
 Names may include any character otherwise not used in any syntax.
 
-#### Variables proposal 3
+### Variables proposal 3
 
 Make `Array` fixed length, and have an importable `Vector` that is a B* tree as
 described in `Array` above.
 
-#### Typecasting
+### Typecasting
 
 Variables are never cast automatically.
 
@@ -178,7 +198,16 @@ myNumber.to.Char={
 - To `Function` all cases: return a function that returns the input, unless it
 is empty, then throw `Casting error: Function constructor takes 1 argument`
 
-#### Operators
+#### Typecasting proposal - monads
+
+Look into adding monads, such as
+
+- just
+- maybe
+
+### Operators
+
+<!--Note to self: look at https://www.tutorialspoint.com/java/java_basic_operators.htm-->
 
 All primitive types allow one of these operators to be appllied to another of
 the same type, with the exeption of functions, where they don't accept `++` or
@@ -212,13 +241,13 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - Invert bool `!`
 - Call b, then pass it to a (`a@b`) `@`
 
-#### Functions
+### Functions
 
-##### Defining
+#### Defining
 
 Supports 6 ways of declaring functions, listed below
 
-###### No args
+##### No args
 
 ```text
 anyVariableHere={
@@ -226,13 +255,13 @@ anyVariableHere={
 }
 ```
 
-###### No args One line
+##### No args One line
 
 ```text
 anyVariableHere=()=> 72;// return 72
 ```
 
-###### One Arg
+##### One Arg
 
 ```text
 anyVariableHere= in => {
@@ -240,28 +269,28 @@ anyVariableHere= in => {
 };
 ```
 
-###### One arg One Line
+##### One arg One Line
 
 ```text
 anyVariableHere= in => in*2;//a single line is treated like a code block
 ```
 
-###### Multi-arg
+##### Multi-arg
 
 ```test
 anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
   //The => is optional when inbetween an endparen and an opening curly
-  self.ret(a+FEW+dif_frent+var5+h$er3);
+  self.ret@+(a,FEW,dif_frent,var5,h$er3);
 }
 ```
 
-###### Multi-arg One line
+##### Multi-arg One line
 
 ```test
 anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a+FEW+dif_frent+var5+h$er3;
 ```
 
-##### scoping
+#### scoping
 
 ```text
 //can be modified above theFunc
@@ -330,7 +359,7 @@ outerFunc={
 //cannot read a here
 ```
 
-###### When var names collide
+##### When var names collide
 
 Sometimes, variable names are unintentially reused by devs. Here's an example of
 functional, yet poorly written code.
@@ -352,9 +381,9 @@ anotherName(k)//returns 3
 //conflictingName is still 849234
 ```
 
-##### Returning
+#### Returning
 
-###### From iside a one-liner
+##### From iside a one-liner
 
 ```text
 returnsNumber1=()=>1;
@@ -362,9 +391,9 @@ returnsArgTimesTwo=arg=>arg*2;
 returnsTheSumOfArgs=(a,b)=>a+b;
 ```
 
-###### From a block function
+##### From a block function
 
-```text
+```chaml
 returnsNumber1={
   self.ret(1);
 };
@@ -376,23 +405,42 @@ returnsTheSumOfArgs=(a,b) => {
 }
 ```
 
-##### Calling convention
+Alternatively you could use
 
-```text
+```chaml
+returnsNumber1={
+  =<1;
+};
+returnsArgTimesTwo=arg=>{
+  =<arg*2;
+}
+returnsTheSumOfArgs=(a,b) => {
+  =<a+b;
+}
+```
+
+#### Calling convention
+
+```chaml
 a=()=>1;
 b=a=>a+1;
 c=(a,b)=>a+b;
 
 //Call a
-a();
+a();        // returns 1
 //call b, passing a value. (if a var, it's a pointer)
-b(3);// returns 4
-c(3,7); //returns 10
+b(3);       // returns 4
+c(3,7);     // returns 10
+
+//Compose b on c (evaluates to `b(c(3,2))`)
+b@c(20,3);  // returns 24
 ```
 
-### Reserved functions
+## Reserved functions
 
 #### if
+
+### if
 
 - Takes 2 args,
   - a boolean
@@ -402,12 +450,12 @@ c(3,7); //returns 10
 If returns a function that resolves itself. Untill this is run, the if is not
 evaluated.
 
-```text
+```chaml
 if(true,{
   //code if true
 })();
 
-if(() => 1>0,{
+if(1>0,{
   //code if true
 })();
 
@@ -426,22 +474,23 @@ if(99==93,{
 }))();
 ```
 
-#### import
+### self.import
 
 - Takes 2 args
   - A string that must refer to either a module name, a Unix-style url to a
 file (extention not needed), or to a URL resorce that the OS can handle.
+    - NOTE: this file can also be a Redox style URL an IPFS style adress, or a
+      git adress.
   - An optional callback
 - Returns the value
 - When module is called, the module has no access to anything else and is
 gennerally treated as its own seperate, private program. Said module may
-also call import. Furthermore, the module is logically wrapped around a
-function, witch is what logically becomes the return of `import`.
+  also call import.
 
-#### useSyntax
+The imported module is logically wrapped around a function, the return of which
+is what becomes the return of [[self.import]].
 
-What I'm going for here is a clean way where the file "imports" a library, and
-that library then allows for alien syntax below that import
+### self.useSyntax
 
 ##### useSyntax proposal 2
 
@@ -451,72 +500,61 @@ that library then allows for alien syntax below that import
     - An array of strings with the below description
     - A string that exactly matches the name of the syntax conversion defined by
     `declareSyntax`.
-- Use RegExp?
+    - A char (or single char str) `'*'` (sigifying all)
 
-##### useSyntax proposal 1
+### self.declareSyntax
 
-- Takes 1 arg, a string with the same requirements as arg 0 of `import`
-- Calls the function passed into `declareSyntax`, passing in the entirety of
-the source code. The return of the function (a string) will then be treated as
-the new code, and the next call to this particular *useSyntax* within this file
-will be ignored, thus preventing recursion. (Note that this means that all code
-up till this point is called again. This is why it is bad practice, but it is
-not unnallowed, for the function to be called outside of the logical "header".
-This may, unfortunately cause minor issues for compilers, and they are not
-obligated to support more then top-level calls to this function)
-- result must be code that either other *useSyntax* calls (including ones
-injected with a *useSyntax* call) in lower lines of code will be able to
-transpile, not to mention the compiler/interpreter iself must be able to
-understand.
+Takes three args:
 
-#### declareSyntax
+- A string representing the name of the conversion
+- A regexp finding the match
+- A function taking the match, returning the replacement.
 
-##### declareSyntax Proposal 1
+<!--TODO: Change name of this to better reflect its function-->
 
-Takes 1 arg, a function that takes the entire file following the *useSyntax*
-call as its only argument, returning the modified code to be ran.
-
-> Can be bad, due to possibility of injection, and the fact that the lib needs the
-> whole file.
-
-##### declareSyntax Proposal 2
-
-take an object, where the keys are the names of the conversion, and the values
-are arrays where item zero is a regexp that the suntax must match, and item one
-is a function that the matched code is passed into. Return of that function
-replaces the regexp match.
-
-take an object as follows (in psudo json):
-
-```json
-"NameOfSyntaxConversion":[/regexpThin/g,(entiretyOfTheLine_s_thatMatched) {
-  //return a string to replace it
-}]
-```
-
-> Still has possibility for injection, but simplifies a few steps.
-
-##### declareSyntax Proposal 3
-
-pass something into one of the comp/int stage components
-
-#### Regexp
+### Regexp
 
 ?? only if needed by declareSyntax proposal 2
 
 A new regexp element.
 
-### Interpretation/Comipliation stages
+## Interpretation/Comipliation stages
+
+### Preprocessor
+
+"A preprocessor, generally considered as a part of compiler, is a tool that
+produces input for compilers. It deals with macro-processing, augmentation, file
+inclusion, language extension, etc."
 
 #### Lexer
 
+"Scan the source code as a stream of characters and convert it into meaningfull
+lexemes." (aka tokens)
+
 #### Syntax Analizer
+
+"Check if expression made by tokens is syntacatically correct" - whilst making
+a parse tree."
 
 #### Semantic Analizer
 
+"Check whether the parse tree constructed follows the rules of language"
+
+Cross-type prevention often done here. keep track of ident, types, exps & their
+rules, and when they are declared.
+
+Output annotated syntax tree as output.
+
+(If interpreter, stop here, and run the code)
+
 #### Intermediate Code Generator
 
+Output intermediate code, such as LLVM language.
+
 #### Machine Independant Code optimizer
+
+"something that removes unnessary code lines, and arranges the sequence of
+statement in order to speed up the program execution without wasteing recources"
 
 #### Code generator
 

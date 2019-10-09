@@ -1,0 +1,25 @@
+{
+  "name": "chameleon-js-implementation",
+  "version": "0.0.0-alpha.0",
+  "description": "This is a prototype of a programming language that implements a few features I've been thinking about for some time. It is designed mostly for thinking about.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^0.1.3",
+    "coveralls": "^3.0.6",
+    "intern": "^4.4.3",
+    "nyc": "^14.1.1",
+    "source-map-support": "^0.5.13",
+    "ts-node": "^8.4.1",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.6.3",
+    "pify":"2.3.0"
+  },
+  "author": "Lazerbeak12345",
+  "license": "GPL-3.0"
+}
