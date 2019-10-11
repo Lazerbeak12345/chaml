@@ -1,3 +1,4 @@
+#!/sh/a/bang
 tst=import("./testLib");
 tst.suite("Core",{
 	tst.test("Export & Import was done correctly",{

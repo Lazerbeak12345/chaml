@@ -7,14 +7,75 @@ about.
 <!--Look at https://vim.fandom.com/wiki/Creating_your_own_syntax_files later-->
 <!--Look at https://stackoverflow.com/questions/38148857/customizing-syntax-highlighting-in-visual-studio-code-->
 
+## Table of Contents
+
+- The Chameleon Programming Language Standard
+  - Table of Contents
+  - File extention
+  - Development tools
+  - Core features
+  - Other features
+  - Syntax
+    - Comments
+    - Variables
+    - Typecasting
+    - Operators
+    - Functions
+      - Defining
+      - Scoping
+        - When var names collide
+      - Returning
+        - From inside a one-liner
+        - From a block function
+  - Reserved functions
+    - while
+    - if
+    - self.import
+    - self.useSyntax
+    - self.declareSyntax
+    - Regexp
+  - Interpretation/Compilation stages
+
+### The future TOC
+
+- The Chameleon Programming Language Standard
+  - Variables
+  - Functions
+    - Defining functions
+    - Calling functions
+    - Returning
+  - `self`
+  - Operators
+  - Types
+  - Libraries
+    - Using libraries
+      - `self.import`
+      - Some example libraries
+        - IO
+        - Vector
+        - Regexp
+    - Writing libraries
+  - Overloading
+    - Overloading functions
+    - Overloading types
+    - Overloading operators
+    - Overloading syntax - (points to dedicated section)
+  - Syntax Extention
+    - Using a syntax module
+      - Common modules
+    - Writing a syntax module
+
 ## File extention
 
 The file extention should be `.chaml`
 
 ## Development tools
 
-None yet, but in this repo there are a few implementations.
+None yet, but in this repo there are a few half-started implementations.
 Just look in the `implementations` directory.
+
+> If you want to add your tool here, just send me a pull request with it added
+> to this section
 
 ## Core features
 
@@ -58,11 +119,12 @@ Instead of
 ## Other features
 
 - Object inheritance
-  - Planned to be much like TypeScript, but with functions at the top of the
-  tree.
-  - To be implemented by importing a library. This ipmlementation may even have
-  a syntax module availiable.
+  - The core components are provided, but can be improoved with a library.
 - Keywords, inline xml, obj syntax sugar all to be syntax modules.
+
+### Other features proposal "Operators"
+
+Make most operators a syntax module.
 
 ## Syntax
 
@@ -126,11 +188,11 @@ $another="This is shorthand for an array of chars";
 theLast1=true;//And here's a bool.
 ```
 
-### Variables proposal 2
+#### Variables proposal 2
 
 Names may include any character otherwise not used in any syntax.
 
-### Variables proposal 3
+#### Variables proposal 3
 
 Make `Array` fixed length, and have an importable `Vector` that is a B* tree as
 described in `Array` above.
@@ -242,6 +304,8 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - Call b, then pass it to a (`a@b`) `@`
 
 ### Functions
+
+Uses pass by value. (Allow for pointers? Do call by val instead?)
 
 #### Defining
 
@@ -383,7 +447,7 @@ anotherName(k)//returns 3
 
 #### Returning
 
-##### From iside a one-liner
+##### From inside a one-liner
 
 ```text
 returnsNumber1=()=>1;
@@ -428,7 +492,7 @@ c=(a,b)=>a+b;
 
 //Call a
 a();        // returns 1
-//call b, passing a value. (if a var, it's a pointer)
+//call b, passing a value. (if a var, it's duplicated)
 b(3);       // returns 4
 c(3,7);     // returns 10
 
@@ -438,7 +502,11 @@ b@c(20,3);  // returns 24
 
 ## Reserved functions
 
-#### if
+### while
+
+- Takes 2 args,
+  - A function returning a boolean (as it is called multiple times)
+  - a function called after each time the boolean is found to be true
 
 ### if
 
@@ -478,21 +546,19 @@ if(99==93,{
 
 - Takes 2 args
   - A string that must refer to either a module name, a Unix-style url to a
-file (extention not needed), or to a URL resorce that the OS can handle.
+    file (extention not needed), or to a URL resorce that the OS can handle.
     - NOTE: this file can also be a Redox style URL an IPFS style adress, or a
       git adress.
   - An optional callback
 - Returns the value
 - When module is called, the module has no access to anything else and is
-gennerally treated as its own seperate, private program. Said module may
+  gennerally treated as its own seperate, private program. Said module may
   also call import.
-
+  
 The imported module is logically wrapped around a function, the return of which
 is what becomes the return of [[self.import]].
 
 ### self.useSyntax
-
-##### useSyntax proposal 2
 
 - Takes 2 args
   - A string with the same requirements as arg 0 of *import*

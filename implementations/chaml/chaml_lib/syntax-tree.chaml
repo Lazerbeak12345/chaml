@@ -1,0 +1,30 @@
+tr=() => self;
+
+tr.Token=name=>{
+	i=Type();
+	i.name=Str(name);
+	self.ret(i);
+};
+
+tr.Operator=name=>{
+	s=self;
+	if(self.validOperators.contains(name).invert(),{
+		operatorS.ret();
+	});
+	i=tr.Token(name);
+	=< i;
+};
+tr.Operator.validOperators=[];
+
+tr.Ref=(name,value)=>{
+	i=s.Token(name);
+	i.value=value;//TODO: enter type filter here
+	=< i;
+};
+
+tr.Tree=contents=>{
+	i=Type();
+	i.contents=Arr(tr.Token,contents);
+};
+
+=< tr;

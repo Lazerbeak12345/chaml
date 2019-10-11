@@ -1,0 +1,32 @@
+openFile=self.import("io").in.openFile;
+//env=self.import("system").env; /// Location where UNIX enviroment variables are found
+//self.useSyntax("regexp");
+
+tr=self.import("syntax-tree");
+tk=self.import("syntax-tokens");
+
+//If I get stuck, here's some URLs for help 
+//https://en.wikipedia.org/wiki/Recursive_descent_parser
+
+expect=String();
+
+tokenify=(getNextLine)=>{
+
+};
+
+makeTree=(tokens,tree)=>{
+
+};
+
+readFile=name=>{
+	file=openFile(name);/// The file that is open
+	s=self;
+	tokens=tokenify(() => file.readLine());
+	tree=makeTree(tokens,tree);
+};
+
+compileFile=name=>{
+	readFile(newTree);
+}
+
+=< args => compileFile(args[args.length-1]);
