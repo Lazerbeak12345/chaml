@@ -1,4 +1,4 @@
-tr=() => self;
+tr={};
 
 tr.Token=name=>{
 	i=Type();
@@ -12,14 +12,14 @@ tr.Operator=name=>{
 		operatorS.ret();
 	});
 	i=tr.Token(name);
-	=< i;
+	self.ret(i);
 };
 tr.Operator.validOperators=[];
 
 tr.Ref=(name,value)=>{
 	i=s.Token(name);
 	i.value=value;//TODO: enter type filter here
-	=< i;
+	self.ret(i);
 };
 
 tr.Tree=contents=>{
@@ -27,4 +27,4 @@ tr.Tree=contents=>{
 	i.contents=Arr(tr.Token,contents);
 };
 
-=< tr;
+self.ret(tr);

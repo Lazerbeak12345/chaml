@@ -510,7 +510,12 @@ b@c(20,3);  // returns 24
 
 - Takes 2 args,
   - A function returning a boolean (as it is called multiple times)
-  - a function called after each time the boolean is found to be true
+  - a function called after each time the boolean is found to be true.
+    - Also must return a boolean or nothing. If found to be false, but not
+    undefined or null, loop stops.
+
+This should allow for while, while-do, do-while and for behavior, as well as
+other awesome combos (like a while-do-while, do-while-do, or do-while-do-while).
 
 ### if
 

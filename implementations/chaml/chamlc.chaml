@@ -12,41 +12,65 @@ runFile=Func([Str()],Null());
 
 tokenify=(getNextLine,error)=>{
 	Symbol=[
-		//Natives
 		"num",
-		"openB","closeB",
-		//openC closeC arrowF openP closeP comma //func
-		//singleQ //char
-
-		//Operators
-		//times div plus minus mod
-		//set
-		//eq ne gt lt gte lte
-		//and or not
-
-		//Other
-		//var semicolon return
 		"comment",
+		"identifier",
+		"endC",
+		"whitespace",
+		"set",
 	].each((index,value) {
 		self[value]=index;
 	}).ext(Type);
 
+	CheckerBuiltIn={
+		a={};
+		a.builtIn=true;
+		a.action=(line,buffer)=>not(a.regexp.matches(buffer+Str(line[0])));
+		self.ret(a);
+	};
 	checkers=[
 		{
-			a={};
+			a=CheckerBuiltIn();
 			a.regexp=RegExp("\\/\\/.*\n");
 			a.name="comment";
-			a.builtIn=true;
-			=<a;
+			self.ret(a);
 		}(),
 		{
-			a={};
+			a=CheckerBuiltIn();
 			//NOTE: because we are making a regexp inside a string, escapes must be doubled
-			a.regexp=RegExp("[0123456789][0123456789_]?\\.?[0123456789_]?");
+			a.regexp=RegExp("[01-9][01-9_]*(\\.[01-9_]*)?");
 			a.name="num";
-			a.builtIn=true;
-			a.action=(line,buffer,default)=>not(a.regexp.matches(buffer+line[0]));
-			=<a;
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp=RegExp("[a-zA-Z_$][a-zA-Z01-9_$]*");//add unicode support later
+			a.name="identifier";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp=RegExp("}");
+			a.name="endC";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp=RegExp("\s*");
+			a.name="whitespace";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp=RegExp("==");
+			a.name="eq";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp=RegExp("=");
+			a.name="set";
+			self.ret(a);
 		}(),
 	];
 
@@ -60,16 +84,23 @@ tokenify=(getNextLine,error)=>{
 				buffer=Str(line[0]);
 				line=line.slice(1);
 			});
+			s=self;
+			if(line.len()==0,{
+				line=getNextLine();
+				s.ret(true);//this is basically a continue. Returning false is a break;
+			});
 			index=0;
 			while(()=>index<checkers.len(),{
 				if (checkers[index].regexp.matches(buffer),{
 					if(checkers[index].action(line,buffer),{
-						sym=checkers[index].name;
+						sym=Symbol[checkers[index].name];
 						index=checkers.len();
 						isNotValidSymbol=false;
 					});
-					if (sym=="comment",{
+					if (sym==Symbol["comment"],{
+						buffer="";
 						line=getNextLine();
+						isNotValidSymbol=true;
 					});
 				});
 				index++;
@@ -87,13 +118,25 @@ tokenify=(getNextLine,error)=>{
 	expect=s=>{
 		a=accept(s);
 		if(not(a),{
-			error("unexpected symbol "+Symbol[s]);
+			error("Unexpected symbol \""+Symbol[sym]+"\"\nWas expecting symbol \""+Symbol[s]+"\" instead.");
 		});
 		self.ret(a);
 	};
 
+	action={
+		accept(Symbol["whitespace"]);
+		expect(Symbol["identifier"]);
+		if(accept(Symbol["set"]),{
+			//TODO
+		});
+	};
+
 	block={
-		
+		while({
+			accept(Symbol["whitespace"]);
+			self.ret(sym==Symbol["identifier"]);
+		},action);
+		expect(Symbol["endC"]);
 	};
 
 	program={
@@ -128,4 +171,4 @@ runFile=name=>{
 	}));
 }
 
-=< args => compileFile(args[args.length-1],IO.out.err);
+self.ret(args => compileFile(args[args.length-1],IO.out.err));
