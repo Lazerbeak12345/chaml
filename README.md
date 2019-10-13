@@ -87,8 +87,7 @@ much.
   sparingly)
 - A sleek, secure way of having per-file syntax overloading.
   - Syntax modules included at the beginning of the file, much like imports
-- Don't have some stupid feature such as lazy eval forced; allow for devs to
-  wrap everything in a function if they wanted to.
+- Functions are call by value
 - Any operator may be applied to any variable, at all.
   - EX: while `7*10` returns `70`, a function that returns 7 multipled by a
   function that returns 10 returns a function that returns the result of that
@@ -115,6 +114,12 @@ Instead of
 ```
 
 (Or at least make the wording less harsh)
+
+### core proposal "need"
+
+add `(needed)` to `- Functions are call by value`
+
+<!--note to self, see https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_value to impliment it-->
 
 ## Other features
 
@@ -344,7 +349,7 @@ anyVariableHere= in => in*2;//a single line is treated like a code block
 ```test
 anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
   //The => is optional when inbetween an endparen and an opening curly
-  self.ret@+(a,FEW,dif_frent,var5,h$er3);
+  self.ret(a+FEW+dif_frent+var5+h$er3);
 }
 ```
 
@@ -393,7 +398,7 @@ theFunc.c=7;
 anotherVar=99;
 
 theFunc(anotherVar);
-//anotherVar now equals 100
+//anotherVar does not change
 ```
 
 Aditionally, functions can be defined within other functions. As they are stored
@@ -435,12 +440,11 @@ funcName=conflictingName=> conflicingName();
 funcName(() => 21); //returns 21
 
 anotherName=(conflicingName) => {
-  self.ret(conflictingName++);
+  self.ret(conflictingName*10);
 }
 
 k=3;
-anotherName(k)//returns 3
-//k is now 4
+anotherName(k)//returns 30
 
 //conflictingName is still 849234
 ```

@@ -1,32 +1,131 @@
-openFile=self.import("io").in.openFile;
-//env=self.import("system").env; /// Location where UNIX enviroment variables are found
-//self.useSyntax("regexp");
+IO=self.import("io");
 
-tr=self.import("syntax-tree");
-tk=self.import("syntax-tokens");
+//env=self.import("system").env; /// Location where UNIX enviroment variables are found
+
+tr=self.import("./lib/syntax-tree");
+tk=self.import("./lib/syntax-tokens");
 
 //If I get stuck, here's some URLs for help 
 //https://en.wikipedia.org/wiki/Recursive_descent_parser
 
-expect=String();
+runFile=Func([Str()],Null());
 
-tokenify=(getNextLine)=>{
+tokenify=(getNextLine,error)=>{
+	Symbol=[
+		//Natives
+		"num",
+		"openB","closeB",
+		//openC closeC arrowF openP closeP comma //func
+		//singleQ //char
+
+		//Operators
+		//times div plus minus mod
+		//set
+		//eq ne gt lt gte lte
+		//and or not
+
+		//Other
+		//var semicolon return
+		"comment",
+	].each((index,value) {
+		self[value]=index;
+	}).ext(Type);
+
+	checkers=[
+		{
+			a={};
+			a.regexp=RegExp("\\/\\/.*\n");
+			a.name="comment";
+			a.builtIn=true;
+			=<a;
+		}(),
+		{
+			a={};
+			//NOTE: because we are making a regexp inside a string, escapes must be doubled
+			a.regexp=RegExp("[0123456789][0123456789_]?\\.?[0123456789_]?");
+			a.name="num";
+			a.builtIn=true;
+			a.action=(line,buffer,default)=>not(a.regexp.matches(buffer+line[0]));
+			=<a;
+		}(),
+	];
+
+	sym=Symbol();
+	line=getNextLine();
+	nextSym={
+		buffer="";
+		isNotValidSymbol=true;
+		while(()=>isNotValidSymbol,{
+			if(buffer.len()==0,{
+				buffer=Str(line[0]);
+				line=line.slice(1);
+			});
+			index=0;
+			while(()=>index<checkers.len(),{
+				if (checkers[index].regexp.matches(buffer),{
+					if(checkers[index].action(line,buffer),{
+						sym=checkers[index].name;
+						index=checkers.len();
+						isNotValidSymbol=false;
+					});
+					if (sym=="comment",{
+						line=getNextLine();
+					});
+				});
+				index++;
+			});
+		});
+	};
+
+	accept=s=>{
+		isEq=sym==s;
+		if(isEq,{
+			nextSym();
+		});
+		self.ret(isEq);
+	};
+	expect=s=>{
+		a=accept(s);
+		if(not(a),{
+			error("unexpected symbol "+Symbol[s]);
+		});
+		self.ret(a);
+	};
+
+	block={
+		
+	};
+
+	program={
+		nextSym();
+		block();
+	};
+};
+
+makeTree=(tokens)=>{
 
 };
 
-makeTree=(tokens,tree)=>{
-
-};
-
-readFile=name=>{
-	file=openFile(name);/// The file that is open
+readFile=(name,error)=>{
+	file=IO.in.openFile(name);/// The file that is open
 	s=self;
-	tokens=tokenify(() => file.readLine());
-	tree=makeTree(tokens,tree);
+	tree=makeTree(
+		tokenify(() => file.readLine(),error)
+	);
 };
 
-compileFile=name=>{
-	readFile(newTree);
+compileFile=(name,error)=>{
+	tree=readFile(name,val=>{
+		error("Compile error in "+name+" :\n"+er);
+	},val=>{
+		error("Compile error: "+er);
+	});//do stuff with tree
 }
 
-=< args => compileFile(args[args.length-1]);
+runFile=name=>{
+	runTree(readFile(name,val=>{
+		error("Interpreter error in "+name+" :\n"+er);
+	}));
+}
+
+=< args => compileFile(args[args.length-1],IO.out.err);
