@@ -12,6 +12,14 @@ about.
 - The Chameleon Programming Language Standard
   - Table of Contents
   - Variables
+  - Functions
+    - Defining functions
+      - No args
+      - No args One line
+      - One Arg
+      - One arg One Line
+      - Multi-arg
+      - Multi-arg One line
   - File extention
   - Development tools
   - Core features
@@ -21,7 +29,6 @@ about.
     - Typecasting
     - Operators
     - Functions
-      - Defining
       - Scoping
         - When var names collide
       - Returning
@@ -40,9 +47,16 @@ about.
 
 - [x] The Chameleon Programming Language Standard
   - [x] Variables
-  - [ ] Functions
-    - [ ] Defining functions
+  - [2/4] Functions
+    - [x] Defining functions
+      - No args
+      - No args One line
+      - One Arg
+      - One arg One Line
+      - Multi-arg
+      - Multi-arg One line
     - [ ] Calling functions
+      - [ ] Scoping
     - [ ] Returning
   - [ ] `self`
   - [ ] Operators
@@ -104,6 +118,57 @@ theLast1=true;//And here's a bool.
 ### Variables proposal 2
 
 Names may include any character otherwise not used in any syntax.
+
+## Functions
+
+Uses pass by value. (Allow for pointers? Do call by val instead?)
+
+### Defining Functions
+
+Supports 6 ways of declaring functions, listed below
+
+#### No args
+
+```text
+anyVariableHere={
+  //do something upon invoction
+}
+```
+
+#### No args One line
+
+```text
+anyVariableHere=()=> 72;// return 72
+```
+
+#### One Arg
+
+```text
+anyVariableHere= in => {
+  self.ret(in*2); // return the arg times two
+};
+```
+
+#### One arg One Line
+
+```text
+anyVariableHere= in => in*2;//a single line is treated like a code block
+```
+
+#### Multi-arg
+
+```test
+anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
+  //The => is optional when inbetween an endparen and an opening curly
+  self.ret(a+FEW+dif_frent+var5+h$er3);
+}
+```
+
+#### Multi-arg One line
+
+```test
+anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a+FEW+dif_frent+var5+h$er3;
+```
 
 ## File extention
 
@@ -304,55 +369,6 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - Call b, then pass it to a (`a@b`) `@`
 
 ### Functions
-
-Uses pass by value. (Allow for pointers? Do call by val instead?)
-
-#### Defining
-
-Supports 6 ways of declaring functions, listed below
-
-##### No args
-
-```text
-anyVariableHere={
-  //do something upon invoction
-}
-```
-
-##### No args One line
-
-```text
-anyVariableHere=()=> 72;// return 72
-```
-
-##### One Arg
-
-```text
-anyVariableHere= in => {
-  self.ret(in*2); // return the arg times two
-};
-```
-
-##### One arg One Line
-
-```text
-anyVariableHere= in => in*2;//a single line is treated like a code block
-```
-
-##### Multi-arg
-
-```test
-anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
-  //The => is optional when inbetween an endparen and an opening curly
-  self.ret(a+FEW+dif_frent+var5+h$er3);
-}
-```
-
-##### Multi-arg One line
-
-```test
-anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a+FEW+dif_frent+var5+h$er3;
-```
 
 #### scoping
 
