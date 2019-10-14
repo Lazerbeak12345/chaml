@@ -47,7 +47,7 @@ about.
 
 - [x] The Chameleon Programming Language Standard
   - [x] Variables
-  - [2/4] Functions
+  - [x] Functions
     - [x] Defining functions
       - No args
       - No args One line
@@ -55,7 +55,7 @@ about.
       - One arg One Line
       - Multi-arg
       - Multi-arg One line
-    - [ ] Calling functions
+    - [x] Calling functions
       - [ ] Scoping
     - [ ] Returning
   - [ ] `self`
@@ -168,6 +168,23 @@ anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
 
 ```test
 anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a+FEW+dif_frent+var5+h$er3;
+```
+
+### Calling functions
+
+```chaml
+a=()=>1;
+b=a=>a+1;
+c=(a,b)=>a+b;
+
+//Call a
+a();        // returns 1
+//call b, passing a value. (if a var, it's duplicated)
+b(3);       // returns 4
+c(3,7);     // returns 10
+
+//Compose b on c (evaluates to `b(c(3,2))`)
+b@c(20,3);  // returns 24
 ```
 
 ## File extention
@@ -496,23 +513,6 @@ returnsArgTimesTwo=arg=>{
 returnsTheSumOfArgs=(a,b) => {
   =<a+b;
 }
-```
-
-#### Calling convention
-
-```chaml
-a=()=>1;
-b=a=>a+1;
-c=(a,b)=>a+b;
-
-//Call a
-a();        // returns 1
-//call b, passing a value. (if a var, it's duplicated)
-b(3);       // returns 4
-c(3,7);     // returns 10
-
-//Compose b on c (evaluates to `b(c(3,2))`)
-b@c(20,3);  // returns 24
 ```
 
 ## Reserved functions
