@@ -20,6 +20,9 @@ about.
       - One arg One Line
       - Multi-arg
       - Multi-arg One line
+    - Calling functions
+      - Scoping
+        - When var names collide
   - File extention
   - Development tools
   - Core features
@@ -29,8 +32,6 @@ about.
     - Typecasting
     - Operators
     - Functions
-      - Scoping
-        - When var names collide
       - Returning
         - From inside a one-liner
         - From a block function
@@ -45,9 +46,9 @@ about.
 
 ### The future TOC
 
-- [x] The Chameleon Programming Language Standard
+- [2.75/9] The Chameleon Programming Language Standard
   - [x] Variables
-  - [x] Functions
+  - [3/4] Functions
     - [x] Defining functions
       - No args
       - No args One line
@@ -56,7 +57,8 @@ about.
       - Multi-arg
       - Multi-arg One line
     - [x] Calling functions
-      - [ ] Scoping
+      - [x] Scoping
+        - When var names collide
     - [ ] Returning
   - [ ] `self`
   - [ ] Operators
@@ -185,6 +187,96 @@ c(3,7);     // returns 10
 
 //Compose b on c (evaluates to `b(c(3,2))`)
 b@c(20,3);  // returns 24
+```
+
+#### scoping
+
+```text
+//can be modified above theFunc
+//can be modified within theFunc
+//can be modified below theFunc
+a=1947;
+theFunc=(
+  //can't be modified above theFunc
+  //can be modified within theFunc
+  //can be modified below theFunc (after a `anotherVar` is declared)
+  e)=>{
+  //can't be modified above theFunc
+  //can be modified within theFunc
+  //can't be modified below theFunc
+  b=28142;
+  //can't be modified above theFunc
+  //can be modified within theFunc
+  //can be modified below theFunc
+  self.c=4234;
+
+  e++;
+}
+//can't be modified above theFunc
+//can't be modified within theFunc
+//can be modified below theFunc
+d=324;
+
+/* here's how to modify this var too.
+ * note that it isn't initialized till there is a value set to it.
+ * If you read this variable on the first line of `theFunc` it would read `7`*/
+theFunc.c=7;
+
+//can't be modified above theFunc
+//can be modified within theFunc
+//can be modified below theFunc (but only after this call)
+anotherVar=99;
+
+theFunc(anotherVar);
+//anotherVar does not change
+```
+
+Aditionally, functions can be defined within other functions. As they are stored
+within variables, they follow the same scoping when it comes to running the
+function. This also applies to variables within functions within functions:
+
+```text
+//cannot read or execute outerFunc here
+//cannot read or execute innerFunc here
+//cannot read a here
+outerFunc={
+  //can read &/or execute outerFunc here
+  //cannot read or execute innerFunc here
+  //cannot read a here
+  innerFunc={
+    //can read &/or execute innerFunc here
+    //can read &/or execute outerFunc here
+    //cannot read a here
+    a=true;
+    //can read a here
+  }
+  //can read &/or execute innerFunc here
+  //cannot read a here
+}
+//can read &/or execute outerFunc here
+//cannot read or execute innerFunc here
+//cannot read a here
+```
+
+##### When var names collide
+
+Sometimes, variable names are unintentially reused by devs. Here's an example of
+functional, yet poorly written code.
+
+```text
+conflicingName=849234;
+funcName=conflictingName=> conflicingName();
+
+funcName(() => 21); //returns 21
+
+anotherName=(conflicingName) => {
+  self.ret(conflictingName*10);
+}
+
+k=3;
+anotherName(k)//returns 30
+
+//conflictingName is still 849234
 ```
 
 ## File extention
@@ -386,96 +478,6 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - Call b, then pass it to a (`a@b`) `@`
 
 ### Functions
-
-#### scoping
-
-```text
-//can be modified above theFunc
-//can be modified within theFunc
-//can be modified below theFunc
-a=1947;
-theFunc=(
-  //can't be modified above theFunc
-  //can be modified within theFunc
-  //can be modified below theFunc (after a `anotherVar` is declared)
-  e)=>{
-  //can't be modified above theFunc
-  //can be modified within theFunc
-  //can't be modified below theFunc
-  b=28142;
-  //can't be modified above theFunc
-  //can be modified within theFunc
-  //can be modified below theFunc
-  self.c=4234;
-
-  e++;
-}
-//can't be modified above theFunc
-//can't be modified within theFunc
-//can be modified below theFunc
-d=324;
-
-/* here's how to modify this var too.
- * note that it isn't initialized till there is a value set to it.
- * If you read this variable on the first line of `theFunc` it would read `7`*/
-theFunc.c=7;
-
-//can't be modified above theFunc
-//can be modified within theFunc
-//can be modified below theFunc (but only after this call)
-anotherVar=99;
-
-theFunc(anotherVar);
-//anotherVar does not change
-```
-
-Aditionally, functions can be defined within other functions. As they are stored
-within variables, they follow the same scoping when it comes to running the
-function. This also applies to variables within functions within functions:
-
-```text
-//cannot read or execute outerFunc here
-//cannot read or execute innerFunc here
-//cannot read a here
-outerFunc={
-  //can read &/or execute outerFunc here
-  //cannot read or execute innerFunc here
-  //cannot read a here
-  innerFunc={
-    //can read &/or execute innerFunc here
-    //can read &/or execute outerFunc here
-    //cannot read a here
-    a=true;
-    //can read a here
-  }
-  //can read &/or execute innerFunc here
-  //cannot read a here
-}
-//can read &/or execute outerFunc here
-//cannot read or execute innerFunc here
-//cannot read a here
-```
-
-##### When var names collide
-
-Sometimes, variable names are unintentially reused by devs. Here's an example of
-functional, yet poorly written code.
-
-```text
-conflicingName=849234;
-funcName=conflictingName=> conflicingName();
-
-funcName(() => 21); //returns 21
-
-anotherName=(conflicingName) => {
-  self.ret(conflictingName*10);
-}
-
-k=3;
-anotherName(k)//returns 30
-
-//conflictingName is still 849234
-```
 
 #### Returning
 
