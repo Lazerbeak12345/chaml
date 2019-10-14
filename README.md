@@ -7,6 +7,8 @@ about.
 <!--Look at https://vim.fandom.com/wiki/Creating_your_own_syntax_files later-->
 <!--Look at https://stackoverflow.com/questions/38148857/customizing-syntax-highlighting-in-visual-studio-code-->
 
+The file extention is `.chaml`
+
 ## Table of Contents
 
 - The Chameleon Programming Language Standard
@@ -23,18 +25,15 @@ about.
     - Calling functions
       - Scoping
         - When var names collide
-  - File extention
-  - Development tools
+    - Returning
+      - From inside a one-liner
+      - From a block function
   - Core features
   - Other features
   - Syntax
     - Comments
     - Typecasting
     - Operators
-    - Functions
-      - Returning
-        - From inside a one-liner
-        - From a block function
   - Reserved functions
     - while
     - if
@@ -46,9 +45,9 @@ about.
 
 ### The future TOC
 
-- [2.75/9] The Chameleon Programming Language Standard
+- [3/9] The Chameleon Programming Language Standard
   - [x] Variables
-  - [3/4] Functions
+  - [x] Functions
     - [x] Defining functions
       - No args
       - No args One line
@@ -59,7 +58,9 @@ about.
     - [x] Calling functions
       - [x] Scoping
         - When var names collide
-    - [ ] Returning
+    - [x] Returning
+      - From inside a one-liner
+      - From a block function
   - [ ] `self`
   - [ ] Operators
   - [ ] Types
@@ -279,17 +280,43 @@ anotherName(k)//returns 30
 //conflictingName is still 849234
 ```
 
-## File extention
+### Returning
 
-The file extention should be `.chaml`
+#### From inside a one-liner
 
-## Development tools
+```text
+returnsNumber1=()=>1;
+returnsArgTimesTwo=arg=>arg*2;
+returnsTheSumOfArgs=(a,b)=>a+b;
+```
 
-None yet, but in this repo there are a few half-started implementations.
-Just look in the `implementations` directory.
+#### From a block function
 
-> If you want to add your tool here, just send me a pull request with it added
-> to this section
+```chaml
+returnsNumber1={
+  self.ret(1);
+};
+returnsArgTimesTwo=arg=>{
+  self.ret(arg*2);
+}
+returnsTheSumOfArgs=(a,b) => {
+  self.ret(a+b);
+}
+```
+
+Alternatively you could use
+
+```chaml
+returnsNumber1={
+  =<1;
+};
+returnsArgTimesTwo=arg=>{
+  =<arg*2;
+}
+returnsTheSumOfArgs=(a,b) => {
+  =<a+b;
+}
+```
 
 ## Core features
 
@@ -476,46 +503,6 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - SET `=`
 - Invert bool `!`
 - Call b, then pass it to a (`a@b`) `@`
-
-### Functions
-
-#### Returning
-
-##### From inside a one-liner
-
-```text
-returnsNumber1=()=>1;
-returnsArgTimesTwo=arg=>arg*2;
-returnsTheSumOfArgs=(a,b)=>a+b;
-```
-
-##### From a block function
-
-```chaml
-returnsNumber1={
-  self.ret(1);
-};
-returnsArgTimesTwo=arg=>{
-  self.ret(arg*2);
-}
-returnsTheSumOfArgs=(a,b) => {
-  self.ret(a+b);
-}
-```
-
-Alternatively you could use
-
-```chaml
-returnsNumber1={
-  =<1;
-};
-returnsArgTimesTwo=arg=>{
-  =<arg*2;
-}
-returnsTheSumOfArgs=(a,b) => {
-  =<a+b;
-}
-```
 
 ## Reserved functions
 
