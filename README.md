@@ -11,13 +11,13 @@ about.
 
 - The Chameleon Programming Language Standard
   - Table of Contents
+  - Variables
   - File extention
   - Development tools
   - Core features
   - Other features
   - Syntax
     - Comments
-    - Variables
     - Typecasting
     - Operators
     - Functions
@@ -38,32 +38,72 @@ about.
 
 ### The future TOC
 
-- The Chameleon Programming Language Standard
-  - Variables
-  - Functions
-    - Defining functions
-    - Calling functions
-    - Returning
-  - `self`
-  - Operators
-  - Types
-  - Libraries
-    - Using libraries
-      - `self.import`
-      - Some example libraries
-        - IO
-        - Vector
-        - Regexp
-    - Writing libraries
-  - Overloading
-    - Overloading functions
-    - Overloading types
-    - Overloading operators
-    - Overloading syntax - (points to dedicated section)
-  - Syntax Extention
-    - Using a syntax module
-      - Common modules
-    - Writing a syntax module
+- [x] The Chameleon Programming Language Standard
+  - [x] Variables
+  - [ ] Functions
+    - [ ] Defining functions
+    - [ ] Calling functions
+    - [ ] Returning
+  - [ ] `self`
+  - [ ] Operators
+  - [ ] Types
+  - [ ] Libraries
+    - [ ] Using libraries
+      - [ ] `self.import`
+      - [ ] Some example libraries
+        - [ ] IO
+        - [ ] Vector
+        - [ ] Regexp
+    - [ ] Writing libraries
+  - [ ] Overloading
+    - [ ] Overloading functions
+    - [ ] Overloading types
+    - [ ] Overloading operators
+    - [ ] Overloading syntax - (points to dedicated section)
+  - [ ] Syntax Extention
+    - [ ] Using a syntax module
+      - [ ] Common modules
+    - [ ] Writing a syntax module
+
+## Variables
+
+Variables may be set to the following (`Generator` is the constructor):
+
+- `Function`
+- `Number`
+  - Supports all syntaxes java supports for numbers.
+    - decimal `34`
+    - bin `0b11`
+    - hex `0xf4`
+    - octal `012`
+    - the underscore may be used for readability anywhere but the first or last
+    characters.
+  - Assumes to be a 64 bit number (a C++ double). Signing the value when using
+  more then 63 bits will throw
+  `Number overflow error: Tried to change sign of huge number`.
+- `Char` (C-style)
+  - Stored in memory nearly exactly the same as a number. (type signage is the
+  only difference)
+- `Array` fixed-length list of items
+- `Bool` (C-style)
+
+Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
+
+Naming conventions are identical to JavaScript; they may contain any number,
+upper or lowercase letter, or these: `$_`. They cannot start with a number.
+
+```text
+newVar=3; // number
+anotherVar=()=>3; //function returning a number
+_yetanoth3rVar='c'; // this is just a char, but can be cast to and from a number
+arrofnums=[3,5,3,2,5,64,5,64,3];//cant change len, but you can replace the value
+$another="This is shorthand for an array of chars";
+theLast1=true;//And here's a bool.
+```
+
+### Variables proposal 2
+
+Names may include any character otherwise not used in any syntax.
 
 ## File extention
 
@@ -156,51 +196,6 @@ And_thus="this line is still reached and evaluated";
  * is greater then 20, remove this list.
  */
 ```
-
-### Variables
-
-Variables may be set to the following (`Generator` is the constructor):
-
-- `Function`
-- `Number`
-  - Supports all syntaxes java supports for numbers.
-    - decimal `34`
-    - bin `0b11`
-    - hex `0xf4`
-    - octal `012`
-    - the underscore may be used for readability anywhere but the first or last
-    characters.
-  - Assumes to be a 64 bit number (a C++ double). Signing the value when using
-  more then 63 bits will throw
-  `Number overflow error: Tried to change sign of huge number`.
-- `Char` (C-style)
-  - Stored in memory nearly exactly the same as a number. (type signage is the
-  only difference)
-- `Array` fixed-length list of items
-- `Bool` (C-style)
-
-Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
-
-Naming conventions are identical to JavaScript; they may contain any number,
-upper or lowercase letter, or these: `$_`. They cannot start with a number.
-
-```text
-newVar=3; // number
-anotherVar=()=>3; //function returning a number
-_yetanoth3rVar='c'; // this is just a char, but can be cast to and from a number
-arrofnums=[3,5,3,2,5,64,5,64,3];
-$another="This is shorthand for an array of chars";
-theLast1=true;//And here's a bool.
-```
-
-#### Variables proposal 2
-
-Names may include any character otherwise not used in any syntax.
-
-#### Variables proposal 3
-
-Make `Array` fixed length, and have an importable `Vector` that is a B* tree as
-described in `Array` above.
 
 ### Typecasting
 
