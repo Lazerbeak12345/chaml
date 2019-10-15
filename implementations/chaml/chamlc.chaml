@@ -77,8 +77,8 @@ tokenify=(getNextLine,error)=>{
 		}(),
 		{
 			a=CheckerBuiltIn();
-			a.regexp="==";
-			a.name="eq";
+			a.regexp="=>";
+			a.name="lamda";//This may not be the correct name
 			self.ret(a);
 		}(),
 		{
@@ -106,16 +106,17 @@ tokenify=(getNextLine,error)=>{
 
 	sym=Symbol();
 	line=getNextLine();
+	oreq=(a1,a2)=>(b1,b2)=>eq(a1,a2).or(eq(b1,b2));
 	nextSym={
 		buffer="";
 		isNotValidSymbol=true;
 		while(()=>isNotValidSymbol,{
-			if(or(buffer.len()==0,sym==-1),{
+			if(oreq(buffer.len(),0)(sym,-1),{
 				buffer=Str(line[0]);
 				line=line.slice(1);
 			});
 			s=self;
-			if(line.len()==0,{
+			if(eq(line.len(),0),{
 				line=getNextLine();
 				s.ret(true);//this is basically a continue. Returning false is a break;
 			});
@@ -128,19 +129,19 @@ tokenify=(getNextLine,error)=>{
 						index=checkers.len();
 						isNotValidSymbol=false;
 					});
-					if (or(sym==Symbol["comment"],sym==Symbol["multicomment"]),{
+					if (oreq(sym,Symbol["comment"])(sym,Symbol["multicomment"]),{
 						buffer="";
 						line=getNextLine();
 						isNotValidSymbol=true;
 					});
 				});
-				index++;
+				index.up1();
 			});
 		});
 	};
 
 	accept=s=>{
-		isEq=sym==s;
+		isEq=eq(sym,s);
 		if(isEq,{
 			nextSym();
 		});
@@ -154,7 +155,7 @@ tokenify=(getNextLine,error)=>{
 		self.ret(a);
 	};
 	reject=(s,reason)=>{
-		isEq=sym==s;
+		isEq=eq(sym,s);
 		if(isEq,{
 			error("Rejected symbol \""+s"\"\n"+reason);
 		});
@@ -163,14 +164,73 @@ tokenify=(getNextLine,error)=>{
 
 	block=a=>null;//Defined here to enable statement to work with functions
 
-	statement={
+	/**
+	 * It's a function
+	 * (named this way to avoid all ambiguity)
+	 * @parem numberOfArguments the numberOfArguments that it took. Used for syntax stuff
+	 */
+	afunction=(numberOfArguments,preface)=>{//TODO
+		if(preface.and(lte(numberOfArguments,1)),{
+			expect(Symbol["lamda"]);
+		},()=>if(gte(numberOfArguments,2),{
+			accept(Symbol["lamda"]);
+		},{
+			reject(Symbol["lamda"],
+				"A zero argument function without any other preface indicators must not have this operator.\nTry removing it, or prefixing it with parentheses");
+		}));
 		//TODO
 	};
 
+	/**
+	 * Something that goes inside a variable. Probabbly needs a better name.
+	 */
+	statement={//TODO
+		s=self;
+		if(accept(Symbol["openP"]),{
+			accept(Symbol["whitespace"]);
+			itsAFunc=false;
+			argCount=0;
+			if(accept(Symbol["identifier"]),{//Is it a function?
+				accept(Symbol["whitespace"]);
+				if(accept(Symbol["comma"]),{//two or more arg function
+					accept(Symbol["whitespace"]);
+					argCount=1;
+					while({
+						accept(Symbol["whitespace"]);
+						s=self;
+						if (eq(argCount,1),{
+							s.ret(accept(Symbol["identifier"]));
+						},{
+							s.ret(expect(Symbol["identifier"]));
+						});
+					},{
+						argCount.up1();//think a++ ++a is Num.up1(a);
+						accept(Symbol["whitespace"]);
+						self.ret(accept(Symbol["comma"]));
+					});
+				},()=>if(accept(Symbol["closeP"]),{//Single arg function
+					itsAFunc=true;
+					argCount=1;
+					accept(Symbol["whitespace"]);
+				}));
+			},()=>if(accept(Symbol["closeP"]),{//the only thing this could be is a one line function with no args
+				itsAFunc=true;
+				accept(Symbol["whitespace"]);
+			},s));// I guess it's just a paren set
+			accept(Symbol["closeP"]);
+			if(itsAFunc,()=> afunction(count,true));
+		},{//TODO
+
+		});
+	};
+
+	/**
+	 * A list of statements. Could either be arguments or an arr
+	 */
 	statementList={
 		ranOnce=false;
 		while({
-			self.ret(or(not(ranOnce),));
+			self.ret(or(not(ranOnce),eq(sym,Symbol["comma"])));
 		},{
 			if(ranOnce,()=>expect(Symbol["comma"]));
 			accept(Symbol["whitespace"]);
@@ -180,10 +240,13 @@ tokenify=(getNextLine,error)=>{
 		});
 	};
 
+	/**
+	 * Think of it like a single line of a function.
+	 */
 	action={
 		expect(Symbol["identifier"]);
 		accept(Symbol["whitespace"]);
-		if(accept(Symbol["set"]),//set/change a value
+		if(accept(Symbol["set"]),//set or change a value
 			statement,
 		()=>if(accept(Symbol["openP"]),{//call a function
 			statementList();
@@ -192,21 +255,29 @@ tokenify=(getNextLine,error)=>{
 		expect(Symbol["semicolon"]);
 	};
 
-	block=notoutermost=>{
-		needsClose=false;
+	/**
+	 * A function, or the internals of a program
+	 * @param needsCurls if true, it expects curlys
+	 */
+	block=needsCurls=>{//A function, or a program
+		needsCurls=false;
 		if(notoutermost,{
-			needsClose=accept(Symbol["openC"]);
+			needsCurls=accept(Symbol["openC"]);
 		});
 		while({
 			accept(Symbol["whitespace"]);
-			self.ret(sym==Symbol["identifier"]);
+			self.ret@eq(sym,Symbol["identifier"]);
 		},action);
-		if(needsClose,()=>expect(Symbol["closeC"]));
+		if(needsCurls,()=>expect(Symbol["closeC"]));
 	};
 
+	/**
+	 * expect a program. (To be called only once. self-destructive)
+	 */
 	program={
 		nextSym();
 		block(false);
+		self={};
 	};
 };
 
