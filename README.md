@@ -35,6 +35,10 @@ The file extention is `.chaml`
     - Typecasting
     - Operators
   - Reserved functions
+    - Math
+    - Boolean logic
+    - self.ret
+    - self.throw
     - while
     - if
     - self.import
@@ -42,10 +46,11 @@ The file extention is `.chaml`
     - self.declareSyntax
     - Regexp
   - Interpretation/Compilation stages
+  - Resources
 
 ### The future TOC
 
-- [3/9] The Chameleon Programming Language Standard
+- [4/10] The Chameleon Programming Language Standard
   - [x] Variables
   - [x] Functions
     - [x] Defining functions
@@ -81,6 +86,7 @@ The file extention is `.chaml`
     - [ ] Using a syntax module
       - [ ] Common modules
     - [ ] Writing a syntax module
+  - [x] Resources
 
 ## Variables
 
@@ -124,7 +130,7 @@ Names may include any character otherwise not used in any syntax.
 
 ## Functions
 
-Uses pass by value. (Allow for pointers? Do call by val instead?)
+Uses call/pass by value. (Allow for pointers? Look into lazy reaction to pure function detection. Also look into deforestation.)
 
 ### Defining Functions
 
@@ -135,7 +141,7 @@ Supports 6 ways of declaring functions, listed below
 ```text
 anyVariableHere={
   //do something upon invoction
-}
+};
 ```
 
 #### No args One line
@@ -164,7 +170,7 @@ anyVariableHere= in => in*2;//a single line is treated like a code block
 anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
   //The => is optional when inbetween an endparen and an opening curly
   self.ret(a+FEW+dif_frent+var5+h$er3);
-}
+};
 ```
 
 #### Multi-arg One line
@@ -212,7 +218,7 @@ theFunc=(
   self.c=4234;
 
   e++;
-}
+};
 //can't be modified above theFunc
 //can't be modified within theFunc
 //can be modified below theFunc
@@ -250,10 +256,10 @@ outerFunc={
     //cannot read a here
     a=true;
     //can read a here
-  }
+  };
   //can read &/or execute innerFunc here
   //cannot read a here
-}
+};
 //can read &/or execute outerFunc here
 //cannot read or execute innerFunc here
 //cannot read a here
@@ -272,7 +278,7 @@ funcName(() => 21); //returns 21
 
 anotherName=(conflicingName) => {
   self.ret(conflictingName*10);
-}
+};
 
 k=3;
 anotherName(k)//returns 30
@@ -298,10 +304,10 @@ returnsNumber1={
 };
 returnsArgTimesTwo=arg=>{
   self.ret(arg*2);
-}
+};
 returnsTheSumOfArgs=(a,b) => {
   self.ret(a+b);
-}
+};
 ```
 
 Alternatively you could use
@@ -312,10 +318,10 @@ returnsNumber1={
 };
 returnsArgTimesTwo=arg=>{
   =<arg*2;
-}
+};
 returnsTheSumOfArgs=(a,b) => {
   =<a+b;
-}
+};
 ```
 
 ## Core features
@@ -412,12 +418,12 @@ One can overload casting by doing something like this:
 //Overload casting of Array to Boolean in all cases
 Array.to.Boolean={
   //Return what you want the value to be. `self` is the current value.
-}
+};
 //Overload instance only
 myNumber=4234
 myNumber.to.Char={
   //Same as before, return what you want the value to be,
-}
+};
 ```
 
 - To `Boolean`
@@ -471,6 +477,7 @@ Look into adding monads, such as
 ### Operators
 
 <!--Note to self: look at https://www.tutorialspoint.com/java/java_basic_operators.htm-->
+<!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
 
 All primitive types allow one of these operators to be appllied to another of
 the same type, with the exeption of functions, where they don't accept `++` or
@@ -505,6 +512,14 @@ the same type, with the exeption of functions, where they don't accept `++` or
 - Call b, then pass it to a (`a@b`) `@`
 
 ## Reserved functions
+
+### Math
+
+### Boolean logic
+
+### self.ret
+
+### self.throw
 
 ### while
 
@@ -634,3 +649,14 @@ statement in order to speed up the program execution without wasteing recources"
 #### Code generator
 
 #### Mashine Dependant code optimizer
+
+## Resources
+
+These are some but not all of the resources that I have used thus far.
+(In no particular order)
+
+- [http://lucacardelli.name/Papers/TypeSystems.pdf](http://lucacardelli.name/Papers/TypeSystems.pdf)
+- [https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/](https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/)
+- [https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf](https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf)
+- [https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/](https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/)
+- [https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm](https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm)
