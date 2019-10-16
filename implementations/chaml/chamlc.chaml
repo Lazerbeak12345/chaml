@@ -8,6 +8,14 @@ tk=self.import("./lib/syntax-tokens");
 //If I get stuck, here's some URLs for help 
 //https://en.wikipedia.org/wiki/Recursive_descent_parser
 
+// Once This file is "ready" look at these in order to get this thing compiled (in order of appearance)
+//https://github.com/antlr/antlr4
+//http://aquamentus.com/flex_bison.html
+//https://github.com/westes/flex
+//https://www.youtube.com/watch?v=54bo1qaHAfk
+//https://www.gnu.org/software/bison/
+//https://invisible-island.net/byacc/byacc.html
+
 runFile=Func([Str()],Null());
 
 tokenify=(getNextLine,error)=>{
@@ -71,6 +79,18 @@ tokenify=(getNextLine,error)=>{
 		}(),
 		{
 			a=CheckerBuiltIn();
+			a.regexp="\\[";
+			a.name="openS";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp="\\]";
+			a.name="closeS";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
 			a.regexp="\s*";
 			a.name="whitespace";
 			self.ret(a);
@@ -97,6 +117,30 @@ tokenify=(getNextLine,error)=>{
 			a=CheckerBuiltIn();
 			a.regexp=",";
 			a.name="comma";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp="\\.";
+			a.name="subItem";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp="\".*[^\\\\]\"";
+			a.name="string";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp="'.'";
+			a.name="char";
+			self.ret(a);
+		}(),
+		{
+			a=CheckerBuiltIn();
+			a.regexp="[0123456789][0123456789_]*";
+			a.name="num";
 			self.ret(a);
 		}(),
 	].each((i,v) {
@@ -141,7 +185,7 @@ tokenify=(getNextLine,error)=>{
 	};
 
 	accept=s=>{
-		isEq=eq(sym,s);
+		isEq=eq(sym,Symbol[s]);
 		if(isEq,{
 			nextSym();
 		});
@@ -150,7 +194,7 @@ tokenify=(getNextLine,error)=>{
 	expect=s=>{
 		a=accept(s);
 		if(not(a),{
-			error("Unexpected symbol \""+Symbol[sym]+"\"\nWas expecting symbol \""+Symbol[s]+"\" instead.");
+			error("Unexpected symbol \""+Symbol[sym]+"\"\nWas expecting symbol \""+s+"\" instead.");
 		});
 		self.ret(a);
 	};
@@ -162,80 +206,110 @@ tokenify=(getNextLine,error)=>{
 		self.ret(isEq);
 	};
 
-	block=a=>null;//Defined here to enable statement to work with functions
+	block={};//Defined here to enable statementValue to work with functions
 
 	/**
 	 * It's a function
 	 * (named this way to avoid all ambiguity)
-	 * @parem numberOfArguments the numberOfArguments that it took. Used for syntax stuff
+	 * @param numberOfArguments the numberOfArguments that it took. Used for syntax stuff
+	 * @param preface does it have a preface in front of this (passed in already handled for)
 	 */
-	afunction=(numberOfArguments,preface)=>{//TODO
+	afunction=(numberOfArguments,preface)=>{
+		hasLamda=false;
 		if(preface.and(lte(numberOfArguments,1)),{
-			expect(Symbol["lamda"]);
+			hasLamda=expect("lamda");
 		},()=>if(gte(numberOfArguments,2),{
-			accept(Symbol["lamda"]);
+			hasLamda=accept("lamda");
 		},{
-			reject(Symbol["lamda"],
+			reject("lamda",
 				"A zero argument function without any other preface indicators must not have this operator.\nTry removing it, or prefixing it with parentheses");
 		}));
-		//TODO
+		hasCurly=false;
+		if(preface.and(not(hasLamda)).and(numberOfArguments.gt(1)),{
+			reject("openC","You must have the lamda operator for a multi-line function with multiple arguments.");
+		},{
+			hasCurly=accept("openC");
+		});
+		block();
+		if(hasCurly,()=>expect("closeC"),
+			()=>reject("closeC","Extra closing curly bracket."));
 	};
 
+	statementValueList={};//Needs to work in statementValue
+
 	/**
-	 * Something that goes inside a variable. Probabbly needs a better name.
+	 * Something that goes inside a variable.
 	 */
-	statement={//TODO
+	statementValue={//TODO
 		s=self;
-		if(accept(Symbol["openP"]),{
-			accept(Symbol["whitespace"]);
+		if(accept("openP"),{
+			accept("whitespace");
 			itsAFunc=false;
 			argCount=0;
-			if(accept(Symbol["identifier"]),{//Is it a function?
-				accept(Symbol["whitespace"]);
-				if(accept(Symbol["comma"]),{//two or more arg function
-					accept(Symbol["whitespace"]);
+			if(accept("identifier"),{//Is it a function?
+				accept("whitespace");
+				itsAFunc=true;
+				if(accept("comma"),{//two or more arg function
+					accept("whitespace");
 					argCount=1;
 					while({
-						accept(Symbol["whitespace"]);
+						accept("whitespace");
 						s=self;
 						if (eq(argCount,1),{
-							s.ret(accept(Symbol["identifier"]));
+							s.ret(accept("identifier"));
 						},{
-							s.ret(expect(Symbol["identifier"]));
+							s.ret(expect("identifier"));
 						});
 					},{
 						argCount.up1();//think a++ ++a is Num.up1(a);
-						accept(Symbol["whitespace"]);
-						self.ret(accept(Symbol["comma"]));
+						accept("whitespace");
+						self.ret(accept("comma"));
 					});
-				},()=>if(accept(Symbol["closeP"]),{//Single arg function
-					itsAFunc=true;
+				},()=>if(accept("closeP"),{//Single arg function
 					argCount=1;
-					accept(Symbol["whitespace"]);
+					accept("whitespace");
 				}));
-			},()=>if(accept(Symbol["closeP"]),{//the only thing this could be is a one line function with no args
+			},()=>if(accept("closeP"),{//the only thing this could be is a one line function with no args
 				itsAFunc=true;
-				accept(Symbol["whitespace"]);
+				accept("whitespace");
 			},s));// I guess it's just a paren set
-			accept(Symbol["closeP"]);
+			accept("closeP");
 			if(itsAFunc,()=> afunction(count,true));
-		},{//TODO
-
-		});
+		},()=>if(ss.eq(Symbol["openC"]),{
+			afunction(0,false);
+		},()=>if(accept("identifier"),{
+			//get variable value
+			accept("whitespace");
+			while(()=>accept("subItem"),{
+				expect("identifier");
+				accept("whitespace");
+			});
+			if(accept("openP"),{//call a function
+				statementValueList();
+				expect("closeP");
+			});
+		},()=>if(accept("string"),{
+			//string
+		},()=>if(accept("char"),{
+			//char
+		},()=>if(accept("openS"),{//Array
+			statementValueList();
+			accept("closeS");
+		},))))));//TODO arr, num
 	};
 
 	/**
-	 * A list of statements. Could either be arguments or an arr
+	 * A list of statement values. Could either be arguments or an arr
 	 */
-	statementList={
+	statementValueList={
 		ranOnce=false;
 		while({
 			self.ret(or(not(ranOnce),eq(sym,Symbol["comma"])));
 		},{
-			if(ranOnce,()=>expect(Symbol["comma"]));
-			accept(Symbol["whitespace"]);
-			statement();
-			accept(Symbol["whitespace"]);
+			if(ranOnce,()=>expect("comma"));
+			accept("whitespace");
+			statementValue();
+			accept("whitespace");
 			ranOnce=true;
 		});
 	};
@@ -244,15 +318,15 @@ tokenify=(getNextLine,error)=>{
 	 * Think of it like a single line of a function.
 	 */
 	action={
-		expect(Symbol["identifier"]);
-		accept(Symbol["whitespace"]);
-		if(accept(Symbol["set"]),//set or change a value
-			statement,
-		()=>if(accept(Symbol["openP"]),{//call a function
-			statementList();
-			expect(Symbol["closeP"]);
+		expect("identifier");
+		accept("whitespace");
+		if(accept("set"),//set or change a value
+			statementValue,
+		()=>if(accept("openP"),{//call a function
+			statementValueList();
+			expect("closeP");
 		}));
-		expect(Symbol["semicolon"]);
+		expect("semicolon");
 	};
 
 	/**
@@ -262,13 +336,14 @@ tokenify=(getNextLine,error)=>{
 	block=needsCurls=>{//A function, or a program
 		needsCurls=false;
 		if(notoutermost,{
-			needsCurls=accept(Symbol["openC"]);
+			needsCurls=accept("openC");
 		});
 		while({
-			accept(Symbol["whitespace"]);
-			self.ret@eq(sym,Symbol["identifier"]);
-		},action);
-		if(needsCurls,()=>expect(Symbol["closeC"]));
+			accept("whitespace");
+			self.ret(eq(sym,Symbol["identifier"]));
+		},
+			action);
+		if(needsCurls,()=>expect("closeC"));
 	};
 
 	/**
@@ -281,7 +356,7 @@ tokenify=(getNextLine,error)=>{
 	};
 };
 
-makeTree=(tokens)=>{
+makeTree=(tokens)=>{//I obviusally didn't understand how token trees worked. I'm gonna have just a _grand_ time fixing this.
 
 };
 
