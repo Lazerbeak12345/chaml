@@ -7,7 +7,28 @@ about.
 <!--Look at https://vim.fandom.com/wiki/Creating_your_own_syntax_files later-->
 <!--Look at https://stackoverflow.com/questions/38148857/customizing-syntax-highlighting-in-visual-studio-code-->
 
-The file extention is `.chaml`
+Here's a code sample for those interested:
+
+```chaml
+/**
+ * An implimentation of else and elif using only if
+ */
+self.ret((b,f) {
+  if(b,f);
+  self.ret({
+    state=Bool(b);
+    obj=self;
+    self.elif=(b,f) {
+      state=state.or(b);
+      if(not(state).and(b),f);
+      self.ret(obj);
+    };
+    self.else=(b,f) {
+      if(not(state).and(b),f);
+    };
+  });
+});
+```
 
 ## Table of Contents
 

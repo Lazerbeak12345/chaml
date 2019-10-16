@@ -1,0 +1,18 @@
+/**
+ * An implimentation of else and elif using only if
+ */
+self.ret((b,f) {
+	if(b,f);
+	self.ret({
+		state=Bool(b);
+		obj=self;
+		self.elif=(b,f) {
+			state=state.or(b);
+			if(not(state).and(b),f);
+			self.ret(obj);
+		};
+		self.else=(b,f) {
+			if(not(state).and(b),f);
+		};
+	});
+});
