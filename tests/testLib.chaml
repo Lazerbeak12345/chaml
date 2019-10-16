@@ -14,7 +14,7 @@ self.assert=(a,b) {
 	if(a!=b,{
 		self.throw("Assert failed! Expected:\n"+JSON.stringify(a)+
 			"\ngot\n"+JSON.stringify(b));
-	})();
+	});
 };
 self.run={
 	suites.assyncEach((index,suite) {

@@ -537,7 +537,14 @@ other awesome combos (like a while-do-while, do-while-do, or do-while-do-while).
 - Takes 2 args,
   - a boolean
   - a function called when boolean is true.
-- An optional third arg is another function, called if boolean is false.
+- Returns an object containing two methods:
+  - `elif` takes the same args as if and returns the same thing as if, but the
+  function is only called if all previous `if` or `.elif` bools are false.
+  In other words, it's only called when the state of the `if` is false. (see
+  `else` below). Also returns the same thing as `if`.
+  same thing(s) as `if`.
+  - `else` takes a function, called only if all previous functions are false.
+  Has no return.
 
 If returns a function that resolves itself. Untill this is run, the if is not
 evaluated.
@@ -545,25 +552,25 @@ evaluated.
 ```chaml
 if(true,{
   //code if true
-})();
+});
 
 if(1>0,{
   //code if true
-})();
+});
 
 if(false,{
   //code if true
-},{
+}).else({
   //code if false
-})();
+});
 
 if(99==93,{
   //code if first true
-},if(false,{
+}).elif(false,{
   //code if 2nd true
-},{
+}).else({
   //code if 1 & 2 false
-}))();
+});
 ```
 
 ### self.import

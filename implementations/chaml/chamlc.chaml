@@ -218,21 +218,21 @@ tokenify=(getNextLine,error)=>{
 		hasLamda=false;
 		if(preface.and(lte(numberOfArguments,1)),{
 			hasLamda=expect("lamda");
-		},()=>if(gte(numberOfArguments,2),{
+		}).elif(gte(numberOfArguments,2),{
 			hasLamda=accept("lamda");
-		},{
+		}).else({
 			reject("lamda",
 				"A zero argument function without any other preface indicators must not have this operator.\nTry removing it, or prefixing it with parentheses");
-		}));
+		});
 		hasCurly=false;
 		if(preface.and(not(hasLamda)).and(numberOfArguments.gt(1)),{
 			reject("openC","You must have the lamda operator for a multi-line function with multiple arguments.");
-		},{
+		}).else({
 			hasCurly=accept("openC");
 		});
 		block();
-		if(hasCurly,()=>expect("closeC"),
-			()=>reject("closeC","Extra closing curly bracket."));
+		if(hasCurly,()=>expect("closeC"))
+			.else(()=>reject("closeC","Extra closing curly bracket."));
 	};
 
 	statementValueList={};//Needs to work in statementValue
@@ -265,19 +265,19 @@ tokenify=(getNextLine,error)=>{
 						accept("whitespace");
 						self.ret(accept("comma"));
 					});
-				},()=>if(accept("closeP"),{//Single arg function
+				}).elif(accept("closeP"),{//Single arg function
 					argCount=1;
 					accept("whitespace");
-				}));
-			},()=>if(accept("closeP"),{//the only thing this could be is a one line function with no args
+				});
+			}).elif(accept("closeP"),{//the only thing this could be is a one line function with no args
 				itsAFunc=true;
 				accept("whitespace");
-			},s));// I guess it's just a paren set
+			},s);// I guess it's just a paren set
 			accept("closeP");
 			if(itsAFunc,()=> afunction(count,true));
-		},()=>if(ss.eq(Symbol["openC"]),{
+		}).elif(ss.eq(Symbol["openC"]),{
 			afunction(0,false);
-		},()=>if(accept("identifier"),{
+		}).elif(accept("identifier"),{
 			//get variable value
 			accept("whitespace");
 			while(()=>accept("subItem"),{
@@ -288,14 +288,14 @@ tokenify=(getNextLine,error)=>{
 				statementValueList();
 				expect("closeP");
 			});
-		},()=>if(accept("string"),{
+		}).elif(accept("string"),{
 			//string
-		},()=>if(accept("char"),{
+		}).elif(accept("char"),{
 			//char
-		},()=>if(accept("openS"),{//Array
+		}).elif(accept("openS"),{//Array
 			statementValueList();
 			accept("closeS");
-		},))))));//TODO arr, num
+		});//TODO arr, num
 	};
 
 	/**
@@ -321,11 +321,11 @@ tokenify=(getNextLine,error)=>{
 		expect("identifier");
 		accept("whitespace");
 		if(accept("set"),//set or change a value
-			statementValue,
-		()=>if(accept("openP"),{//call a function
+			statementValue))
+		.elif(accept("openP"),{//call a function
 			statementValueList();
 			expect("closeP");
-		}));
+		});
 		expect("semicolon");
 	};
 
