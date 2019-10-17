@@ -49,12 +49,14 @@ self.ret((b,f) {
     - Returning
       - From inside a one-liner
       - From a block function
+  - `self`
+    - `self.ret`
+  - Operators
   - Core features
   - Other features
   - Syntax
     - Comments
     - Typecasting
-    - Operators
   - Reserved functions
     - Math
     - Boolean logic
@@ -71,24 +73,11 @@ self.ret((b,f) {
 
 ### The future TOC
 
-- [4/10] The Chameleon Programming Language Standard
+- [6/11] The Chameleon Programming Language Standard
   - [x] Variables
   - [x] Functions
-    - [x] Defining functions
-      - No args
-      - No args One line
-      - One Arg
-      - One arg One Line
-      - Multi-arg
-      - Multi-arg One line
-    - [x] Calling functions
-      - [x] Scoping
-        - When var names collide
-    - [x] Returning
-      - From inside a one-liner
-      - From a block function
-  - [ ] `self`
-  - [ ] Operators
+  - [x] `self`
+  - [x] Operators
   - [ ] Types
   - [ ] Libraries
     - [ ] Using libraries
@@ -345,6 +334,53 @@ returnsTheSumOfArgs=(a,b) => {
 };
 ```
 
+## `self`
+
+`self` is a variable that refers to the nearest function. Calling it calls the
+function it resides in, setting properties to it sets properties to the function
+it resides in and setting it overrides the property it resides in.
+
+If there is a `self` conflict, just set a varuible to `self`.
+
+### `self.ret`
+
+A function taking one argument, the value to return from the function that it is
+called in. (this could be a function that is passed as the 2nd arg to `if`.)
+
+## Operators
+
+
+<!--Note to self: look at https://www.tutorialspoint.com/java/java_basic_operators.htm-->
+<!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
+
+All primitive types allow one of these operators to be appllied to another of
+the same type, with the exeption of functions, where they don't accept `++` or
+`--` operators.
+
+- SET `=` the only real operator
+- Add (see add function)
+- Subtract (see minus function)
+- Multiply (see times function)
+- Divide (see div function)
+- Increment (see up1 sub function for postfix, and up1 for prefix)
+- Decrement (see down1 sub function, and down1 for prefix)
+- Increment by (see upBy sub function)
+- Decrement by (see downBy sub function)
+- Multipy by (see multBy sub function)
+- Divide by (see divBy sub function)
+- Left byteshift `<<` TODO do i even want or need this?
+- Right byteshift `>>` TODO see above todo
+- Greater then (see gt function and sub function)
+- Less then (see lt function and sub function)
+- Greater then or equal to (see gte function and sub function)
+- Less then or equal to (see lte function and subfunction)
+- AND (see and subfunction)
+- OR (see or subfunction)
+- XOR (see xor subfunction)
+- Equal (see eq function)
+- Not equal TODO right now this is just not and equal
+- Invert bool (see not function)
+
 ## Core features
 
 These features are core to the design, and are very unlikely to change very
@@ -494,43 +530,6 @@ Look into adding monads, such as
 
 - just
 - maybe
-
-### Operators
-
-<!--Note to self: look at https://www.tutorialspoint.com/java/java_basic_operators.htm-->
-<!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
-
-All primitive types allow one of these operators to be appllied to another of
-the same type, with the exeption of functions, where they don't accept `++` or
-`--` operators.
-
-> Many of these may be dropped in order to replace them with a functional
-> equivilant.
-
-- Add `+`
-- Subtract `-`
-- Multiply `*`
-- Divide `/`
-- Increment `++` (prefix v postfix act the same as in C)
-- Decrement `--` (prefix v postfix act the same as in C)
-- Increment by `+=`
-- Decrement by `-=`
-- Multipy by `*=`
-- Divide by `/=`
-- Left byteshift `<<`
-- Right byteshift `>>`
-- Greater then `>`
-- Less then `<`
-- Greater then or equal to `>=`
-- Less then or equal to `<=`
-- AND `&&`
-- OR `||`
-- XOR `^`
-- Equal `==`
-- Not equal `!=`
-- SET `=`
-- Invert bool `!`
-- Call b, then pass it to a (`a@b`) `@`
 
 ## Reserved functions
 
