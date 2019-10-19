@@ -58,8 +58,19 @@ self.ret((b,f) {
     - Comments
     - Typecasting
   - Reserved functions
-    - Math
-    - Boolean logic
+    - `add`
+    - `minus`
+    - `times`
+    - `div`
+    - `gt`
+    - `lt`
+    - `gte`
+    - `lte`
+    - `and`
+    - `or`
+    - `xor`
+    - `eq`
+    - `not`
     - self.ret
     - self.throw
     - while
@@ -79,6 +90,15 @@ self.ret((b,f) {
   - [x] `self`
   - [x] Operators
   - [ ] Types
+    - [ ] Type inference
+    - [ ] Type functions
+      - `Func`
+      - `Bool`
+      - `Int`
+      - `Char`
+      - `Arr`
+      - `Str`
+    - [ ] Casting
   - [ ] Libraries
     - [ ] Using libraries
       - [ ] `self.import`
@@ -334,6 +354,8 @@ returnsTheSumOfArgs=(a,b) => {
 };
 ```
 
+However, this latter approach isn't going to be implemented very soon.
+
 ## `self`
 
 `self` is a variable that refers to the nearest function. Calling it calls the
@@ -349,37 +371,14 @@ called in. (this could be a function that is passed as the 2nd arg to `if`.)
 
 ## Operators
 
-
 <!--Note to self: look at https://www.tutorialspoint.com/java/java_basic_operators.htm-->
 <!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
 
-All primitive types allow one of these operators to be appllied to another of
-the same type, with the exeption of functions, where they don't accept `++` or
-`--` operators.
-
 - SET `=` the only real operator
-- Add (see add function)
-- Subtract (see minus function)
-- Multiply (see times function)
-- Divide (see div function)
-- Increment (see up1 sub function for postfix, and up1 for prefix)
-- Decrement (see down1 sub function, and down1 for prefix)
-- Increment by (see upBy sub function)
-- Decrement by (see downBy sub function)
-- Multipy by (see multBy sub function)
-- Divide by (see divBy sub function)
 - Left byteshift `<<` TODO do i even want or need this?
 - Right byteshift `>>` TODO see above todo
-- Greater then (see gt function and sub function)
-- Less then (see lt function and sub function)
-- Greater then or equal to (see gte function and sub function)
-- Less then or equal to (see lte function and subfunction)
-- AND (see and subfunction)
-- OR (see or subfunction)
-- XOR (see xor subfunction)
-- Equal (see eq function)
-- Not equal TODO right now this is just not and equal
-- Invert bool (see not function)
+
+## Types
 
 ## Core features
 
@@ -393,9 +392,16 @@ much.
   - Syntax modules included at the beginning of the file, much like imports
 - Functions are call by value
 - Any operator may be applied to any variable, at all.
-  - EX: while `7*10` returns `70`, a function that returns 7 multipled by a
+  - EX: while `7.times(10)` returns `70`, a function that returns 7 multipled by a
   function that returns 10 returns a function that returns the result of that
   operator applied to each value, respectively.
+
+```chaml
+retSeven=()=>7;
+retTen=()=>10;
+resultGetter=retSeven.times(retTen);
+endResult=resultGetter();
+```
 
 ### CORE PROPOSAL 2
 
@@ -466,8 +472,7 @@ And_thus="this line is still reached and evaluated";
 Variables are never cast automatically.
 
 To cast use the constructor like so:
-`joinOfStringAndNum=+("The number is ",String(37))`.
-Or `joinOfStringAndNum=+("The number is ",37.to.String()))`
+ `joinOfStringAndNum=+("The number is ",37.to.String()))`
 
 One can overload casting by doing something like this:
 
@@ -485,44 +490,41 @@ myNumber.to.Char={
 
 - To `Boolean`
   - `Boolean` duplicate of original boolean
-  - `Char` error thrown: `Casting error: Cannot cast Char to Boolean`
   - `Number` true only if equal to `0` or `-0`
   - `Array` If array is len of 1 and it is a bool, then that bool, else error
   thrown: `Casting error: Cannot cast Array to Boolean`
-  - `Function` error thrown: `Casting error: Cannot cast Function to Boolean`
 - To `Char`
-  - `Boolean` `'t'` if true, `'f'` if false
+  - `Bool` `'t'` if true, `'f'` if false
   - `Char` duplicate of original char
-  - `Number` local charcode conversion to char. If invalid, throw sensible error
+  - `Int` local charcode conversion to char. If invalid, throw sensible error
   like `Casting error: Cannot cast Number(`insert num here`) to Char` as it is
   value dependant.
-  - `Array` If array is len of 1 and it is a char, then that char, else error
+  - `Arr` If array is len of 1 and it is a char, then that char, else error
   thrown: `Casting error: Cannot cast Array to Char`
-  - `Function` error thrown: `Casting error: Cannot cast Function to Char`
-- To `Number`
-  - empty, throw `Casting error: Number constructor takes 1 argument`
-  - `Boolean` `0` if true, `1` if false
-  - `Char` local charcode conversion to num. If invalid, throw sensible error
-  like `Casting error: Cannot cast Char(`insert char here`) to Number` as it is
+- To `Int`
+  - `Bool` `0` if true, `1` if false
+  - `Char` local charcode conversion to int. If invalid, throw sensible error
+  like `Casting error: Cannot cast Char(`insert char here`) to Integer` as it is
   value dependant.
-  - `Number` duplicate of original num
-  - `Array` If array is len of 1 and it is a number, then that number, else
+  - `Int` duplicate of original num
+  - `Arr` If array is len of 1 and it is a number, then that number, else
   error thrown: `Casting error: Cannot cast Array to Number`
-  - `String` If the string is what would pass for a valid in-line literal of any
+  - `Str` If the string is what would pass for a valid in-line literal of any
   type (decimal, hex, etc.) then resolve it, elsewhise, throw:
   `Casting error: Cannot cast String(`insert string here`) to Number`
-  - `Function` error thrown: `Casting error: Cannot cast Function to Number`
-- To `Array`
+- To `Arr`
   - empty, array len of 0
-  - `Boolean` `"True"` if true, `"False"` if false.
+  - `Bool` `"True"` if true, `"False"` if false.
   - `Char` The char is turned into a string with len of 1
-  - `Number` empty array of the length of that number.
+  - `Int` empty array of the length of that number.
     - Optional 2nd arg: what to fill it with.
     - If not enough memory, error thrown: `Casting error: Cannot cast Number(`insert num here`) to Array`
   - `Array` duplicate of origianl array
-  - `Function` error thrown: `Casting error: Cannot cast Function to Array`
-- To `Function` all cases: return a function that returns the input, unless it
+- To `Func` all cases: return a function that returns the input, unless it
 is empty, then throw `Casting error: Function constructor takes 1 argument`
+
+Assume that missing cases signify that that function doesn't exsist on that
+object.
 
 #### Typecasting proposal - monads
 
@@ -533,11 +535,128 @@ Look into adding monads, such as
 
 ## Reserved functions
 
-### Math
+### `add`
 
-### Boolean logic
+Adds two objects. If it's two numbers, it just adds them.
+
+Calls the first function's `add` sub-function (and therefore is overloadable on a
+per-case basis). If not present, it returns a function that returns the sum of
+calling each.
+
+Takes two args, the items to add; returns one arg, the added items.
+
+### `minus`
+
+Subtracts two objects. If it's two numbers, it just subtracts them.
+
+Calls the first function's `minus` sub-function (and therefore is overloadable
+on a per-case basis). If not present, it returns a function that returns the
+subtraction of calling each.
+
+Takes two args, the items to subtract; returns one arg, the subtracted items.
+
+### `times`
+
+Multiplies two objects. If it's two numbers, it just multiplies them.
+
+Calls the first function's `times` sub-function (and therefore is overloadable
+on a per-case basis). If not present, it returns a function that returns the
+multiple of calling each.
+
+Takes two args, the items to subtract; returns one arg, the subtracted items.
+
+### `div`
+
+Divides two objects. If it's two numbers, it just divides them.
+
+Calls the first function's `div` sub-function (and therefore is overloadable on a
+per-case basis). If not present, it returns a function that returns the division
+of calling each.
+
+Takes two args, the items to subtract; returns one arg, the subtracted items.
+
+### `gt`
+
+Checks to see if one object is greater than the other. Returns a bool.
+
+Calls the first function's `gt` sub-function (and therefore is overloadable on a
+per-case basis). If not present, it returns a function that returns the "gt" of
+the return of each when called.
+
+### `lt`
+
+Checks to see if one object is less than the other. Returns a bool.
+
+Calls the first function's `lt` sub-function (and therefore is overloadable on a
+per-case basis). If not present, it returns a function that returns the "lt" of
+the return of each when called.
+
+### `gte`
+
+Checks to see if one object is greater than or equal to the other. Returns a
+bool.
+
+Calls the first function's `gte` sub-function (and therefore is overloadable on
+a per-case basis). If not present, it returns a function that returns the "gte"
+of the return of each when called.
+
+(This sub-function often just equals the return of the `eq` sub-function applied
+to the `gt` sub-function)
+
+### `lte`
+
+Checks to see if one object is less than or equal to the other. Returns a bool.
+
+Calls the first function's `lte` sub-function (and therefore is overloadable on
+a per-case basis). If not present, it returns a function that returns the "lte"
+of the return of each when called.
+
+(This sub-function often just equals the return of the `eq` sub-function applied
+to the `lt` sub-function)
+
+### `and`
+
+A subfunction of bools (and a few other things).
+
+- If the `self` bool value was false, it returns false.
+- If the `self` bool value was true, and the new bool is true, return true.
+- Otherwise return false.
+
+### `or`
+
+A subfunction of bools (and a few other things).
+
+- If the `self` bool value was true, it returns true.
+- If the `self` bool value was false, and/or the new bool is true, return true.
+- Otherwise return false.
+
+### 'xor'
+
+A subfunction of bools (and a few other things).
+
+- If the `self` bool value was true and the new bool is false, it returns true.
+- If the `self` bool value was false and the new bool is true, it returns true.
+- Otherwise return false.
+
+### `eq`
+
+Determines equality between two objects.
+
+Calls the first function's `eq` sub-function (and therefore is overloadable on a
+per-case basis). If not present, it returns a function that returns the eqality
+function applied to the return of calling each.
+
+Takes two args, the items to subtract; returns one arg, the subtracted items.
+
+### `not`
+
+Returns false if passed in true, returns true if passed in false.
 
 ### self.ret
+
+How one returns from a function. If at the topmost level of the source code, It
+exports that instead. If this is the topmost file, then the return value is
+called with an array of an array of chars (the arguments)
 
 ### self.throw
 
@@ -631,51 +750,7 @@ Takes three args:
 
 ### Regexp
 
-?? only if needed by declareSyntax proposal 2
-
 A new regexp element.
-
-## Interpretation/Comipliation stages
-
-### Preprocessor
-
-"A preprocessor, generally considered as a part of compiler, is a tool that
-produces input for compilers. It deals with macro-processing, augmentation, file
-inclusion, language extension, etc."
-
-#### Lexer
-
-"Scan the source code as a stream of characters and convert it into meaningfull
-lexemes." (aka tokens)
-
-#### Syntax Analizer
-
-"Check if expression made by tokens is syntacatically correct" - whilst making
-a parse tree."
-
-#### Semantic Analizer
-
-"Check whether the parse tree constructed follows the rules of language"
-
-Cross-type prevention often done here. keep track of ident, types, exps & their
-rules, and when they are declared.
-
-Output annotated syntax tree as output.
-
-(If interpreter, stop here, and run the code)
-
-#### Intermediate Code Generator
-
-Output intermediate code, such as LLVM language.
-
-#### Machine Independant Code optimizer
-
-"something that removes unnessary code lines, and arranges the sequence of
-statement in order to speed up the program execution without wasteing recources"
-
-#### Code generator
-
-#### Mashine Dependant code optimizer
 
 ## Resources
 
