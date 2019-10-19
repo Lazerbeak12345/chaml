@@ -85,6 +85,11 @@ self.ret((b,f) {
 ### The future TOC
 
 - [6/11] The Chameleon Programming Language Standard
+  - [ ] The compiler
+    - [ ] Stages
+    - [ ] Runtime
+    - [ ] Current state
+    - [ ] Plans
   - [x] Variables
   - [x] Functions
   - [x] `self`
@@ -762,3 +767,24 @@ These are some but not all of the resources that I have used thus far.
 - [https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf](https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf)
 - [https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/](https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/)
 - [https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm](https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm)
+- [https://en.wikipedia.org/wiki/Extensible_programming](https://en.wikipedia.org/wiki/Extensible_programming)
+- [http://wiki.c2.com/?ExtensibleProgrammingLanguage](http://wiki.c2.com/?ExtensibleProgrammingLanguage)
+- [http://wiki.c2.com/?MetaProgramming](http://wiki.c2.com/?MetaProgramming)
+- [https://en.wikipedia.org/wiki/Lambda_calculus](https://en.wikipedia.org/wiki/Lambda_calculus)s
+- [https://www.epaperpress.com/lexandyacc/index.html](https://www.epaperpress.com/lexandyacc/index.html) This is actually more than one link, and this is the TOC for them.
+- [http://www.paulgraham.com/langdes.html](http://www.paulgraham.com/langdes.html)
+- [http://wiki.c2.com/?AutomatedCodeGeneration](http://wiki.c2.com/?AutomatedCodeGeneration)
+- [http://wiki.c2.com/?CompileTimeResolution](http://wiki.c2.com/?CompileTimeResolution)
+- [https://wespiser.com/writings/wyas/01_introduction.html](https://wespiser.com/writings/wyas/01_introduction.html)
+- [http://www.theenterprisearchitect.eu/blog/2013/02/14/designing-the-next-programming-language-understand-how-people-learn/](http://www.theenterprisearchitect.eu/blog/2013/02/14/designing-the-next-programming-language-understand-how-people-learn/)
+- [https://tomassetti.me/antlr-mega-tutorial/](https://tomassetti.me/antlr-mega-tutorial/)
+- [https://tomassetti.me/resources-create-programming-languages/](https://tomassetti.me/resources-create-programming-languages/)
+- [http://wiki.c2.com/?MetaProgramming](http://wiki.c2.com/?MetaProgramming)
+- [http://wiki.c2.com/?StumblingBlocksForDomainSpecificLanguages](http://wiki.c2.com/?StumblingBlocksForDomainSpecificLanguages)
+- [http://wiki.c2.com/?LanguageOrientedProgramming](http://wiki.c2.com/?LanguageOrientedProgramming)
+- [http://www.jayconrod.com/posts/37/a-simple-interpreter-from-scratch-in-python-part-1](http://www.jayconrod.com/posts/37/a-simple-interpreter-from-scratch-in-python-part-1)
+- [https://ruslanspivak.com/lsbasi-part1/](https://ruslanspivak.com/lsbasi-part1/)
+- [https://www.codeproject.com/articles/345888/how-to-write-a-simple-interpreter-in-javascript](https://www.codeproject.com/articles/345888/how-to-write-a-simple-interpreter-in-javascript)
+- [https://en.wikipedia.org/wiki/Haskell_(programming_language)](https://en.wikipedia.org/wiki/Haskell_(programming_language))
+- [http://www.stephendiehl.com/llvm/](http://www.stephendiehl.com/llvm/)
+- [https://en.wikipedia.org/wiki/Parsec_(parser)](https://en.wikipedia.org/wiki/Parsec_(parser))
