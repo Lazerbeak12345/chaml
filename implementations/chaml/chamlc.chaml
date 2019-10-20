@@ -13,6 +13,7 @@ tk=self.import("./lib/syntax-tokens");
 //http://aquamentus.com/flex_bison.html
 //https://github.com/westes/flex
 //https://www.youtube.com/watch?v=54bo1qaHAfk
+//https://www.epaperpress.com/lexandyacc/thl.html
 //https://www.gnu.org/software/bison/
 //https://invisible-island.net/byacc/byacc.html
 

@@ -7,7 +7,6 @@
  * - [ ] Joining lines ending with `\`
  * - [ ] Remove whitespace line
  */
-
 import * as fs from "fs";// consider using https://github.com/isaacs/node-graceful-fs
 import * as pify from "pify";
 let fileLocation=process.argv[2];
@@ -17,9 +16,9 @@ let fileLocation=process.argv[2];
  * @param url The url of the file
  */
 let getAFile:(url:string)=> Promise<string>
-	=url=> pify(fs.readFileSync)(url,'utf8');
+	=url=>pify(fs.readFileSync)(url,'utf8');
 getAFile(fileLocation).then((data:string) => {
-	console.log("A")
+	console.log("A");
 	let thingsToRemove=[
 		///#!\n/,
 		/\/\/.*\n/g,

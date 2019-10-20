@@ -1,19 +1,17 @@
 /**
- * This file is the lexer for my proto language, written in cpp.
+ * This file is the temperary lexer for my proto language, written in cpp.
  * 
- * (yes, yes, I know, I should have done it in my language, but I needed a
- * working demo)
+ * I don't plan on supporting syntax extentions in this implementation of the language
  */
 #include <iostream>
 #include <fstream>
 #include <string>
 int main(int arg_num,char** arg_value) {
-	//std::cout <<num<<std::endl<<value[num-1];
 	std::string mainFileLocation;
 	mainFileLocation=arg_value[1];
 
 	std::ifstream mainFile;
-	mainFile.open(mainFileLocation);
+	mainFile.open(mainFileLocation.c_str());
 
 	if (!mainFile) {
 		std::cerr <<"Unable to open file \""<<mainFileLocation<<"\"."<<std::endl
@@ -47,20 +45,22 @@ int main(int arg_num,char** arg_value) {
 				i+1<buffer.size()&&
 				buffer[i+1]=='*') {
 				insideMultiLineComment=true;
-				hasImportantDataInThisLine=false;
-				i+=2;
-			}else if (insideMultiLineComment&&
+				i+=2;//Skip both chars
+				std::cout<<"COMMENT:\""<<buffer[i]<<"\"\n";
+			}
+			if (insideMultiLineComment&&
 				buffer[i]=='*'&&
 				i+1<buffer.size()&&
 				buffer[i+1]=='/') {
 				insideMultiLineComment=false;
 				i++;
-				continue;
-			}else if (insideMultiLineComment) continue;
+				std::cout<<"COMMENT:\""<<buffer[i]<<"\"\n";
+			}
+			if (insideMultiLineComment) continue;
 
 			hasImportantDataInThisLine=buffer[i]!=' '||
 				buffer[i]!='\t'||
-				hasImportantDataInThisLine;
+				hasImportantDataInThisLine;//If it only has whitespace, it's removed
 			
 			line+=buffer[i];
 		}
