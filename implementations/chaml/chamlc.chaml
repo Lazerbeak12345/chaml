@@ -31,6 +31,7 @@ tokenify=(getNextLine,error)=>{
 	checkers=[
 		{
 			a=CheckerBuiltIn();
+			//NOTE: because we are making a regexp inside a string, escapes must be doubled
 			a.regexp="\\/\\/.*\n";
 			a.name="comment";
 			self.ret(a);
@@ -39,13 +40,6 @@ tokenify=(getNextLine,error)=>{
 			a=CheckerBuiltIn();
 			a.regexp="\\/\\*(.*)?\\*\\/";
 			a.name="multicomment";
-			self.ret(a);
-		}(),
-		{
-			a=CheckerBuiltIn();
-			//NOTE: because we are making a regexp inside a string, escapes must be doubled
-			a.regexp="[01-9][01-9_]*(\\.[01-9_]*)?";
-			a.name="num";
 			self.ret(a);
 		}(),
 		{
@@ -140,7 +134,7 @@ tokenify=(getNextLine,error)=>{
 		}(),
 		{
 			a=CheckerBuiltIn();
-			a.regexp="[0123456789][0123456789_]*";
+			a.regexp="[01-9][01-9_]*(\\.[01-9_]*)?";
 			a.name="num";
 			self.ret(a);
 		}(),
