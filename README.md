@@ -15,18 +15,19 @@ Here's a code sample for those interested:
  */
 self.ret((b,f) {
   if(b,f);
-  self.ret({
-    state=Bool(b);
-    obj=self;
-    self.elif=(b,f) {
-      state=state.or(b);
-      if(not(state).and(b),f);
-      self.ret(obj);
-    };
-    self.else=(b,f) {
-      if(not(state).and(b),f);
-    };
-  });
+  state=b;
+  out=()=>self;
+  out.elif=(b,f) {
+    state=state.or(not(b));
+    if(not(state),f);
+    self.ret(out);
+  };
+  out~out.elif;//Overload out to take elif
+  out.else=f=>{
+    if(not(state),f);
+  };
+  out~out.else;
+  self.ret(out);
 });
 ```
 

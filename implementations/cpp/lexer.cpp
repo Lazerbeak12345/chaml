@@ -104,6 +104,6 @@ int main(int arg_num,char** arg_value) {
 	int lineNum=0;//There's a possiblity that this isn't long enough
 	while(std::getline(mainFile,buffer)) {
 		untokened+=buffer+"\n";
-		std::printf("%5d\t%s\n",lineNum++,buffer.c_str());
+		std::printf("%5d\t%s\n",++lineNum,buffer.c_str());
 	}
 };
