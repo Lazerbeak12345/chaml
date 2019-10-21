@@ -764,8 +764,10 @@ These are some but not all of the resources that I have used thus far.
 (In no particular order)
 
 - [http://lucacardelli.name/Papers/TypeSystems.pdf](http://lucacardelli.name/Papers/TypeSystems.pdf)
+  - Here's the IPFS link: [/ipfs/QmRRhoSixiScBLXFkRtc9gUdXo4RJgy7nw71H6CXn87pLw](https://ipfs.io/ipfs/QmRRhoSixiScBLXFkRtc9gUdXo4RJgy7nw71H6CXn87pLw)
 - [https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/](https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/)
 - [https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf](https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf)
+  - Here's the IPFS link: [/ipfs/QmUof57JgBgyzAUYBWVXJN5Aezopak4zb8ekKz4XKRjNYK](https://ipfs.io/ipfs/QmUof57JgBgyzAUYBWVXJN5Aezopak4zb8ekKz4XKRjNYK)
 - [https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/](https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/)
 - [https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm](https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm)
 - [https://en.wikipedia.org/wiki/Extensible_programming](https://en.wikipedia.org/wiki/Extensible_programming)
