@@ -9,7 +9,6 @@
 #include <vector>
 
 enum PossibleTokens {
-	END_OF_FILE,
 	WHITESPACE,
 
 	SINGLELINE_COMMENT,
@@ -33,7 +32,6 @@ enum PossibleTokens {
 
 std::string getTokenAsStr(PossibleTokens token) {
 	switch(token) {
-		case END_OF_FILE: return "END_OF_FILE";
 		case WHITESPACE: return "WHITESPACE";
 		case SINGLELINE_COMMENT: return "SINGLELINE_COMMENT";
 		case OPEN_MULTILINE_COMMENT: return "OPEN_MULTILINE_COMMENT";
@@ -100,4 +98,12 @@ int main(int arg_num,char** arg_value) {
 			"d location."<<std::endl;
 		return 1;
 	}
-}
+
+	std::string buffer,
+		untokened="";
+	int lineNum=0;//There's a possiblity that this isn't long enough
+	while(std::getline(mainFile,buffer)) {
+		untokened+=buffer+"\n";
+		std::printf("%5d\t%s\n",lineNum++,buffer.c_str());
+	}
+};
