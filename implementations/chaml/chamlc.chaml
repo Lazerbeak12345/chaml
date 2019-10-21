@@ -25,7 +25,7 @@ tokenify=(getNextLine,error)=>{
 	CheckerBuiltIn={
 		a={};
 		a.builtIn=true;
-		a.action=(line,buffer)=>not(a.regexp.matches(buffer+Str(line[0])));
+		a.action=(line,buffer)=>not(a.regexp.matches(buffer+Str(line.get(0))));
 		self.ret(a);
 	};
 	checkers=[
@@ -139,8 +139,8 @@ tokenify=(getNextLine,error)=>{
 			self.ret(a);
 		}(),
 	].each((i,v) {
-		Symbol[i]=v.name;
-		Symbol[v.name]=i;
+		Symbol.set(i,v.name);
+		Symbol.set(v.name,i);
 	});
 
 	sym=Symbol();
@@ -151,7 +151,7 @@ tokenify=(getNextLine,error)=>{
 		isNotValidSymbol=true;
 		while(()=>isNotValidSymbol,{
 			if(oreq(buffer.len(),0)(sym,-1),{
-				buffer=Str(line[0]);
+				buffer=Str(line.get(0));
 				line=line.slice(1);
 			});
 			s=self;
@@ -162,13 +162,13 @@ tokenify=(getNextLine,error)=>{
 			index=0;
 			sym=-1;
 			while(()=>index<checkers.len(),{
-				if (RegExp(checkers[index].regexp).matches(buffer),{
-					if(checkers[index].action(line,buffer),{
-						sym=Symbol[checkers[index].name];
+				if (RegExp(checkers.get(index).regexp).matches(buffer),{
+					if(checkers.get(index).action(line,buffer),{
+						sym=Symbol.get(checkers.get(index).name);
 						index=checkers.len();
 						isNotValidSymbol=false;
 					});
-					if (oreq(sym,Symbol["comment"])(sym,Symbol["multicomment"]),{
+					if (oreq(sym,Symbol.comment)(sym,Symbol.multicomment),{
 						buffer="";
 						line=getNextLine();
 						isNotValidSymbol=true;
@@ -180,7 +180,7 @@ tokenify=(getNextLine,error)=>{
 	};
 
 	accept=s=>{
-		isEq=eq(sym,Symbol[s]);
+		isEq=eq(sym,Symbol.get(s));
 		if(isEq,{
 			nextSym();
 		});
@@ -189,7 +189,7 @@ tokenify=(getNextLine,error)=>{
 	expect=s=>{
 		a=accept(s);
 		if(not(a),{
-			error("Unexpected symbol \""+Symbol[sym]+"\"\nWas expecting symbol \""+s+"\" instead.");
+			error("Unexpected symbol \""+Symbol.get(sym)+"\"\nWas expecting symbol \""+s+"\" instead.");
 		});
 		self.ret(a);
 	};
@@ -270,7 +270,7 @@ tokenify=(getNextLine,error)=>{
 			},s);// I guess it's just a paren set
 			accept("closeP");
 			if(itsAFunc,()=> afunction(count,true));
-		}).elif(ss.eq(Symbol["openC"]),{
+		}).elif(ss.eq(Symbol.openC),{
 			afunction(0,false);
 		}).elif(accept("identifier"),{
 			//get variable value
@@ -287,10 +287,12 @@ tokenify=(getNextLine,error)=>{
 			//string
 		}).elif(accept("char"),{
 			//char
+		}).elif(accept("num"),{
+			//num
 		}).elif(accept("openS"),{//Array
 			statementValueList();
 			accept("closeS");
-		});//TODO arr, num
+		});
 	};
 
 	/**
@@ -299,7 +301,7 @@ tokenify=(getNextLine,error)=>{
 	statementValueList={
 		ranOnce=false;
 		while({
-			self.ret(or(not(ranOnce),eq(sym,Symbol["comma"])));
+			self.ret(or(not(ranOnce),eq(sym,Symbol.comma)));
 		},{
 			if(ranOnce,()=>expect("comma"));
 			accept("whitespace");
@@ -335,7 +337,7 @@ tokenify=(getNextLine,error)=>{
 		});
 		while({
 			accept("whitespace");
-			self.ret(eq(sym,Symbol["identifier"]));
+			self.ret(eq(sym,Symbol.identifier));
 		},
 			action);
 		if(needsCurls,()=>expect("closeC"));
@@ -369,12 +371,12 @@ compileFile=(name,error)=>{
 	},val=>{
 		error("Compile error: "+er);
 	});//do stuff with tree
-}
+};
 
 runFile=name=>{
 	runTree(readFile(name,val=>{
 		error("Interpreter error in "+name+" :\n"+er);
 	}));
-}
+};
 
-self.ret(args => compileFile(args[args.length-1],IO.out.err));
+self.ret(args => compileFile(args.get(args.length-1),IO.out.err));
