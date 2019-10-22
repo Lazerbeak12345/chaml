@@ -32,7 +32,7 @@ tokenify=(getNextLine,error)=>{
 		{
 			a=CheckerBuiltIn();
 			//NOTE: because we are making a regexp inside a string, escapes must be doubled
-			a.regexp="\\/\\/.*\n";
+			a.regexp="\\/\\/.*\\n";
 			a.name="comment";
 			self.ret(a);
 		}(),
