@@ -45,7 +45,14 @@
 		"sstream": "cpp",
 		"stdexcept": "cpp",
 		"streambuf": "cpp",
-		"typeinfo": "cpp"
+		"typeinfo": "cpp",
+		"regex": "cpp",
+		"bitset": "cpp",
+		"chrono": "cpp",
+		"condition_variable": "cpp",
+		"map": "cpp",
+		"ratio": "cpp",
+		"shared_mutex": "cpp"
 	},
 	"typescript.tsdk": "node_modules/typescript/lib"
 }

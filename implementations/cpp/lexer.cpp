@@ -7,6 +7,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <regex>
 
 enum PossibleTokens {
 	WHITESPACE,
@@ -85,25 +86,35 @@ class Token{
 	};
 };
 
-int main(int arg_num,char** arg_value) {
-	std::string mainFileLocation;
-	mainFileLocation=arg_value[1];
-	
-	std::ifstream mainFile;
-	mainFile.open(mainFileLocation.c_str());
-
-	if (!mainFile) {
-		std::cerr <<"Unable to open file \""<<mainFileLocation<<"\"."<<std::endl
-			<<"\tMake sure that the filename is correct, and points to a vali"<<
-			"d location."<<std::endl;
-		return 1;
-	}
-
+class Lexer{
+	private:
+	std::ifstream file;
 	std::string buffer,
 		untokened="";
 	int lineNum=0;//There's a possiblity that this isn't long enough
-	while(std::getline(mainFile,buffer)) {
-		untokened+=buffer+"\n";
-		std::printf("%5d\t%s\n",++lineNum,buffer.c_str());
-	}
+	public:
+	Lexer(std::string location) {
+		std::ifstream file;
+		file.open(location.c_str());
+
+		if (!file) {
+			std::cerr <<"Unable to open file \""<<location<<"\"."<<std::endl
+				<<"\tMake sure that the filename is correct, and points to a vali"<<
+				"d location.\n";
+		}
+
+		std::string buffer,
+			untokened="";
+		int lineNum=0;//There's a possiblity that this isn't long enough
+		while(std::getline(file,buffer)) {
+			untokened+=buffer+"\n";
+			std::printf("%5d\t%s\n",++lineNum,buffer.c_str());
+		}
+	};
+};
+
+int main(int arg_num,char** arg_value) {
+	std::string mainFileLocation;
+	mainFileLocation=arg_value[1];
+	Lexer a=Lexer(mainFileLocation);
 };
