@@ -1,3 +1,5 @@
 #!/bin/bash
-lex 
+flex 
+bison
+gcc
 rm lex.yy.cc
