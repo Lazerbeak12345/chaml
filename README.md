@@ -795,3 +795,4 @@ These are some but not all of the resources that I have used thus far.
   1. [https://www.youtube.com/watch?v=54bo1qaHAfk](https://www.youtube.com/watch?v=54bo1qaHAfk)
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
+- [http://wiki.c2.com/?LispMacro](http://wiki.c2.com/?LispMacro)
