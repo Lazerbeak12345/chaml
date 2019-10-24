@@ -796,4 +796,5 @@ Great for knowing the "why" behind different different ideas.
   1. [https://www.youtube.com/watch?v=54bo1qaHAfk](https://www.youtube.com/watch?v=54bo1qaHAfk)
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
+- [http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf](http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf)
 - [http://wiki.c2.com/?LispMacro](http://wiki.c2.com/?LispMacro)
