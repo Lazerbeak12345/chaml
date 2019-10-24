@@ -3,11 +3,16 @@ lws	[ \t]*
     int nParen,nComma,nComments;
 %}
 %%
-^#!.*\n	;	//SHABANG!
-{lws}"/*"[^/]*"*/"	{nComments++;}
-{lws}"//".*\n	{nComments++;}
-[()]	{nParen++;printf(" ");}
-,		{nComma++;printf(" ");}
+^#!.*\n             ;   //SHABANG!
+{lws}"/*"[^/]*"*/"  {nComments++;}
+    /*
+Due to some issues with the character / tempararlly removing multiline
+comments (or adding a further layer of abstraction at an earlier) might be a good idea
+*/
+{lws}"//".*\n       {nComments++;}
+\(                  {nParen++;printf("(");}
+\)                  {nParen++;printf(")");}
+,                   {nComma++;printf(",");}
 %%
 int yywrap(void) {
     return 1;

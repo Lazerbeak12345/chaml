@@ -776,6 +776,7 @@ These are some but not all of the resources that I have used thus far.
 - [https://en.wikipedia.org/wiki/Lambda_calculus](https://en.wikipedia.org/wiki/Lambda_calculus)s
 - [https://www.epaperpress.com/lexandyacc/index.html](https://www.epaperpress.com/lexandyacc/index.html) This is actually more than one link, and this is the TOC for them.
 - [http://www.paulgraham.com/langdes.html](http://www.paulgraham.com/langdes.html)
+Great for knowing the "why" behind different different ideas.
 - [http://wiki.c2.com/?AutomatedCodeGeneration](http://wiki.c2.com/?AutomatedCodeGeneration)
 - [http://wiki.c2.com/?CompileTimeResolution](http://wiki.c2.com/?CompileTimeResolution)
 - [https://wespiser.com/writings/wyas/01_introduction.html](https://wespiser.com/writings/wyas/01_introduction.html)
@@ -796,3 +797,4 @@ These are some but not all of the resources that I have used thus far.
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
 - [http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf](http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf)
+- [http://wiki.c2.com/?LispMacro](http://wiki.c2.com/?LispMacro)
