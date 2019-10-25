@@ -771,6 +771,8 @@ These are some but not all of the resources that I have used thus far.
 - [https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/](https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/)
 - [https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm](https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm)
 - [https://en.wikipedia.org/wiki/Extensible_programming](https://en.wikipedia.org/wiki/Extensible_programming)
+There are a lot of ideas here that I want. See the section titled "extensible
+compiler"
 - [http://wiki.c2.com/?ExtensibleProgrammingLanguage](http://wiki.c2.com/?ExtensibleProgrammingLanguage)
 - [http://wiki.c2.com/?MetaProgramming](http://wiki.c2.com/?MetaProgramming)
 - [https://en.wikipedia.org/wiki/Lambda_calculus](https://en.wikipedia.org/wiki/Lambda_calculus)s
@@ -797,4 +799,8 @@ Great for knowing the "why" behind different different ideas.
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
 - [http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf](http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf)
+- [http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf](http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf)
 - [http://wiki.c2.com/?LispMacro](http://wiki.c2.com/?LispMacro)
+- [https://www.youtube.com/watch?v=lC5UWG5N8oY](https://www.youtube.com/watch?v=lC5UWG5N8oY)
+C++Now 2017: Ryan Newton "Haskell taketh away: limiting side effects for
+parallel programming"
