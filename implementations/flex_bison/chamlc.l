@@ -1,24 +1,27 @@
-lws	[ \t]*
 %{
-    int nParen,nComma,nComments;
+    #include "chamlc.tab.h"
+    #include <stdlib.h>
+    void yyerror(char *);
 %}
+
 %%
-^#!.*\n             ;   //SHABANG!
-{lws}"/*"[^/]*"*/"  {nComments++;}
-    /*
-Due to some issues with the character / tempararlly removing multiline
-comments (or adding a further layer of abstraction at an earlier) might be a good idea
-*/
-{lws}"//".*\n       {nComments++;}
-\(                  {nParen++;printf("(");}
-\)                  {nParen++;printf(")");}
-,                   {nComma++;printf(",");}
+
+[0-9]+ {
+                yylval = atoi(yytext);
+                return INTEGER;
+            }
+
+\(         {return OPAREN;}
+\)         {return CPAREN;}
+
+[-+\n]      return *yytext;
+
+[ \t]       ; /* skip whitespace */
+
+.           yyerror("invalid character");
+
 %%
+
 int yywrap(void) {
     return 1;
-}
-int main(void) {
-    yylex();
-    printf("%d Parens\t%d Commas\t%d Comments\n", nParen,nComma,nComments);
-    return 0;
 }
