@@ -767,6 +767,7 @@ These are some but not all of the resources that I have used thus far.
   - Here's the IPFS link: [/ipfs/QmRRhoSixiScBLXFkRtc9gUdXo4RJgy7nw71H6CXn87pLw](https://ipfs.io/ipfs/QmRRhoSixiScBLXFkRtc9gUdXo4RJgy7nw71H6CXn87pLw)
 - [https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/](https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/)
 - [https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf](https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf)
+This is a really good in-depth explanation behind many paradimes.
   - Here's the IPFS link: [/ipfs/QmUof57JgBgyzAUYBWVXJN5Aezopak4zb8ekKz4XKRjNYK](https://ipfs.io/ipfs/QmUof57JgBgyzAUYBWVXJN5Aezopak4zb8ekKz4XKRjNYK)
 - [https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/](https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/)
 - [https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm](https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm)
@@ -799,8 +800,10 @@ Great for knowing the "why" behind different different ideas.
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
 - [http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf](http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf)
-- [http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf](http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf)
 - [http://wiki.c2.com/?LispMacro](http://wiki.c2.com/?LispMacro)
 - [https://www.youtube.com/watch?v=lC5UWG5N8oY](https://www.youtube.com/watch?v=lC5UWG5N8oY)
 C++Now 2017: Ryan Newton "Haskell taketh away: limiting side effects for
 parallel programming"
+- [http://homepages.inf.ed.ac.uk/wadler/topics/monads.html](http://homepages.inf.ed.ac.uk/wadler/topics/monads.html) This is a list of things on advanced topics.
+- [http://dev.stephendiehl.com/hask/tutorial.pdf](http://dev.stephendiehl.com/hask/tutorial.pdf)
+  - Here's the IPFS link: [/ipfs/Qma9qLRMc7Mkcevy4v3phevopjVTtoXStoVgfSPxRaRRPp](https://ipfs.io/ipfs/Qma9qLRMc7Mkcevy4v3phevopjVTtoXStoVgfSPxRaRRPp)
