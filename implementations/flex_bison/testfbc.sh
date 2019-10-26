@@ -1,6 +1,6 @@
 #!/bin/bash
-flex chamlc.l
 bison -d chamlc.y
+flex chamlc.l
 gcc chamlc.tab.c lex.yy.c
 #cat ../chaml/lib/if.chaml | ./chamlc
 #cat ../../tests/main.chaml | ./chamlc

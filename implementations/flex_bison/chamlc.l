@@ -9,7 +9,7 @@
     /* variables */
 [a-z]       {
                 yylval = *yytext - 'a';
-                return VARIABLE;
+                return IDENTIFIER;
             }
 
     /* integers */

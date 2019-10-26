@@ -1,4 +1,4 @@
-%token INTEGER VARIABLE
+%token INTEGER IDENTIFIER
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -18,12 +18,12 @@ program:
 
 statement:
         expr                      { printf("%d\n", $1); }
-        | VARIABLE '=' expr       { sym[$1] = $3; }
+        | IDENTIFIER '=' expr     { sym[$1] = $3; }
         ;
 
 expr:
         INTEGER
-        | VARIABLE                { $$ = sym[$1]; }
+        | IDENTIFIER              { $$ = sym[$1]; }
         | expr '+' expr           { $$ = $1 + $3; }
         | expr '-' expr           { $$ = $1 - $3; }
         | expr '*' expr           { $$ = $1 * $3; }
