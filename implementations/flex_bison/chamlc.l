@@ -6,19 +6,26 @@
 
 %%
 
-[0-9]+ {
+    /* variables */
+[a-z]       {
+                yylval = *yytext - 'a';
+                return VARIABLE;
+            }
+
+    /* integers */
+[0-9]+      {
                 yylval = atoi(yytext);
                 return INTEGER;
             }
 
-\(         {return OPAREN;}
-\)         {return CPAREN;}
+    /* operators */
+[-+()=/*%\n] { return *yytext; }
 
-[-+\n]      return *yytext;
+    /* skip whitespace */
+[ \t]        ;
 
-[ \t]       ; /* skip whitespace */
-
-.           yyerror("invalid character");
+    /* anything else is an error */
+.               yyerror("invalid character");
 
 %%
 
