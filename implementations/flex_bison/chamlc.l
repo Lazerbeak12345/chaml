@@ -5,13 +5,6 @@
 %}
 
 %%
-
-    /* variables */
-[a-z]       {
-                yylval = *yytext - 'a';
-                return IDENTIFIER;
-            }
-
     /* integers */
 [0-9]+      {
                 yylval = atoi(yytext);
@@ -24,8 +17,10 @@
     /* skip whitespace */
 [ \t]        ;
 
-    /* anything else is an error */
-.               yyerror("invalid character");
+.           {
+                yylval = *yytext;
+                return IDENTIFIER;
+            }
 
 %%
 

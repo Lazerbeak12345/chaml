@@ -6,31 +6,31 @@
     #include <stdio.h>
     void yyerror(char *);
     int yylex(void);
-    int sym[26];
+    int sym[300];
 %}
 
 %%
 
 program:
-        program statement '\n'
-        | 
-        ;
+    program statement '\n'
+    | 
+    ;
 
 statement:
-        expr                      { printf("%d\n", $1); }
-        | IDENTIFIER '=' expr     { sym[$1] = $3; }
-        ;
+    expr                       { printf("%d\n", $1); }
+    | IDENTIFIER '=' statement { sym[(int) $1] = $3; }
+    ;
 
 expr:
-        INTEGER
-        | IDENTIFIER              { $$ = sym[$1]; }
-        | expr '+' expr           { $$ = $1 + $3; }
-        | expr '-' expr           { $$ = $1 - $3; }
-        | expr '*' expr           { $$ = $1 * $3; }
-        | expr '/' expr           { $$ = $1 / $3; }
-        | expr '%' expr           { $$ = $1 % $3; }
-        | '(' expr ')'            { $$ = $2; }
-        ;
+    INTEGER
+    | IDENTIFIER        { $$ = sym[(int) $1]; }
+    | expr '+' expr     { $$ = $1 + $3; }
+    | expr '-' expr     { $$ = $1 - $3; }
+    | expr '*' expr     { $$ = $1 * $3; }
+    | expr '/' expr     { $$ = $1 / $3; }
+    | expr '%' expr     { $$ = $1 % $3; }
+    | '(' expr ')'      { $$ = $2; }
+    ;
 
 %%
 
