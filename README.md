@@ -126,27 +126,9 @@ self.ret((b,f) {
 
 ## Variables
 
-Variables may be set to the following (`Generator` is the constructor):
-
-- `Function`
-- `Number`
-  - Supports all syntaxes java supports for numbers.
-    - decimal `34`
-    - bin `0b11`
-    - hex `0xf4`
-    - octal `012`
-    - the underscore may be used for readability anywhere but the first or last
-    characters.
-  - Assumes to be a 64 bit number (a C++ double). Signing the value when using
-  more then 63 bits will throw
-  `Number overflow error: Tried to change sign of huge number`.
-- `Char` (C-style)
-  - Stored in memory nearly exactly the same as a number. (type signage is the
-  only difference)
-- `Array` fixed-length list of items
-- `Bool` (C-style)
-
-Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
+All variables are functions. When set with the `=` operator, it is overwritten
+with the value on the right side. When set with the `~` operator, the caller is
+overloaded.
 
 Naming conventions are identical to JavaScript; they may contain any number,
 upper or lowercase letter, or these: `$_`. They cannot start with a number.
@@ -380,11 +362,34 @@ called in. (this could be a function that is passed as the 2nd arg to `if`.)
 <!--Note to self: look at https://www.tutorialspoint.com/java/java_basic_operators.htm-->
 <!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
 
-- SET `=` the only real operator
-- Left byteshift `<<` TODO do i even want or need this?
-- Right byteshift `>>` TODO see above todo
+- SET `=`
+- OVERLOAD `~` (Sets the internal "caller" of the following closure's arg len to
+the following closure)
 
 ## Types
+
+Types are functions of this description:
+
+They have this behavior given the number of args,
+
+zero returns default,
+
+On 1, If it is this type, return a duplicate of it. Elsewise, call that class's
+`class.to.` then whatever this class is. EX: `class.to.Foo` inside of a class
+called `Foo`.
+
+(EX: a class `Square` might take x,y,w,h
+as well as x,y,w, whereas a class `FileStream` would take a filename and a
+callback)
+
+These are the default type constructors
+
+- `Func`
+- `Int`
+- `Char`
+- `Array`
+- `Bool`
+- `Str` Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
 
 ## Core features
 
@@ -496,14 +501,14 @@ myNumber.to.Char={
 
 - To `Boolean`
   - `Boolean` duplicate of original boolean
-  - `Number` true only if equal to `0` or `-0`
+  - `Int` true only if equal to `0` or `-0`
   - `Array` If array is len of 1 and it is a bool, then that bool, else error
   thrown: `Casting error: Cannot cast Array to Boolean`
 - To `Char`
   - `Bool` `'t'` if true, `'f'` if false
   - `Char` duplicate of original char
   - `Int` local charcode conversion to char. If invalid, throw sensible error
-  like `Casting error: Cannot cast Number(`insert num here`) to Char` as it is
+  like `Casting error: Cannot cast Int(`insert num here`) to Char` as it is
   value dependant.
   - `Arr` If array is len of 1 and it is a char, then that char, else error
   thrown: `Casting error: Cannot cast Array to Char`
@@ -514,17 +519,17 @@ myNumber.to.Char={
   value dependant.
   - `Int` duplicate of original num
   - `Arr` If array is len of 1 and it is a number, then that number, else
-  error thrown: `Casting error: Cannot cast Array to Number`
+  error thrown: `Casting error: Cannot cast Array to Int`
   - `Str` If the string is what would pass for a valid in-line literal of any
   type (decimal, hex, etc.) then resolve it, elsewhise, throw:
-  `Casting error: Cannot cast String(`insert string here`) to Number`
+  `Casting error: Cannot cast String(`insert string here`) to Int`
 - To `Arr`
   - empty, array len of 0
   - `Bool` `"True"` if true, `"False"` if false.
   - `Char` The char is turned into a string with len of 1
   - `Int` empty array of the length of that number.
     - Optional 2nd arg: what to fill it with.
-    - If not enough memory, error thrown: `Casting error: Cannot cast Number(`insert num here`) to Array`
+    - If not enough memory, error thrown: `Casting error: Cannot cast Int(`insert num here`) to Array`
   - `Array` duplicate of origianl array
 - To `Func` all cases: return a function that returns the input, unless it
 is empty, then throw `Casting error: Function constructor takes 1 argument`
@@ -764,11 +769,10 @@ These are some but not all of the resources that I have used thus far.
 (In no particular order)
 
 - [http://lucacardelli.name/Papers/TypeSystems.pdf](http://lucacardelli.name/Papers/TypeSystems.pdf)
-  - Here's the IPFS link: [/ipfs/QmRRhoSixiScBLXFkRtc9gUdXo4RJgy7nw71H6CXn87pLw](https://ipfs.io/ipfs/QmRRhoSixiScBLXFkRtc9gUdXo4RJgy7nw71H6CXn87pLw)
+  - Here's the IPFS link: [/ipfs/QmcrFvSwxarj2r1HDMsBzcjt5SgtMcvCp8ByuFLk97WEov/TypeSystems.pdf](https://ipfs.io/ipfs/QmcrFvSwxarj2r1HDMsBzcjt5SgtMcvCp8ByuFLk97WEov/TypeSystems.pdf)
 - [https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/](https://thecodeboss.dev/2016/02/programming-concepts-type-introspection-and-reflection/)
 - [https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf](https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf)
-This is a really good in-depth explanation behind many paradimes.
-  - Here's the IPFS link: [/ipfs/QmUof57JgBgyzAUYBWVXJN5Aezopak4zb8ekKz4XKRjNYK](https://ipfs.io/ipfs/QmUof57JgBgyzAUYBWVXJN5Aezopak4zb8ekKz4XKRjNYK)
+  - Here's the IPFS link: [/ipfs/QmcrFvSwxarj2r1HDMsBzcjt5SgtMcvCp8ByuFLk97WEov/VanRoyChapter.pdf](https://ipfs.io/ipfs/QmcrFvSwxarj2r1HDMsBzcjt5SgtMcvCp8ByuFLk97WEov/VanRoyChapter.pdf)
 - [https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/](https://thecodeboss.dev/2015/11/programming-concepts-static-vs-dynamic-type-checking/)
 - [https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm](https://www.tutorialspoint.com/compiler_design/compiler_design_regular_expressions.htm)
 - [https://en.wikipedia.org/wiki/Extensible_programming](https://en.wikipedia.org/wiki/Extensible_programming)
@@ -800,10 +804,8 @@ Great for knowing the "why" behind different different ideas.
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
 - [http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf](http://ropas.snu.ac.kr/~kwang/520/pierce_book.pdf)
+  - [/ipfs/QmcrFvSwxarj2r1HDMsBzcjt5SgtMcvCp8ByuFLk97WEov/pierce_book.pdf](https://ipfs.io/ipfs/QmcrFvSwxarj2r1HDMsBzcjt5SgtMcvCp8ByuFLk97WEov/pierce_book.pdf)
 - [http://wiki.c2.com/?LispMacro](http://wiki.c2.com/?LispMacro)
 - [https://www.youtube.com/watch?v=lC5UWG5N8oY](https://www.youtube.com/watch?v=lC5UWG5N8oY)
 C++Now 2017: Ryan Newton "Haskell taketh away: limiting side effects for
 parallel programming"
-- [http://homepages.inf.ed.ac.uk/wadler/topics/monads.html](http://homepages.inf.ed.ac.uk/wadler/topics/monads.html) This is a list of things on advanced topics.
-- [http://dev.stephendiehl.com/hask/tutorial.pdf](http://dev.stephendiehl.com/hask/tutorial.pdf)
-  - Here's the IPFS link: [/ipfs/Qma9qLRMc7Mkcevy4v3phevopjVTtoXStoVgfSPxRaRRPp](https://ipfs.io/ipfs/Qma9qLRMc7Mkcevy4v3phevopjVTtoXStoVgfSPxRaRRPp)
