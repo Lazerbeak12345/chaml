@@ -809,3 +809,4 @@ Great for knowing the "why" behind different different ideas.
 - [https://www.youtube.com/watch?v=lC5UWG5N8oY](https://www.youtube.com/watch?v=lC5UWG5N8oY)
 C++Now 2017: Ryan Newton "Haskell taketh away: limiting side effects for
 parallel programming"
+- [https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
