@@ -12,10 +12,16 @@
             }
 
     /* operators */
-[-+()=/*%\n] { return *yytext; }
+[()=/*%;,\n] { return *yytext; }
 
     /* skip whitespace */
 [ \t]        ;
+
+".plus"     { return PLUS; }
+".minus"     { return MINUS; }
+".times"     { return TIMES; }
+".div"     { return DIV; }
+".mod"     { return MOD; }
 
 .           {
                 yylval = *yytext;

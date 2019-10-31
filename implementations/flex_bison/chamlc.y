@@ -1,12 +1,17 @@
-%token INTEGER IDENTIFIER
-%left '+' '-'
-%left '*' '/' '%'
+%token INTEGER
+%token IDENTIFIER
+
+    /*All tokens have equal precedence.*/
+%token PLUS MINUS TIMES DIV MOD POW
 
 %{
     #include <stdio.h>
+    //#include <map>
     void yyerror(char *);
     int yylex(void);
     int sym[300];
+    //std::map<char *,int> sym;
+    //std::map<int,char *> sym;
 %}
 
 %%
@@ -17,18 +22,18 @@ program:
     ;
 
 statement:
-    expr                       { printf("%d\n", $1); }
-    | IDENTIFIER '=' statement { sym[(int) $1] = $3; }
+    expr ';'                    { printf("%d\n", $1); }
+    | IDENTIFIER '=' expr ';'   { sym[$1] = $3; }
     ;
 
 expr:
     INTEGER
-    | IDENTIFIER        { $$ = sym[(int) $1]; }
-    | expr '+' expr     { $$ = $1 + $3; }
-    | expr '-' expr     { $$ = $1 - $3; }
-    | expr '*' expr     { $$ = $1 * $3; }
-    | expr '/' expr     { $$ = $1 / $3; }
-    | expr '%' expr     { $$ = $1 % $3; }
+    | IDENTIFIER        { $$ = sym[$1]; }
+    | expr PLUS '(' expr ')'    { $$ = $1 + $4; }
+    | expr MINUS '(' expr ')'   { $$ = $1 - $4; }
+    | expr TIMES '(' expr ')'   { $$ = $1 * $4; }
+    | expr DIV '(' expr ')'   { $$ = $1 / $4; }
+    | expr MOD '(' expr ')'   { $$ = $1 % $4; }
     | '(' expr ')'      { $$ = $2; }
     ;
 
