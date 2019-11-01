@@ -1,8 +1,23 @@
 # The Chameleon Programming Language Standard
 
-This is a prototype of a programming language that implements a few features
-I've been thinking about for some time. It is designed mostly for thinking
-about.
+A programming language that spins off of this question: "Is it possible to make
+a programming language without any keywords?"
+
+The answer so far: sortof, but not really. It depends if you count "self" (see
+below) as a keyword, if you count operators as keywords, and if you count built-
+in functions.
+
+There is also going to be support for many (if not all) of the aspects of LOP
+(Language Oriented Programming), what I regard to be the next programming
+paradigm. But it also has support for OOP, via syntax extentions (thanks to LOP
+), and/or it's built-in object prototypeing.
+
+It is designed to make using functions easy-peasy. Without syntax extentions,
+there are 6 (ish) syntaxes to define one, and all functions are first-order, so
+they can take other functions as arguments.
+
+I'm actually looking for help with the initial runtime. Once that's done, it'l
+be bootstrapped.
 
 <!--Look at https://vim.fandom.com/wiki/Creating_your_own_syntax_files later-->
 <!--Look at https://stackoverflow.com/questions/38148857/customizing-syntax-highlighting-in-visual-studio-code-->
