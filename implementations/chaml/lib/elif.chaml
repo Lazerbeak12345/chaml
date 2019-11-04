@@ -1,19 +1,19 @@
 /**
  * An implimentation of else and elif using only if
  */
-self.ret((b,f) {
+=<(b,f) {
 	if(b,f);
 	state=b;
-	out=()=>self;
+	out={};
 	out.elif=(b,f) {
 		state=state.or(not(b));
 		if(not(state),f);
-		self.ret(out);
+		=<out;
 	};
 	out~out.elif;//Overload out to take elif
 	out.else=f=>{
 		if(not(state),f);
 	};
 	out~out.else;
-	self.ret(out);
-});
+	=<out;
+};

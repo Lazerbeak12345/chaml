@@ -1,22 +1,22 @@
+useSyntax("throw");//Is this how it should be?
 print=import("print");
-JSON=import("JSON");
 suites=[];
-self.suite=suite(name,callback) {
+out=()=>out;
+out.suite=(name,callback) {
 	callback.name=name;
 	suites.push(callback);
 };
 tests=[];
-self.test=(name,callback) {
+out.test=(name,callback) {
 	callback.name=name;
 	tests.push(callback);
 };
-self.assert=(a,b) {
-	if(a!=b,{
-		self.throw("Assert failed! Expected:\n"+JSON.stringify(a)+
-			"\ngot\n"+JSON.stringify(b));
+out.assert=(a,b) {
+	if(not(eq(a,b)),{
+		throw("Assert failed!");
 	});
 };
-self.run={
+out.run={
 	suites.assyncEach((index,suite) {
 		print("Now running suite \""+suite.name+"\"\n");
 		try({
@@ -33,3 +33,4 @@ self.run={
 		});
 	});
 };
+=<out;

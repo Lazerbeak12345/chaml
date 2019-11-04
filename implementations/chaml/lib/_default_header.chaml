@@ -1,8 +1,9 @@
-Bool=self.import("bool");
+Bool=import("bool");
 if=Bool.if;
 and=Bool.and;
 or=Bool.or;
+xor=Bool.xor;
 not=Bool.not;
 true=Bool.t;
 false=Bool.f;
-while=Bool.while
+while=Bool.while;

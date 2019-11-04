@@ -3,9 +3,8 @@
 A programming language that spins off of this question: "Is it possible to make
 a programming language without any keywords?"
 
-The answer so far: sortof, but not really. It depends if you count "self" (see
-below) as a keyword, if you count operators as keywords, and if you count built-
-in functions.
+The answer so far: sortof, but not really. It depends if you count operators as
+keywords, and if you count built-in functions.
 
 There is also going to be support for many (if not all) of the aspects of LOP
 (Language Oriented Programming), what I regard to be the next programming
@@ -28,22 +27,22 @@ Here's a code sample for those interested:
 /**
  * An implimentation of else and elif using only if
  */
-self.ret((b,f) {
+=<(b,f) {
   if(b,f);
   state=b;
-  out=()=>self;
+  out={};
   out.elif=(b,f) {
     state=state.or(not(b));
     if(not(state),f);
-    self.ret(out);
+    =<out;
   };
   out~out.elif;//Overload out to take elif
   out.else=f=>{
     if(not(state),f);
   };
   out~out.else;
-  self.ret(out);
-});
+  =<out;
+};
 ```
 
 ## Table of Contents
@@ -65,8 +64,6 @@ self.ret((b,f) {
     - Returning
       - From inside a one-liner
       - From a block function
-  - `self`
-    - `self.ret`
   - Operators
   - Core features
   - Other features
@@ -87,13 +84,13 @@ self.ret((b,f) {
     - `xor`
     - `eq`
     - `not`
-    - self.ret
-    - self.throw
+    - `<=`
+    - throw
     - while
     - if
-    - self.import
-    - self.useSyntax
-    - self.declareSyntax
+    - import
+    - useSyntax
+    - declareSyntax
     - Regexp
   - Interpretation/Compilation stages
   - Resources
@@ -187,7 +184,7 @@ anyVariableHere=()=> 72;// return 72
 
 ```text
 anyVariableHere= in => {
-  self.ret(in*2); // return the arg times two
+  =<in.times(2); // return the arg times two
 };
 ```
 
@@ -202,7 +199,7 @@ anyVariableHere= in => in*2;//a single line is treated like a code block
 ```test
 anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
   //The => is optional when inbetween an endparen and an opening curly
-  self.ret(a+FEW+dif_frent+var5+h$er3);
+  =<a.plus(FEW).plus(dif_frent).plus(var5).plus(h$er3);
 };
 ```
 
@@ -248,7 +245,7 @@ theFunc=(
   //can't be modified above theFunc
   //can be modified within theFunc
   //can be modified below theFunc
-  self.c=4234;
+  theFunc.c=4234;
 
   e++;
 };
@@ -310,7 +307,7 @@ funcName=conflictingName=> conflicingName();
 funcName(() => 21); //returns 21
 
 anotherName=(conflicingName) => {
-  self.ret(conflictingName*10);
+  =<conflictingName.times(10);
 };
 
 k=3;
@@ -333,44 +330,15 @@ returnsTheSumOfArgs=(a,b)=>a+b;
 
 ```chaml
 returnsNumber1={
-  self.ret(1);
-};
-returnsArgTimesTwo=arg=>{
-  self.ret(arg*2);
-};
-returnsTheSumOfArgs=(a,b) => {
-  self.ret(a+b);
-};
-```
-
-Alternatively you could use
-
-```chaml
-returnsNumber1={
   =<1;
 };
 returnsArgTimesTwo=arg=>{
-  =<arg*2;
+  =<arg.times(2);
 };
 returnsTheSumOfArgs=(a,b) => {
-  =<a+b;
+  =<a.plus(b);
 };
 ```
-
-However, this latter approach isn't going to be implemented very soon.
-
-## `self`
-
-`self` is a variable that refers to the nearest function. Calling it calls the
-function it resides in, setting properties to it sets properties to the function
-it resides in and setting it overrides the property it resides in.
-
-If there is a `self` conflict, just set a varuible to `self`.
-
-### `self.ret`
-
-A function taking one argument, the value to return from the function that it is
-called in. (this could be a function that is passed as the 2nd arg to `if`.)
 
 ## Operators
 
@@ -380,6 +348,9 @@ called in. (this could be a function that is passed as the 2nd arg to `if`.)
 - SET `=`
 - OVERLOAD `~` (Sets the internal "caller" of the following closure's arg len to
 the following closure)
+- RETURN `=<`
+- LAMDA `=>`
+- SUBPROPERTYACESS `.`
 
 ## Types
 
@@ -505,12 +476,12 @@ One can overload casting by doing something like this:
 ```text
 //Overload casting of Array to Boolean in all cases
 Array.to.Boolean={
-  //Return what you want the value to be. `self` is the current value.
+  //Return what you want the value to be. NOTE: BROKEN DUE TO LACK OF CURRENT VAL ACCESS!
 };
 //Overload instance only
 myNumber=4234
 myNumber.to.Char={
-  //Same as before, return what you want the value to be,
+  //Same as before, return what you want the value to be. NOTE: BROKEN DUE TO LACK OF CURRENT VAL ACCESS!
 };
 ```
 
@@ -678,13 +649,17 @@ Takes two args, the items to subtract; returns one arg, the subtracted items.
 
 Returns false if passed in true, returns true if passed in false.
 
-### self.ret
+### `=<`
 
 How one returns from a function. If at the topmost level of the source code, It
 exports that instead. If this is the topmost file, then the return value is
 called with an array of an array of chars (the arguments)
 
-### self.throw
+> NOTE: Not needed in lamda-style closures such as `(a)=>a.plus(1);`
+
+### throw
+
+UNDEFINED BEHAVIOR
 
 ### while
 
@@ -738,7 +713,9 @@ if(99==93,{
 });
 ```
 
-### self.import
+### import
+
+NOTE: access restriction may need to be changed
 
 - Takes 2 args
   - A string that must refer to either a module name, a Unix-style url to a
@@ -752,9 +729,11 @@ if(99==93,{
   also call import.
   
 The imported module is logically wrapped around a function, the return of which
-is what becomes the return of [[self.import]].
+is what becomes the return of [[import]].
 
-### self.useSyntax
+### useSyntax
+
+NOTE: access restriction may need to be changed
 
 - Takes 2 args
   - A string with the same requirements as arg 0 of *import*
@@ -764,7 +743,10 @@ is what becomes the return of [[self.import]].
     `declareSyntax`.
     - A char (or single char str) `'*'` (sigifying all)
 
-### self.declareSyntax
+### declareSyntax
+
+NOTE1: access restriction may need to be changed
+NOTE2: huge changes are going to happen here
 
 Takes three args:
 

@@ -1,9 +1,9 @@
-IO=self.import("io");
+IO=import("io");
 
-//env=self.import("system").env; /// Location where UNIX enviroment variables are found
+//env=import("system").env; /// Location where UNIX enviroment variables are found
 
-tr=self.import("./lib/syntax-tree");
-tk=self.import("./lib/syntax-tokens");
+tr=import("./lib/syntax-tree");
+tk=import("./lib/syntax-tokens");
 
 //If I get stuck, here's some URLs for help 
 //https://en.wikipedia.org/wiki/Recursive_descent_parser
@@ -26,7 +26,7 @@ tokenify=(getNextLine,error)=>{
 		a={};
 		a.builtIn=true;
 		a.action=(line,buffer)=>not(a.regexp.matches(buffer+Str(line.get(0))));
-		self.ret(a);
+		=<a;
 	};
 	checkers=[
 		{
@@ -34,109 +34,109 @@ tokenify=(getNextLine,error)=>{
 			//NOTE: because we are making a regexp inside a string, escapes must be doubled
 			a.regexp="\\/\\/.*\\n";
 			a.name="comment";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\\/\\*(.*)?\\*\\/";
 			a.name="multicomment";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="[a-zA-Z_$][a-zA-Z01-9_$]*";//add unicode support later
 			a.name="identifier";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="{";
 			a.name="openC";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="}";
 			a.name="closeC";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\\(";
 			a.name="openP";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\\)";
 			a.name="closeP";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\\[";
 			a.name="openS";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\\]";
 			a.name="closeS";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\s*";
 			a.name="whitespace";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="=>";
 			a.name="lamda";//This may not be the correct name
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="=";
 			a.name="set";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp=";";
 			a.name="semicolon";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp=",";
 			a.name="comma";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\\.";
 			a.name="subItem";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="\".*[^\\\\]\"";
 			a.name="string";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="'.'";
 			a.name="char";
-			self.ret(a);
+			=<a;
 		}(),
 		{
 			a=CheckerBuiltIn();
 			a.regexp="[01-9][01-9_]*(\\.[01-9_]*)?";
 			a.name="num";
-			self.ret(a);
+			=<a;
 		}(),
 	].each((i,v) {
 		Symbol.set(i,v.name);
@@ -154,27 +154,27 @@ tokenify=(getNextLine,error)=>{
 				buffer=Str(line.get(0));
 				line=line.slice(1);
 			});
-			s=self;
-			if(eq(line.len(),0),{
+			=<if(eq(line.len(),0),{
 				line=getNextLine();
-				s.ret(true);//this is basically a continue. Returning false is a break;
-			});
-			index=0;
-			sym=-1;
-			while(()=>index<checkers.len(),{
-				if (RegExp(checkers.get(index).regexp).matches(buffer),{
-					if(checkers.get(index).action(line,buffer),{
-						sym=Symbol.get(checkers.get(index).name);
-						index=checkers.len();
-						isNotValidSymbol=false;
+				=<true;//this is basically a continue. Returning false from a while is a break;
+			},{
+				index=0;
+				sym=-1;
+				while(()=>index<checkers.len(),{
+					if (RegExp(checkers.get(index).regexp).matches(buffer),{
+						if(checkers.get(index).action(line,buffer),{
+							sym=Symbol.get(checkers.get(index).name);
+							index=checkers.len();
+							isNotValidSymbol=false;
+						});
+						if (oreq(sym,Symbol.comment)(sym,Symbol.multicomment),{
+							buffer="";
+							line=getNextLine();
+							isNotValidSymbol=true;
+						});
 					});
-					if (oreq(sym,Symbol.comment)(sym,Symbol.multicomment),{
-						buffer="";
-						line=getNextLine();
-						isNotValidSymbol=true;
-					});
-				});
-				index.up1();
+					index.up1();
+				})();
 			});
 		});
 	};
@@ -184,21 +184,21 @@ tokenify=(getNextLine,error)=>{
 		if(isEq,{
 			nextSym();
 		});
-		self.ret(isEq);
+		=<isEq;
 	};
 	expect=s=>{
 		a=accept(s);
 		if(not(a),{
 			error("Unexpected symbol \""+Symbol.get(sym)+"\"\nWas expecting symbol \""+s+"\" instead.");
 		});
-		self.ret(a);
+		=<a;
 	};
 	reject=(s,reason)=>{
 		isEq=eq(sym,s);
 		if(isEq,{
 			error("Rejected symbol \""+s"\"\n"+reason);
 		});
-		self.ret(isEq);
+		=<isEq;
 	};
 
 	block={};//Defined here to enable statementValue to work with functions
@@ -236,7 +236,6 @@ tokenify=(getNextLine,error)=>{
 	 * Something that goes inside a variable.
 	 */
 	statementValue={//TODO
-		s=self;
 		if(accept("openP"),{
 			accept("whitespace");
 			itsAFunc=false;
@@ -249,16 +248,15 @@ tokenify=(getNextLine,error)=>{
 					argCount=1;
 					while({
 						accept("whitespace");
-						s=self;
-						if (eq(argCount,1),{
-							s.ret(accept("identifier"));
+						=<if(eq(argCount,1),{
+							=<accept("identifier");
 						},{
-							s.ret(expect("identifier"));
-						});
+							=<expect("identifier");
+						})();
 					},{
 						argCount.up1();//think a++ ++a is Num.up1(a);
 						accept("whitespace");
-						self.ret(accept("comma"));
+						=<accept("comma");
 					});
 				}).elif(accept("closeP"),{//Single arg function
 					argCount=1;
@@ -301,7 +299,7 @@ tokenify=(getNextLine,error)=>{
 	statementValueList={
 		ranOnce=false;
 		while({
-			self.ret(or(not(ranOnce),eq(sym,Symbol.comma)));
+			=<or(not(ranOnce),eq(sym,Symbol.comma));
 		},{
 			if(ranOnce,()=>expect("comma"));
 			accept("whitespace");
@@ -337,7 +335,7 @@ tokenify=(getNextLine,error)=>{
 		});
 		while({
 			accept("whitespace");
-			self.ret(eq(sym,Symbol.identifier));
+			=<eq(sym,Symbol.identifier);
 		},
 			action);
 		if(needsCurls,()=>expect("closeC"));
@@ -349,7 +347,7 @@ tokenify=(getNextLine,error)=>{
 	program={
 		nextSym();
 		block(false);
-		self={};
+		program={};
 	};
 };
 
@@ -359,7 +357,6 @@ makeTree=(tokens)=>{//I obviusally didn't understand how token trees worked. I'm
 
 readFile=(name,error)=>{
 	file=IO.in.openFile(name);/// The file that is open
-	s=self;
 	tree=makeTree(
 		tokenify(() => file.readLine(),error)
 	);
@@ -379,4 +376,4 @@ runFile=name=>{
 	}));
 };
 
-self.ret(args => compileFile(args.get(args.length-1),IO.out.err));
+=<(args => compileFile(args.get(args.size()-1),IO.out.err));

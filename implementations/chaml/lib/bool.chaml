@@ -20,62 +20,58 @@ Bool.or=(a,b)=>a(Bool.f,b);
 Bool.t.or=b=>Bool.or(Bool.t,b);
 Bool.f.or=b=>Bool.or(Bool.f,b);
 
+Bool.xor=(a,b)=>a(b(Bool.f,Bool.t),b(Bool.t,Bool.f));
+Bool.t.xor=b=>Bool.xor(Bool.t,b);
+Bool.f.xor=b=>Bool.xor(Bool.f,b);
+
 Bool.not=a=>a(Bool.f,Bool.t);
 Bool.t.not=()=>Bool.f;
 Bool.f.not=()=>Bool.t;
 
-Bool.if=(a,b,c)=>a(b,c)();
-Bool.if~(b,f) {
-	//self(b,f,{});
-	b(f,{})();//A bit faster
+Bool.if=(b,f) {
+	v=b(f,{})();//Capture the value in v
 	state=b.not();
-	out=()=>self;
+	out=()=>v;
 	out.elif=(b,f) {
 		state=state.and(b);
-		//self(state,f,{});
-		state(f,{})();//A bit faster
-		self.ret(out);
+		v=state(f,{})();//update the value
+		=<out;
 	};
-	out~out.elif;//Overload out to take elif
+	out~out.elif;//Overload out to take elif's args too (will make it act like elif in that case)
 	out.else=f=>{
-		//self(state,f);
-		state(f,{})();//A bit faster
+		v=state(f,{})();//update the value
 	};
 	out~out.else;
-	self.ret(out);
+	=< out;
 };
+Bool.if~(a,b,c)=>if(a,b)(c);
 
 Bool.while=(b,f,d) {
-	s=self;
-	self.ret(//Will return the result
-		Bool(b())({//Get the return of the bool satement. If it's false, stop.
-			r=f();//Get the return of the function satement
-			self.ret(
-				r.instanceOf(Nothing)({//If it didn't return anything, act like it returned true
-					self.ret(Bool.t);
-				},{
-					self.ret(Bool(r));//Or else return whatever it did, casted to a bool
-				})()(
-					()=>s(b,f,d);,//If it was true, recursively call while
-					d)()//Or else call the "done"
-			);
-		},{})();
-	);
+	=< Bool(b())({//Get the return of the bool satement. If it's false, stop.
+		r=f();//Get the return of the function satement
+		=< r.instanceOf(Nothing)(
+			()=>Bool.t;,//If it didn't return anything, act like it returned true
+			()=>Bool(r);//Or else return whatever it did, casted to a bool
+		)()(
+			()=>Bool.while(b,f,d);,//If it was true, recursively call while
+			d//Or else call the "done"
+		)()
+	},{})();
 };
-Bool.while~(b,f)=>self(b,f,{});//The done is optional
+Bool.while~(b,f)=>Bool.while(b,f,{});//The done is optional
 
 Bool~v=>{
-	s=self;
-	v.instanceOf(Bool)({
-		s.ret(v);
+	=< v.instanceOf(Bool)({
+		=<v;
 	},{
-		v.instanceOf(Nothing)({
-			s.ret(Bool.f);
+		=< v.instanceOf(Nothing)({
+			=<Bool.f;
 		},{
-			s.ret(v.to.Bool());//This may throw an error
-		});
+			=<v.to.Bool();//This may throw an error
+		})();
 	})();
 };
-Bool.to.Bool=()=>self;//Gets .to from Func, it's natural parent.
+Bool.t.to.Bool=()=>Bool.t;//Gets .to from Func, it's natural parent.
+Bool.f.to.Bool=()=>Bool.f;
 
-self.ret(Bool);
+=<Bool;

@@ -3,23 +3,21 @@ tr={};
 tr.Token=name=>{
 	i=Type();
 	i.name=Str(name);
-	self.ret(i);
+	=<i;
 };
 
 tr.Operator=name=>{
-	s=self;
-	if(self.validOperators.contains(name).invert(),{
+	if(Operator.validOperators.contains(name).invert(),{//This might not work at all
 		operatorS.ret();
 	});
-	i=tr.Token(name);
-	self.ret(i);
+	=<tr.Token(name);
 };
 tr.Operator.validOperators=[];
 
 tr.Ref=(name,value)=>{
 	i=s.Token(name);
 	i.value=value;//TODO: enter type filter here
-	self.ret(i);
+	=<i;
 };
 
 tr.Tree=contents=>{
@@ -27,4 +25,4 @@ tr.Tree=contents=>{
 	i.contents=Arr(tr.Token,contents);
 };
 
-self.ret(tr);
+=<tr;
