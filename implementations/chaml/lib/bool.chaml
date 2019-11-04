@@ -1,0 +1,81 @@
+/**
+ * An implimentation of Bool, as inspired by page 36 of Benjamin C. Pierce's
+ * "Type Systems for Programming Languages," January 15, 2000 draft.
+ * 
+ * Note that to the end programmer, they won't ever know that this system, in
+ * fact, does not have a native bool, by default, and uses this.
+ */
+
+Bool={};//Returns nothing given nothing.
+
+//These two lines are almost directly converted from a lamda satement in Peirce's book, but with an ext to Bool
+Bool.t=((a,b)=>a).ext(Bool);//extends bool for typing reasons
+Bool.f=((a,b)=>b).ext(Bool);
+
+Bool.and=(a,b)=>a(b,Bool.f);
+Bool.t.and=b=>Bool.and(Bool.t,b);
+Bool.f.and=b=>Bool.and(Bool.f,b);
+
+Bool.or=(a,b)=>a(Bool.f,b);
+Bool.t.or=b=>Bool.or(Bool.t,b);
+Bool.f.or=b=>Bool.or(Bool.f,b);
+
+Bool.not=a=>a(Bool.f,Bool.t);
+Bool.t.not=()=>Bool.f;
+Bool.f.not=()=>Bool.t;
+
+Bool.if=(a,b,c)=>a(b,c)();
+Bool.if~(b,f) {
+	//self(b,f,{});
+	b(f,{})();//A bit faster
+	state=b.not();
+	out=()=>self;
+	out.elif=(b,f) {
+		state=state.and(b);
+		//self(state,f,{});
+		state(f,{})();//A bit faster
+		self.ret(out);
+	};
+	out~out.elif;//Overload out to take elif
+	out.else=f=>{
+		//self(state,f);
+		state(f,{})();//A bit faster
+	};
+	out~out.else;
+	self.ret(out);
+};
+
+Bool.while=(b,f,d) {
+	s=self;
+	self.ret(//Will return the result
+		Bool(b())({//Get the return of the bool satement. If it's false, stop.
+			r=f();//Get the return of the function satement
+			self.ret(
+				r.instanceOf(Nothing)({//If it didn't return anything, act like it returned true
+					self.ret(Bool.t);
+				},{
+					self.ret(Bool(r));//Or else return whatever it did, casted to a bool
+				})()(
+					()=>s(b,f,d);,//If it was true, recursively call while
+					d)()//Or else call the "done"
+			);
+		},{})();
+	);
+};
+Bool.while~(b,f)=>self(b,f,{});//The done is optional
+
+Bool~v=>{
+	s=self;
+	v.instanceOf(Bool)({
+		s.ret(v);
+	},{
+		v.instanceOf(Nothing)({
+			s.ret(Bool.f);
+		},{
+			s.ret(v.to.Bool());//This may throw an error
+		});
+	})();
+};
+Bool.to.Bool=()=>self;//Gets .to from Func, it's natural parent.
+
+self.ret(Bool);

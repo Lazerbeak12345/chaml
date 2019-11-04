@@ -1,0 +1,20 @@
+/*
+ * This is converted from lamda code on Benjamin C. Pierce's "Type Systems for
+ * Programming Languages," January 15, 2000 draft
+ */
+Bool=self.import("bool");
+Pair=(f,s)=>{
+	p=(b)=>b(f,s);
+	p.get=p;
+	p.set=(pos,val)=>{
+		pos({
+			f=val;
+		},{
+			s=val;
+		})();
+	};
+	self.ret(p);
+};
+Pair.first=(p)=>p(Bool.t);
+Pair.second=(p)=>p(Bool.f);
+self.ret(Pair);

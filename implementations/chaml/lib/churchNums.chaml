@@ -1,0 +1,50 @@
+/*
+ * Church numbers. (not used by default)
+ */
+Bool=self.import("bool");
+Pair=self.import("pair");
+c={};
+
+zero=Bool.f;
+one=Bool.t;
+one~(s,z)=s(z);
+
+c.plus=a=>b=>(s,z)=>a(s,b(s,z));
+c.plusplus=c.plus(one);
+
+c.times=a=>b=>(s,z)=>a(c.plus(b),c.zero);
+
+c.pow=a=>b=>(s,b)=>a(c.times(b),c.zero);
+
+c.isZero=a=>a(x=>Bool.f,Bool.t);
+
+///A pair of two zeros
+c.zz=Pair(zero,zero);
+/**
+ * @param p A pair of church numbers
+ * @return A pair containing the second number, and the second number plus 1
+ */
+c.ss=p=>Pair(Pair.second(p),c.plus(one,Pair.second(p)));
+/**
+ * @param a A church number
+ * @return that church number's predecessor by turning the series into a linked list
+ */
+c.predecessor=a=>Pair.first(a(ss,zz));
+
+c.minus=a=>b=>c.isZero(b)(
+		a,
+		c.minus(c.predecessor(a),c.predecessor(b))
+	);
+
+c.set("0",zero);
+c.set("1",one);
+c.set("2",(s,z)=>c.plusplus(one));
+c.set("3",(s,z)=>c.plusplus(c.get("2"));
+c.set("4",(s,z)=>c.plusplus(c.get("3"));
+c.set("5",(s,z)=>c.plusplus(c.get("4"));
+c.set("6",(s,z)=>c.plusplus(c.get("5"));
+c.set("7",(s,z)=>c.plusplus(c.get("6"));
+c.set("8",(s,z)=>c.plusplus(c.get("7"));
+c.set("9",(s,z)=>c.plusplus(c.get("8"));
+c.set("10",(s,z)=>c.plusplus(c.get("9"));
+self.ret(c);
