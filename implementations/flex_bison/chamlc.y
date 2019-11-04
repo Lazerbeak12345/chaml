@@ -2,7 +2,7 @@
 %token IDENTIFIER
 
     /*All tokens have equal precedence.*/
-%token PLUS MINUS TIMES DIV MOD POW
+%token PLUS MINUS TIMES DIV MOD POW MCOMMENT
 
 %{
     #include <stdio.h>
@@ -24,6 +24,7 @@ program:
 statement:
     expr ';'                    { printf("%d\n", $1); }
     | IDENTIFIER '=' expr ';'   { sym[$1] = $3; }
+    | statement MCOMMENT
     ;
 
 expr:
@@ -35,6 +36,8 @@ expr:
     | expr DIV '(' expr ')'   { $$ = $1 / $4; }
     | expr MOD '(' expr ')'   { $$ = $1 % $4; }
     | '(' expr ')'      { $$ = $2; }
+    | expr MCOMMENT
+    | MCOMMENT expr;
     ;
 
 %%
