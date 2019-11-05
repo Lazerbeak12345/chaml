@@ -760,6 +760,32 @@ Takes three args:
 
 A new regexp element.
 
+## How running/compiling it works
+
+1. Feed source code (call this file A) into tokenizer (outputs a stream). Go to
+step 2.
+2. Feed token stream into parser. If an import or syntax extention is found, go
+to step 2.1, or else go to step 3.
+   1. Grab the file that the import or syntax extention requires, and pass that
+  into step 1. (call this file file B) If it's a syntax module, go to step 2.3,
+  or else go to step 2.2.
+   2. Get the entire Parse tree for file B, and insert it into the proper node
+   on file A's parse tree. Go to step 3 (not to be confused with step 2.3).
+   3. Run File B through the interpreter (not the JIT compiler). It may modify
+  the token list, parse tree generator, Ast tree generator, interpeter, AST tree
+  reverser, parse tree reverser, and or the token reverser.
+  This modification _only_ applies to this local file A (not file a's parent, if
+  this is multiple levels deep, and not file B). Continue to step 3.
+3. Convert the parse tree into an AST tree. If file A is being interpreted run
+the file, or else continue to step 4.
+4. Convert the AST tree into a parse tree for the output language (or language
+family) Continue to step 5.
+5. Convert the parse tree into a token stream for the output language (or
+language family). Coontinue to step 6.
+6. Convert the token stream into the transpiled code for the output language.
+(Most often this is LLVM, but I've been thinking about output to JavaScript,
+JVM, and a few others). If the compiler is in JIT mode, run the file.
+
 ## Resources
 
 These are some but not all of the resources that I have used thus far.
@@ -807,3 +833,4 @@ Great for knowing the "why" behind different different ideas.
 C++Now 2017: Ryan Newton "Haskell taketh away: limiting side effects for
 parallel programming"
 - [https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
+- [https://www.youtube.com/watch?v=sTLkomM2P0o](https://www.youtube.com/watch?v=sTLkomM2P0o) "Introduction to building a programming language" A talk about implimenting a subset of PHP in JavaScript
