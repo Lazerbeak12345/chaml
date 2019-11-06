@@ -44,19 +44,24 @@ Bool.if=(b,f) {
 	out~out.else;
 	=< out;
 };
-Bool.if~(a,b,c)=>if(a,b)(c);
+Bool.if~(a,b,c)=>Bool.if(a,b)(c);
+Bool.if~a=>b=>Bool.if(a,b);//Wait for the next arg
 
 Bool.while=(b,f,d) {
-	=< Bool(b())({//Get the return of the bool satement. If it's false, stop.
-		r=f();//Get the return of the function satement
-		=< r.instanceOf(Nothing)(
-			()=>Bool.t;,//If it didn't return anything, act like it returned true
-			()=>Bool(r);//Or else return whatever it did, casted to a bool
-		)()(
-			()=>Bool.while(b,f,d);,//If it was true, recursively call while
-			d//Or else call the "done"
-		)()
-	},{})();
+	re=()=>Bool.while(b,f,d);         //Defined the recursor up here for minimum stack
+	=< Bool(b())(                     //Get the return of the bool satement, casting it to a bool
+		{
+			r=f();                    //Get the return of the function satement
+			=< r.instanceOf(Nothing)( //Pass up the result
+				()=>Bool.t;,          //If it didn't return anything, act like it returned true
+				()=>Bool(r);          //Or else return whatever it did, casted to a bool
+			)()(
+				re,                   //If it was true, pass the recursive func from above
+				d                     //Or else pass the "done"
+			);
+		},
+		()=>d;                        //or else pass a wrapped done
+	)()();                            //call the getter and the recursor or done func
 };
 Bool.while~(b,f)=>Bool.while(b,f,{});//The done is optional
 
