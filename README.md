@@ -834,3 +834,4 @@ C++Now 2017: Ryan Newton "Haskell taketh away: limiting side effects for
 parallel programming"
 - [https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
 - [https://www.youtube.com/watch?v=sTLkomM2P0o](https://www.youtube.com/watch?v=sTLkomM2P0o) "Introduction to building a programming language" A talk about implimenting a subset of PHP in JavaScript
+- [https://cdsmith.wordpress.com/2011/01/09/an-old-article-i-wrote/](https://cdsmith.wordpress.com/2011/01/09/an-old-article-i-wrote/) A great article on distinctions about different properties of type systems.
