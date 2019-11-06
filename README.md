@@ -51,6 +51,7 @@ Here's a code sample for those interested:
   - Table of Contents
   - The compiler
     - Stages
+    - Runtime
   - Variables
   - Functions
     - Defining functions
@@ -98,11 +99,11 @@ Here's a code sample for those interested:
 
 ### The future TOC
 
-- [7/12] The Chameleon Programming Language Standard
+- [6/11] The Chameleon Programming Language Standard
   - [x] Table of Contents
-  - [2/5] The compiler
+  - [3/5] The compiler
     - [x] Stages
-    - [ ] Runtime
+    - [x] Runtime
     - [ ] Current state
     - [ ] Plans
   - [x] Variables
@@ -164,6 +165,15 @@ language family). Coontinue to step 6.
 6. Convert the token stream into the transpiled code for the output language.
 (Most often this is LLVM, but I've been thinking about output to JavaScript,
 JVM, and a few others). If the compiler is in JIT mode, run the file.
+
+### Runtime
+
+As the standard output of the file is planned to be LLVM code, it will have
+an enviroment simmilar to that one, but I am concidering having JVM and/or
+JavaScript as options for target languages.
+
+The exeption to this is when it's in interpeter mode, but this should function
+about the same.
 
 ## Variables
 
