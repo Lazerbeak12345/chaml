@@ -10,7 +10,7 @@ char *s;
 
 %%
 
-"/*"                    { BEGIN MULTICOMMENT; s = buf; }
+"/*"                  { BEGIN MULTICOMMENT; s = buf; }
 <MULTICOMMENT>"*/"    { 
                         *s = 0;
                         BEGIN 0;
@@ -18,7 +18,8 @@ char *s;
                         return MCOMMENT;
                       }
 <MULTICOMMENT>.       ;
-<MULTICOMMENT>\n       ;
+<MULTICOMMENT>\n      ;
+\/\/.+\n              ;
 
 [0-9]+      {
                 yylval = atoi(yytext);
@@ -26,16 +27,16 @@ char *s;
             }
 
     /* operators */
-[()=/*%;,\n] { return *yytext; }
+[()=;,\n.] { return *yytext; }
 
     /* skip whitespace */
 [ \t]        ;
 
-".plus"     { return PLUS; }
-".minus"     { return MINUS; }
-".times"     { return TIMES; }
-".div"     { return DIV; }
-".mod"     { return MOD; }
+".plus"    { return PLUS;  }
+".minus"   { return MINUS; }
+".times"   { return TIMES; }
+".div"     { return DIV;   }
+".mod"     { return MOD;   }
 
 .           {
                 yylval = *yytext;
