@@ -49,6 +49,8 @@ Here's a code sample for those interested:
 
 - The Chameleon Programming Language Standard
   - Table of Contents
+  - The compiler
+    - Stages
   - Variables
   - Functions
     - Defining functions
@@ -71,7 +73,7 @@ Here's a code sample for those interested:
     - Comments
     - Typecasting
   - Reserved functions
-    - `add`
+    - `plus`
     - `minus`
     - `times`
     - `div`
@@ -92,20 +94,19 @@ Here's a code sample for those interested:
     - useSyntax
     - declareSyntax
     - Regexp
-  - Interpretation/Compilation stages
   - Resources
 
 ### The future TOC
 
-- [6/11] The Chameleon Programming Language Standard
-  - [ ] The compiler
-    - [ ] Stages
+- [7/12] The Chameleon Programming Language Standard
+  - [x] Table of Contents
+  - [2/5] The compiler
+    - [x] Stages
     - [ ] Runtime
     - [ ] Current state
     - [ ] Plans
   - [x] Variables
   - [x] Functions
-  - [x] `self`
   - [x] Operators
   - [ ] Types
     - [ ] Type inference
@@ -135,6 +136,34 @@ Here's a code sample for those interested:
       - [ ] Common modules
     - [ ] Writing a syntax module
   - [x] Resources
+
+## The compiler
+
+### Stages
+
+1. Feed source code (call this file A) into tokenizer (outputs a stream). Go to
+step 2.
+2. Feed token stream into parser. If an import or syntax extention is found, go
+to step 2.1, or else go to step 3.
+   1. Grab the file that the import or syntax extention requires, and pass that
+  into step 1. (call this file file B) If it's a syntax module, go to step 2.3,
+  or else go to step 2.2.
+   2. Get the entire Parse tree for file B, and insert it into the proper node
+   on file A's parse tree. Go to step 3 (not to be confused with step 2.3).
+   3. Run File B through the interpreter (not the JIT compiler). It may modify
+  the token list, parse tree generator, Ast tree generator, interpeter, AST tree
+  reverser, parse tree reverser, and or the token reverser.
+  This modification _only_ applies to this local file A (not file a's parent, if
+  this is multiple levels deep, and not file B). Continue to step 3.
+3. Convert the parse tree into an AST tree. If file A is being interpreted run
+the file, or else continue to step 4.
+4. Convert the AST tree into a parse tree for the output language (or language
+family) Continue to step 5.
+5. Convert the parse tree into a token stream for the output language (or
+language family). Coontinue to step 6.
+6. Convert the token stream into the transpiled code for the output language.
+(Most often this is LLVM, but I've been thinking about output to JavaScript,
+JVM, and a few others). If the compiler is in JIT mode, run the file.
 
 ## Variables
 
@@ -226,7 +255,7 @@ c(3,7);     // returns 10
 b@c(20,3);  // returns 24
 ```
 
-#### scoping
+#### Scoping
 
 ```text
 //can be modified above theFunc
@@ -532,11 +561,11 @@ Look into adding monads, such as
 
 ## Reserved functions
 
-### `add`
+### `plus`
 
 Adds two objects. If it's two numbers, it just adds them.
 
-Calls the first function's `add` sub-function (and therefore is overloadable on a
+Calls the first function's `plus` sub-function (and therefore is overloadable on a
 per-case basis). If not present, it returns a function that returns the sum of
 calling each.
 
@@ -759,32 +788,6 @@ Takes three args:
 ### Regexp
 
 A new regexp element.
-
-## How running/compiling it works
-
-1. Feed source code (call this file A) into tokenizer (outputs a stream). Go to
-step 2.
-2. Feed token stream into parser. If an import or syntax extention is found, go
-to step 2.1, or else go to step 3.
-   1. Grab the file that the import or syntax extention requires, and pass that
-  into step 1. (call this file file B) If it's a syntax module, go to step 2.3,
-  or else go to step 2.2.
-   2. Get the entire Parse tree for file B, and insert it into the proper node
-   on file A's parse tree. Go to step 3 (not to be confused with step 2.3).
-   3. Run File B through the interpreter (not the JIT compiler). It may modify
-  the token list, parse tree generator, Ast tree generator, interpeter, AST tree
-  reverser, parse tree reverser, and or the token reverser.
-  This modification _only_ applies to this local file A (not file a's parent, if
-  this is multiple levels deep, and not file B). Continue to step 3.
-3. Convert the parse tree into an AST tree. If file A is being interpreted run
-the file, or else continue to step 4.
-4. Convert the AST tree into a parse tree for the output language (or language
-family) Continue to step 5.
-5. Convert the parse tree into a token stream for the output language (or
-language family). Coontinue to step 6.
-6. Convert the token stream into the transpiled code for the output language.
-(Most often this is LLVM, but I've been thinking about output to JavaScript,
-JVM, and a few others). If the compiler is in JIT mode, run the file.
 
 ## Resources
 
