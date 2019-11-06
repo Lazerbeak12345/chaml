@@ -1,5 +1,7 @@
 /*
  * Church numbers. (not used by default)
+ * This is converted from lamda code on Benjamin C. Pierce's "Type Systems for
+ * Programming Languages," January 15, 2000 draft
  */
 Bool=import("bool");
 Pair=import("pair");
@@ -31,10 +33,9 @@ c.ss=p=>Pair(Pair.second(p),c.plus(one,Pair.second(p)));
  */
 c.predecessor=a=>Pair.first(a(ss,zz));
 
-c.minus=a=>b=>c.isZero(b)(
-		a,
-		c.minus(c.predecessor(a),c.predecessor(b))
-	);
+//Minus, div, etc
+//equals
+//(I don't care that much as to figure them out. Honestly I couldn't really understand c.predecessor so I thought I'd stop there)
 
 c.set("0",zero);
 c.set("1",one);
