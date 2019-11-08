@@ -9,11 +9,11 @@ keywords, and if you count built-in functions.
 There is also going to be support for many (if not all) of the aspects of LOP
 (Language Oriented Programming), what I regard to be the next programming
 paradigm. But it also has support for OOP, via syntax extentions (thanks to LOP
-), and/or it's built-in object prototypeing.
+), and/or it's built-in object prototyping.
 
 It is designed to make using functions easy-peasy. Without syntax extentions,
-there are 6 (ish) syntaxes to define one, and all functions are first-order, so
-they can take other functions as arguments.
+there are 6 (ish) syntaxes to define a function, and all functions are
+first-order, so they can take other functions as arguments.
 
 I'm actually looking for help with the initial runtime. Once that's done, it'l
 be bootstrapped.
@@ -45,6 +45,28 @@ Here's a code sample for those interested:
 };
 ```
 
+These features are core to the design, and are very unlikely to change very
+much.
+
+- No keywords
+  - Also try to avoid things like them. (Operators and Types are to be used
+  sparingly)
+- A sleek, secure way of having per-file syntax overloading.
+  - Syntax modules included at the beginning of the file, much like imports
+- Functions are call by value
+- Everything is a function
+- Any operator may be applied to any variable, at all.
+  - EX: while `7.times(10)` returns `70`, a function that returns 7 multipled by a
+  function that returns 10 returns a function that returns the result of that
+  operator applied to each value, respectively.
+
+```chaml
+retSeven=()=>7;
+retTen=()=>10;
+resultGetter=retSeven.times(retTen);
+endResult=resultGetter();
+```
+
 ## Table of Contents
 
 - The Chameleon Programming Language Standard
@@ -52,6 +74,8 @@ Here's a code sample for those interested:
   - The compiler
     - Stages
     - Runtime
+    - Current state
+    - Plans
   - Variables
   - Functions
     - Defining functions
@@ -68,26 +92,11 @@ Here's a code sample for those interested:
       - From inside a one-liner
       - From a block function
   - Operators
-  - Core features
   - Other features
   - Syntax
     - Comments
     - Typecasting
   - Reserved functions
-    - `plus`
-    - `minus`
-    - `times`
-    - `div`
-    - `gt`
-    - `lt`
-    - `gte`
-    - `lte`
-    - `and`
-    - `or`
-    - `xor`
-    - `eq`
-    - `not`
-    - `<=`
     - throw
     - while
     - if
@@ -99,25 +108,21 @@ Here's a code sample for those interested:
 
 ### The future TOC
 
-- [6/11] The Chameleon Programming Language Standard
+- [7/11] The Chameleon Programming Language Standard
   - [x] Table of Contents
-  - [3/5] The compiler
-    - [x] Stages
-    - [x] Runtime
-    - [ ] Current state
-    - [ ] Plans
+  - [x] The compiler
   - [x] Variables
   - [x] Functions
   - [x] Operators
-  - [ ] Types
+  - [1/3] Types
     - [ ] Type inference
     - [ ] Type functions
-      - `Func`
-      - `Bool`
-      - `Int`
-      - `Char`
-      - `Arr`
-      - `Str`
+      - [ ] `Func`
+      - [ ] `Bool`
+      - [ ] `Int`
+      - [ ] `Char`
+      - [ ] `Arr`
+      - [ ] `Str`
     - [ ] Casting
   - [ ] Libraries
     - [ ] Using libraries
@@ -175,6 +180,33 @@ JavaScript as options for target languages.
 The exeption to this is when it's in interpeter mode, but this should function
 about the same.
 
+### Current state
+
+There are multiple parallel attemps to reach a working end-goal.
+
+- The cpp implimentation is the oldest one. It right now can only just barely
+handle some comments, sometimes. I'm not likely to continue pursuit with this
+one, I'm just using it for reference, and will most likely remove it.
+- The chaml one is 75% done, but once I realised I made a few critical mistakes
+(such as not actually knowing what a lexer is and what a parser is), I decided
+to stop for awhile.
+  - In the lib directory are libraries that I plan to have availiable. Many are
+  highly experimental.
+  - I plan on re-writing this once a different implimentation starts working.
+- flex_bison was going to be the offical first language compiler/interpreter/
+whatever_the_heck_I_actually_got_out_of_it, but as I am not super familiar with
+C or C++ I am looking into alternatives. I actually can do basic math in the
+library as if it was actually done, but it feels unreliable.
+- java is my potential replacement for flex_bison. Very little progress, but as
+I know the datatypes well enough, I should be able to make this work.
+
+### Plans
+
+GET IT WORKING
+
+I personally don't have any plan but this, and what is in the "Current state"
+section
+
 ## Variables
 
 All variables are functions. When set with the `=` operator, it is overwritten
@@ -199,7 +231,7 @@ Names may include any character otherwise not used in any syntax.
 
 ## Functions
 
-Uses call/pass by value. (Allow for pointers? Look into lazy reaction to pure function detection. Also look into deforestation.)
+Uses call/pass by value.
 
 ### Defining Functions
 
@@ -260,78 +292,83 @@ a();        // returns 1
 //call b, passing a value. (if a var, it's duplicated)
 b(3);       // returns 4
 c(3,7);     // returns 10
+```
 
-//Compose b on c (evaluates to `b(c(3,2))`)
-b@c(20,3);  // returns 24
+### Overloadig functions
+
+The `~` operator makes the function on the right the function to call given its
+number of arguments and the args that were passed in.
+
+```chaml
+tog=true;//A value that myF will be modifying
+myF={//If no arguments are given, toggle `tog`
+  if(tog,{
+    tog=false;
+  },{
+    tog=true;
+  });
+};
+myF~firstArg=>{//If one argument is given, unconditionally set `tog` to that
+  tog=firstArg;
+};
+a=0;
+myF~(ifT,ifF){//If two arguments are given, set `a` to the first if `tog` is true, and the second if it is false
+  if(tog,{
+    a=ifT;
+  },{
+    a=ifF;
+  });
+};
+myF();//Toggle tog
+myF(true);//Set tog to true
+myF(10,20);//set a to 10 if tog is true, and set a to 20 if tog is false
+//`a` should now be equal to 10.
 ```
 
 #### Scoping
 
 ```text
-//can be modified above theFunc
-//can be modified within theFunc
-//can be modified below theFunc
+//can't change or read any vars here
 a=1947;
-theFunc=(
-  //can't be modified above theFunc
-  //can be modified within theFunc
-  //can be modified below theFunc (after a `anotherVar` is declared)
-  e)=>{
-  //can't be modified above theFunc
-  //can be modified within theFunc
-  //can't be modified below theFunc
+//`a` is the only var that can be changed or read here
+theFunc=(e)=>{
+  //`a`, `theFunc` and `e` are the only vars that can be changed or read here
   b=28142;
-  //can't be modified above theFunc
-  //can be modified within theFunc
-  //can be modified below theFunc
+  //`a`, `theFunc`, `e` and `b` are the only vars that can be changed or read here
   theFunc.c=4234;
-
+  //`a`, `theFunc`, `theFunc.c`, `e` and `b` are the only vars that can be changed or read here
+  theFunc.p=()=>b;
+  //`a`, `theFunc`, `theFunc.c`, `theFunc.p`, `e` and `b` are the only vars that can be changed or read here
   e++;
 };
-//can't be modified above theFunc
-//can't be modified within theFunc
-//can be modified below theFunc
+//`a` and `theFunc` are the only vars that can be changed or read here
 d=324;
-
-/* here's how to modify this var too.
- * note that it isn't initialized till there is a value set to it.
- * If you read this variable on the first line of `theFunc` it would read `7`*/
+//`a`, `theFunc` and `d` are the only vars that can be changed or read here
 theFunc.c=7;
-
-//can't be modified above theFunc
-//can be modified within theFunc
-//can be modified below theFunc (but only after this call)
-anotherVar=99;
-
-theFunc(anotherVar);
-//anotherVar does not change
+//`a`, `theFunc`, `theFunc.c` and `d` are the only vars that can be changed or read here
+v=99;
+//`a`, `theFunc`, `theFunc.c`, `d` and `v` are the only vars that can be changed or read here
+theFunc(v);
+//`a`, `theFunc`, `theFunc.c`, `theFunc.p`, `d` and `v` are the only vars that can be changed or read here. `b` may be indirectly read through calling `theFunc.p`, but cannot be changed here
 ```
 
-Aditionally, functions can be defined within other functions. As they are stored
-within variables, they follow the same scoping when it comes to running the
-function. This also applies to variables within functions within functions:
+Aditionally, functions can be defined within other functions. If you can read a
+function, you can run it. As they are stored within variables, they follow the
+same scoping when it comes to running the function.This also applies to
+variables within functions within functions:
 
 ```text
-//cannot read or execute outerFunc here
-//cannot read or execute innerFunc here
-//cannot read a here
+//no vars can be read here
 outerFunc={
-  //can read &/or execute outerFunc here
-  //cannot read or execute innerFunc here
-  //cannot read a here
+  //`outerFunc` is the only var that can be changed or read here
   innerFunc={
-    //can read &/or execute innerFunc here
-    //can read &/or execute outerFunc here
-    //cannot read a here
+    //`outerFunc` and `innerFunc` are the only vars that can be changed or read here
     a=true;
-    //can read a here
+    //`outerFunc`, `innerFunc` and `a` are the only vars that can be changed or read here
   };
-  //can read &/or execute innerFunc here
-  //cannot read a here
+  //`outerFunc` and `innerFunc` are the only vars that can be changed or read here
 };
-//can read &/or execute outerFunc here
-//cannot read or execute innerFunc here
-//cannot read a here
+//`outerFunc` is the only var that can be changed or read here
 ```
 
 ##### When var names collide
@@ -361,8 +398,8 @@ anotherName(k)//returns 30
 
 ```text
 returnsNumber1=()=>1;
-returnsArgTimesTwo=arg=>arg*2;
-returnsTheSumOfArgs=(a,b)=>a+b;
+returnsArgTimesTwo=arg=>arg.times(2);
+returnsTheSumOfArgs=(a,b)=>a.plus(b);
 ```
 
 #### From a block function
@@ -381,7 +418,6 @@ returnsTheSumOfArgs=(a,b) => {
 
 ## Operators
 
-<!--Note to self: look at https://www.tutorialspoint.com/java/java_basic_operators.htm-->
 <!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
 
 - SET `=`
@@ -393,79 +429,51 @@ the following closure)
 
 ## Types
 
-Types are functions of this description:
+Types are functions where have this behavior given the number of args,
 
-They have this behavior given the number of args,
+Zero returns the default value, if applicable. (Think of it like a default
+constructor)
 
-zero returns default,
+One argument returns a duplicate of this type if it is already this type.
+Elsewise, call that class's `class.to.` then whatever this class is.
+EX: `class.to.Foo` inside of a class called `Foo`.
 
-On 1, If it is this type, return a duplicate of it. Elsewise, call that class's
-`class.to.` then whatever this class is. EX: `class.to.Foo` inside of a class
-called `Foo`.
-
-(EX: a class `Square` might take x,y,w,h
-as well as x,y,w, whereas a class `FileStream` would take a filename and a
-callback)
+Any more are arguments type specific.
 
 These are the default type constructors
 
 - `Func`
 - `Int`
+  - has mathmatical methods on children
+    - `plus`
+    - `minus`
+    - `times`
+    - `div`
+    - `mod`
+  - also has boolean returners on children
+    - `gt` greater than
+    - `lt` less than
+    - `gte` greater than or equal to
+    - `lte` less than or equal to
+  - other
+    - `eq`
 - `Char`
+  - getCode returns the charcode
+  - other
+    - `eq`
 - `Array`
+  - size returns the size
+  - other
+    - `eq`
 - `Bool`
+  - public `not` function returns inverse of passed in boolean
+  - has binary logic functions/methods
+    - `and`
+    - `or`
+    - `xor` Exclusive or
+  - other
+    - `eq`
 - `Str` Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
-
-## Core features
-
-These features are core to the design, and are very unlikely to change very
-much.
-
-- No keywords
-  - Also try to avoid things like them. (Operators and Types are to be used
-  sparingly)
-- A sleek, secure way of having per-file syntax overloading.
-  - Syntax modules included at the beginning of the file, much like imports
-- Functions are call by value
-- Any operator may be applied to any variable, at all.
-  - EX: while `7.times(10)` returns `70`, a function that returns 7 multipled by a
-  function that returns 10 returns a function that returns the result of that
-  operator applied to each value, respectively.
-
-```chaml
-retSeven=()=>7;
-retTen=()=>10;
-resultGetter=retSeven.times(retTen);
-endResult=resultGetter();
-```
-
-### CORE PROPOSAL 2
-
-Add "everything is a function - including natives"
-
-### CORE PROPOSAL 3
-
-Add
-
-```md
-- Arguments to a function are to be evaluated lazily, and booleans should
-  short-circut, but the rest of the program is eager.
-```
-
-Instead of
-
-```md
-- Don't have some stupid feature such as lazy eval forced; allow for devs to
-  wrap everything in a function if they wanted to.
-```
-
-(Or at least make the wording less harsh)
-
-### core proposal "need"
-
-add `(needed)` to `- Functions are call by value`
-
-<!--note to self, see https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_value to impliment it-->
 
 ## Other features
 
@@ -478,6 +486,19 @@ add `(needed)` to `- Functions are call by value`
 Make most operators a syntax module.
 
 ## Syntax
+
+### Overload lib ideas
+
+- keywords
+  - A full explicit type system
+- inline xml
+- lazy function calling (from perspective of caller)
+- A lib to make ifs C-style
+- a lib to make strings their own datatype
+- a lib to make bools an instance of Int (0 or 1)
+- a lib to generate a documentaiton markdown file using comments
+  - could interact with the keywords lib idea and its children
+  - could interact with the AST too
 
 ### Comments
 
@@ -503,12 +524,16 @@ And_thus="this line is still reached and evaluated";
  */
 ```
 
+Comments are preserved as long as possible, with few exeptions (ex: interpeting
+mode) throughout the compiling process. This means it should be possible to
+make comment dependant functionality
+
 ### Typecasting
 
 Variables are never cast automatically.
 
 To cast use the constructor like so:
- `joinOfStringAndNum=+("The number is ",37.to.String()))`
+ `joinOfStringAndNum=+("The number is ",String(37))`
 
 One can overload casting by doing something like this:
 
@@ -562,139 +587,7 @@ is empty, then throw `Casting error: Function constructor takes 1 argument`
 Assume that missing cases signify that that function doesn't exsist on that
 object.
 
-#### Typecasting proposal - monads
-
-Look into adding monads, such as
-
-- just
-- maybe
-
 ## Reserved functions
-
-### `plus`
-
-Adds two objects. If it's two numbers, it just adds them.
-
-Calls the first function's `plus` sub-function (and therefore is overloadable on a
-per-case basis). If not present, it returns a function that returns the sum of
-calling each.
-
-Takes two args, the items to add; returns one arg, the added items.
-
-### `minus`
-
-Subtracts two objects. If it's two numbers, it just subtracts them.
-
-Calls the first function's `minus` sub-function (and therefore is overloadable
-on a per-case basis). If not present, it returns a function that returns the
-subtraction of calling each.
-
-Takes two args, the items to subtract; returns one arg, the subtracted items.
-
-### `times`
-
-Multiplies two objects. If it's two numbers, it just multiplies them.
-
-Calls the first function's `times` sub-function (and therefore is overloadable
-on a per-case basis). If not present, it returns a function that returns the
-multiple of calling each.
-
-Takes two args, the items to subtract; returns one arg, the subtracted items.
-
-### `div`
-
-Divides two objects. If it's two numbers, it just divides them.
-
-Calls the first function's `div` sub-function (and therefore is overloadable on a
-per-case basis). If not present, it returns a function that returns the division
-of calling each.
-
-Takes two args, the items to subtract; returns one arg, the subtracted items.
-
-### `gt`
-
-Checks to see if one object is greater than the other. Returns a bool.
-
-Calls the first function's `gt` sub-function (and therefore is overloadable on a
-per-case basis). If not present, it returns a function that returns the "gt" of
-the return of each when called.
-
-### `lt`
-
-Checks to see if one object is less than the other. Returns a bool.
-
-Calls the first function's `lt` sub-function (and therefore is overloadable on a
-per-case basis). If not present, it returns a function that returns the "lt" of
-the return of each when called.
-
-### `gte`
-
-Checks to see if one object is greater than or equal to the other. Returns a
-bool.
-
-Calls the first function's `gte` sub-function (and therefore is overloadable on
-a per-case basis). If not present, it returns a function that returns the "gte"
-of the return of each when called.
-
-(This sub-function often just equals the return of the `eq` sub-function applied
-to the `gt` sub-function)
-
-### `lte`
-
-Checks to see if one object is less than or equal to the other. Returns a bool.
-
-Calls the first function's `lte` sub-function (and therefore is overloadable on
-a per-case basis). If not present, it returns a function that returns the "lte"
-of the return of each when called.
-
-(This sub-function often just equals the return of the `eq` sub-function applied
-to the `lt` sub-function)
-
-### `and`
-
-A subfunction of bools (and a few other things).
-
-- If the `self` bool value was false, it returns false.
-- If the `self` bool value was true, and the new bool is true, return true.
-- Otherwise return false.
-
-### `or`
-
-A subfunction of bools (and a few other things).
-
-- If the `self` bool value was true, it returns true.
-- If the `self` bool value was false, and/or the new bool is true, return true.
-- Otherwise return false.
-
-### 'xor'
-
-A subfunction of bools (and a few other things).
-
-- If the `self` bool value was true and the new bool is false, it returns true.
-- If the `self` bool value was false and the new bool is true, it returns true.
-- Otherwise return false.
-
-### `eq`
-
-Determines equality between two objects.
-
-Calls the first function's `eq` sub-function (and therefore is overloadable on a
-per-case basis). If not present, it returns a function that returns the eqality
-function applied to the return of calling each.
-
-Takes two args, the items to subtract; returns one arg, the subtracted items.
-
-### `not`
-
-Returns false if passed in true, returns true if passed in false.
-
-### `=<`
-
-How one returns from a function. If at the topmost level of the source code, It
-exports that instead. If this is the topmost file, then the return value is
-called with an array of an array of chars (the arguments)
-
-> NOTE: Not needed in lamda-style closures such as `(a)=>a.plus(1);`
 
 ### throw
 
@@ -710,6 +603,8 @@ UNDEFINED BEHAVIOR
 
 This should allow for while, while-do, do-while and for behavior, as well as
 other awesome combos (like a while-do-while, do-while-do, or do-while-do-while).
+
+part of the `Bool` library
 
 ### if
 
@@ -752,11 +647,13 @@ if(99==93,{
 });
 ```
 
+part of the `Bool` library
+
 ### import
 
 NOTE: access restriction may need to be changed
 
-- Takes 2 args
+- Takes 1-2 args
   - A string that must refer to either a module name, a Unix-style url to a
     file (extention not needed), or to a URL resorce that the OS can handle.
     - NOTE: this file can also be a Redox style URL an IPFS style adress, or a
@@ -774,7 +671,7 @@ is what becomes the return of [[import]].
 
 NOTE: access restriction may need to be changed
 
-- Takes 2 args
+- Takes 1-2 args
   - A string with the same requirements as arg 0 of *import*
   - An optional variable that is one of the following:
     - An array of strings with the below description
