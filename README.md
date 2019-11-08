@@ -478,7 +478,8 @@ These are the default type constructors
 ## Other features
 
 - Object inheritance
-  - The core components are provided, but can be improoved with a library.
+  - The core components are provided (via some built-in prototyping), but can be
+  improoved with a library.
 - Keywords, inline xml, obj syntax sugar all to be syntax modules.
 
 ### Other features proposal "Operators"
