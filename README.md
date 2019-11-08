@@ -210,8 +210,8 @@ section
 ## Variables
 
 All variables are functions. When set with the `=` operator, it is overwritten
-with the value on the right side. When set with the `~` operator, the caller is
-overloaded.
+with the value on the right side. When set with the `~` (tilda) operator, the
+caller is overloaded.
 
 Naming conventions are identical to JavaScript; they may contain any number,
 upper or lowercase letter, or these: `$_`. They cannot start with a number.
@@ -296,8 +296,8 @@ c(3,7);     // returns 10
 
 ### Overloadig functions
 
-The `~` operator makes the function on the right the function to call given its
-number of arguments and the args that were passed in.
+The `~` (tilda) operator makes the function on the right the function to call
+given its number of arguments and the args that were passed in.
 
 ```chaml
 tog=true;//A value that myF will be modifying
@@ -421,8 +421,8 @@ returnsTheSumOfArgs=(a,b) => {
 <!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
 
 - SET `=`
-- OVERLOAD `~` (Sets the internal "caller" of the following closure's arg len to
-the following closure)
+- OVERLOAD `~` (Tilda. Sets the internal "caller" of the following closure's arg
+len to the following closure)
 - RETURN `=<`
 - LAMDA `=>`
 - SUBPROPERTYACESS `.`
