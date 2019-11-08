@@ -284,8 +284,8 @@ anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a.plus(FEW).plus(dif_frent).pl
 
 ```chaml
 a=()=>1;
-b=a=>a+1;
-c=(a,b)=>a+b;
+b=a=>a.plus(1);
+c=(a,b)=>a.plus(b);
 
 //Call a
 a();        // returns 1
@@ -339,7 +339,7 @@ theFunc=(e)=>{
   //`a`, `theFunc`, `theFunc.c`, `e` and `b` are the only vars that can be changed or read here
   theFunc.p=()=>b;
   //`a`, `theFunc`, `theFunc.c`, `theFunc.p`, `e` and `b` are the only vars that can be changed or read here
-  e++;
+  e=e.plus(1);
 };
 //`a` and `theFunc` are the only vars that can be changed or read here
 d=324;
@@ -533,7 +533,7 @@ make comment dependant functionality
 Variables are never cast automatically.
 
 To cast use the constructor like so:
- `joinOfStringAndNum=+("The number is ",String(37))`
+ `joinOfStringAndNum="The number is ".plus(String(37))`
 
 One can overload casting by doing something like this:
 
