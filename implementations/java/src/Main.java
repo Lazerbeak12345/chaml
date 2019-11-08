@@ -1,12 +1,13 @@
-import java.io.FileNotFoundException;
-
 public class Main {
     private static int[] version = {0,0,0};
     public static void main(String[] args) throws Exception {
         if (args.length==0) helpText();
         else{
             String filename=args[0];
-            FileReaderDummy f=new FileReaderDummy(filename);
+            FileReaderDummy a=new FileReaderDummy(filename);
+            //from testing, they have the same output. That's great!
+            a.lineByLine();
+            a.charByChar();
         }
     }
 
