@@ -1,9 +1,16 @@
+import java.io.FileNotFoundException;
+
 public class Main {
     private static int[] version = {0,0,0};
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if (args.length==0) helpText();
         else{
-            System.out.println(args[0]);
+            String filename=args[0];
+  //          try{
+                FileReaderDummy f=new FileReaderDummy(filename);
+//            }catch(FileNotFoundException e) {
+      //          System.out.printf("No file by the name of \"%s\" could be found\n",filename);
+    //        }
         }
     }
 
