@@ -6,11 +6,7 @@ public class Main {
         if (args.length==0) helpText();
         else{
             String filename=args[0];
-  //          try{
-                FileReaderDummy f=new FileReaderDummy(filename);
-//            }catch(FileNotFoundException e) {
-      //          System.out.printf("No file by the name of \"%s\" could be found\n",filename);
-    //        }
+            FileReaderDummy f=new FileReaderDummy(filename);
         }
     }
 

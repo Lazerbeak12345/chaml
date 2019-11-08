@@ -1,30 +1,22 @@
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 
 class FileReaderDummy{
-    FileInputStream input;
-    FileReaderDummy(String filename) throws FileNotFoundException {
-        input=new FileInputStream(filename);
-    }
-	public void testFile(String filename) {
-        try{
-            byte b[]={0,0,0,0,0};
-            input.read(b);
-            System.out.println(b[5]);
-            for (byte i : b) {
-                System.out.println(i);
+    FileReaderDummy(String filename) {
+        //Based on code from https://www.java2novice.com/java-file-io-operations/read-line-from-file/
+        BufferedReader br = null;
+        String strLine = "";
+        try {
+            br = new BufferedReader( new FileReader(filename));
+            while( (strLine = br.readLine()) != null){
+                System.out.println(strLine);
             }
+        } catch (FileNotFoundException e) {
+            System.err.printf("Unable to find the file: %s\n",filename);
         } catch (IOException e) {
-            System.out.println("Byte could not be read!");
-            return;
-        } finally {
-            try{
-                input.close();
-            } catch (IOException e) {
-                System.out.println("File could not be closed!");
-            }
+            System.err.printf("Unable to read the file: %s\n",filename);
         }
     }
 }
