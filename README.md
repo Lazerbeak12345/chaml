@@ -277,7 +277,7 @@ anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
 #### Multi-arg One line
 
 ```test
-anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a+FEW+dif_frent+var5+h$er3;
+anyVariableHere= (a,FEW,dif_ferent, var5,h$r3) => a.plus(FEW).plus(dif_frent).plus(var5).plus(h$er3);
 ```
 
 ### Calling functions
