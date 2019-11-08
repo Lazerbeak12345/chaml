@@ -126,7 +126,7 @@ endResult=resultGetter();
     - [ ] Casting
   - [ ] Libraries
     - [ ] Using libraries
-      - [ ] `self.import`
+      - [ ] `import`
       - [ ] Some example libraries
         - [ ] IO
         - [ ] Vector
