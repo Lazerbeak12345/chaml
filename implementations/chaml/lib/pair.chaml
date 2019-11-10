@@ -3,17 +3,17 @@
  * Programming Languages," January 15, 2000 draft
  */
 Bool=import("bool");
-Pair=(f,s)=>{
+Pair=(f,s) {
 	p=(b)=>b(f,s);
 	p.get=p;
-	p.set=(pos,val)=>{
+	p.set=(pos,val) {
 		pos({
 			f=val;
 		},{
 			s=val;
 		})();
 	};
-	=<p;
+	=<p.ext(Pair.proto);
 };
 Pair.first=(p)=>p(Bool.t);
 Pair.second=(p)=>p(Bool.f);

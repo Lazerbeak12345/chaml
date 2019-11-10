@@ -11,7 +11,7 @@
 		=<out;
 	};
 	out~out.elif;//Overload out to take elif
-	out.else=f=>{
+	out.else=(f) {
 		if(not(state),f);
 	};
 	out~out.else;

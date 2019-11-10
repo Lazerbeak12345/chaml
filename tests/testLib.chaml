@@ -28,7 +28,7 @@ out.run={
 					print.err("\tSuite \""+test.name+"\" failed with err: \n"+err.msg"\n");
 				});
 			});
-		},err => {
+		},(err) {
 			print.err("Suite \""+suite.name+"\" failed with err: \n"+err.msg"\n");
 		});
 	});

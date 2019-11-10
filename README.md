@@ -37,7 +37,7 @@ Here's a code sample for those interested:
     =<out;
   };
   out~out.elif;//Overload out to take elif
-  out.else=f=>{
+  out.else=(f) {
     if(not(state),f);
   };
   out~out.else;
@@ -256,7 +256,7 @@ anyVariableHere=()=> 72;// return 72
 #### One Arg
 
 ```text
-anyVariableHere= in => {
+anyVariableHere=(in) {
   =<in.times(2); // return the arg times two
 };
 ```
@@ -270,8 +270,7 @@ anyVariableHere= in => in*2;//a single line is treated like a code block
 #### Multi-arg
 
 ```test
-anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) => {
-  //The => is optional when inbetween an endparen and an opening curly
+anyVariableHere= (a,FEW,dif_ferent,var5,h$r3) {
   =<a.plus(FEW).plus(dif_frent).plus(var5).plus(h$er3);
 };
 ```
@@ -310,7 +309,7 @@ myF={//If no arguments are given, toggle `tog`
     tog=true;
   });
 };
-myF~firstArg=>{//If one argument is given, unconditionally set `tog` to that
+myF~(firstArg) {//If one argument is given, unconditionally set `tog` to that
   tog=firstArg;
 };
 a=0;
@@ -333,7 +332,7 @@ myF(10,20);//set a to 10 if tog is true, and set a to 20 if tog is false
 //can't change or read any vars here
 a=1947;
 //`a` is the only var that can be changed or read here
-theFunc=(e)=>{
+theFunc=(e) {
   //`a`, `theFunc` and `e` are the only vars that can be changed or read here
   b=28142;
   //`a`, `theFunc`, `e` and `b` are the only vars that can be changed or read here
@@ -384,7 +383,7 @@ funcName=conflictingName=> conflicingName();
 
 funcName(() => 21); //returns 21
 
-anotherName=(conflicingName) => {
+anotherName=(conflicingName) {
   =<conflictingName.times(10);
 };
 
@@ -410,10 +409,10 @@ returnsTheSumOfArgs=(a,b)=>a.plus(b);
 returnsNumber1={
   =<1;
 };
-returnsArgTimesTwo=arg=>{
+returnsArgTimesTwo=(arg) {
   =<arg.times(2);
 };
-returnsTheSumOfArgs=(a,b) => {
+returnsTheSumOfArgs=(a,b) {
   =<a.plus(b);
 };
 ```

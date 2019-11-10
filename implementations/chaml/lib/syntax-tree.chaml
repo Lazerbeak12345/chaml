@@ -1,12 +1,12 @@
 tr={};
 
-tr.Token=name=>{
+tr.Token=(name){
 	i=Type();
 	i.name=Str(name);
 	=<i;
 };
 
-tr.Operator=name=>{
+tr.Operator=(name){
 	if(Operator.validOperators.contains(name).invert(),{//This might not work at all
 		operatorS.ret();
 	});
@@ -14,13 +14,13 @@ tr.Operator=name=>{
 };
 tr.Operator.validOperators=[];
 
-tr.Ref=(name,value)=>{
+tr.Ref=(name,value){
 	i=s.Token(name);
 	i.value=value;//TODO: enter type filter here
 	=<i;
 };
 
-tr.Tree=contents=>{
+tr.Tree=(contents){
 	i=Type();
 	i.contents=Arr(tr.Token,contents);
 };

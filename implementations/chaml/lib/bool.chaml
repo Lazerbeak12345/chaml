@@ -38,7 +38,7 @@ Bool.if=(b,f) {
 		=<out;
 	};
 	out~out.elif;//Overload out to take elif's args too (will make it act like elif in that case)
-	out.else=f=>{
+	out.else=(f){
 		v=state(f,{})();//update the value
 	};
 	out~out.else;
@@ -65,7 +65,7 @@ Bool.while=(b,f,d) {
 };
 Bool.while~(b,f)=>Bool.while(b,f,{});//The done is optional
 
-Bool~v=>{
+Bool~(v) {
 	=< v.instanceOf(Bool)({
 		=<v;
 	},{
