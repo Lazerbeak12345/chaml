@@ -108,15 +108,15 @@ endResult=resultGetter();
 
 ### The future TOC
 
-- [7/11] The Chameleon Programming Language Standard
+- [7/12] The Chameleon Programming Language Standard
   - [x] Table of Contents
   - [x] The compiler
   - [x] Variables
   - [x] Functions
   - [x] Operators
-  - [1/3] Types
-    - [ ] Type inference
-    - [ ] Type functions
+  - [2/3] Types
+    - [x] Type inference
+    - [ ] Type constructors
       - [ ] `Func`
       - [ ] `Bool`
       - [ ] `Int`
@@ -124,6 +124,13 @@ endResult=resultGetter();
       - [ ] `Arr`
       - [ ] `Str`
     - [ ] Casting
+  - [ ] Overloading
+    - [ ] Overloading functions
+    - [ ] Overloading types
+    - [ ] Overloading operators
+    - [ ] Overloading syntax - (points to dedicated section)
+  - [ ] Builtins
+    - [ ] `.ext`
   - [ ] Libraries
     - [ ] Using libraries
       - [ ] `import`
@@ -132,11 +139,6 @@ endResult=resultGetter();
         - [ ] Vector
         - [ ] Regexp
     - [ ] Writing libraries
-  - [ ] Overloading
-    - [ ] Overloading functions
-    - [ ] Overloading types
-    - [ ] Overloading operators
-    - [ ] Overloading syntax - (points to dedicated section)
   - [ ] Syntax Extention
     - [ ] Using a syntax module
       - [ ] Common modules
@@ -174,7 +176,7 @@ JVM, and a few others). If the compiler is in JIT mode, run the file.
 ### Runtime
 
 As the standard output of the file is planned to be LLVM code, it will have
-an enviroment simmilar to that one, but I am concidering having JVM and/or
+an enviroment simmilar to that one, but I am considering having JVM and/or
 JavaScript as options for target languages.
 
 The exeption to this is when it's in interpeter mode, but this should function
@@ -429,7 +431,23 @@ len to the following closure)
 
 ## Types
 
-Types are functions where have this behavior given the number of args,
+### Type inference
+
+Types, by default, are strict as java, yet as inferred as python.
+Each variable, once initally set, retains type metadata, including the
+constructor, and requires that all values stored in that variable are either
+directly, or indirectly constructed by the constructor bound to the variable.
+
+The constructor bound to a value can be accessed with the `.constructor`
+property. Well-formed constructors will use `.ext` to "extend" the return of
+it's "parent" constructor. The return of `.ext` is the same as that it is called
+upon, but when a value is missing, it is looked for in the value passed in to
+`.ext`.
+
+### Type constructors
+
+Type constructors are functions where have this behavior given the number of
+args;
 
 Zero returns the default value, if applicable. (Think of it like a default
 constructor)
@@ -438,7 +456,7 @@ One argument returns a duplicate of this type if it is already this type.
 Elsewise, call that class's `class.to.` then whatever this class is.
 EX: `class.to.Foo` inside of a class called `Foo`.
 
-Any more are arguments type specific.
+Any more arguments are type specific.
 
 These are the default type constructors
 
@@ -480,11 +498,8 @@ These are the default type constructors
 - Object inheritance
   - The core components are provided (via some built-in prototyping), but can be
   improoved with a library.
-- Keywords, inline xml, obj syntax sugar all to be syntax modules.
-
-### Other features proposal "Operators"
-
-Make most operators a syntax module.
+- Keywords, common operators, inline xml, obj syntax sugar all to be syntax
+modules.
 
 ## Syntax
 
