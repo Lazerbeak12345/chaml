@@ -34,12 +34,14 @@ Bool.if=(b,f) {
 	out=()=>v;
 	out.elif=(b,f) {
 		state=state.and(b);
-		v=state(f,{})();//update the value
+		v=state(f,()=>v)();//update the value
 		=<out;
 	};
-	out~out.elif;//Overload out to take elif's args too (will make it act like elif in that case)
+	out.elif=(b,f,e)=>out.elif(b,f)(e);
+	out~out.elif;//Overload out to take elif's args too (will make it act like elif in that case, and it also inherets elif's overloads)
 	out.else=(f){
-		v=state(f,{})();//update the value
+		v=state(f,()=>v)();//make sure to update the value 
+		=<()=>v;
 	};
 	out~out.else;
 	=< out;
@@ -48,7 +50,7 @@ Bool.if~(a,b,c)=>Bool.if(a,b)(c);
 Bool.if~a=>b=>Bool.if(a,b);//Wait for the next arg
 
 Bool.while=(b,f,d) {
-	re=()=>Bool.while(b,f,d);         //Defined the recursor up here for minimum stack
+	re=()=>Bool.while(b,f,d);         //Define the recursor up here for minimum stack
 	=< Bool(b())(                     //Get the return of the bool satement, casting it to a bool
 		{
 			r=f();                    //Get the return of the function satement
@@ -76,7 +78,7 @@ Bool~(v) {
 		})();
 	})();
 };
-Bool.t.to.Bool=()=>Bool.t;//Gets .to from Func, it's natural parent.
+Bool.t.to.Bool=()=>Bool.t;//Gets .to from Func, its natural parent.
 Bool.f.to.Bool=()=>Bool.f;
 
 =<Bool;
