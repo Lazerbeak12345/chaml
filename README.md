@@ -1,4 +1,12 @@
-# The Chameleon Programming Language Standard
+# The CHAML Standard
+
+The name of the language is an acronym:
+
+- CHAML
+- Has
+- A
+- Modifiable
+- Language
 
 A programming language that spins off of this question: "Is it possible to make
 a programming language without any keywords?"
