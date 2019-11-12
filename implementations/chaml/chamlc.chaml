@@ -19,7 +19,7 @@ tk=import("./lib/syntax-tokens");
 
 runFile=Func([Str()],Null());
 
-tokenify=(getNextLine,error)=>{
+tokenify=(getNextLine,error){
 	Symbol=Type();
 
 	CheckerBuiltIn={
@@ -179,21 +179,21 @@ tokenify=(getNextLine,error)=>{
 		});
 	};
 
-	accept=s=>{
+	accept=(s){
 		isEq=eq(sym,Symbol.get(s));
 		if(isEq,{
 			nextSym();
 		});
 		=<isEq;
 	};
-	expect=s=>{
+	expect=(s){
 		a=accept(s);
 		if(not(a),{
 			error("Unexpected symbol \""+Symbol.get(sym)+"\"\nWas expecting symbol \""+s+"\" instead.");
 		});
 		=<a;
 	};
-	reject=(s,reason)=>{
+	reject=(s,reason){
 		isEq=eq(sym,s);
 		if(isEq,{
 			error("Rejected symbol \""+s"\"\n"+reason);
@@ -209,7 +209,7 @@ tokenify=(getNextLine,error)=>{
 	 * @param numberOfArguments the numberOfArguments that it took. Used for syntax stuff
 	 * @param preface does it have a preface in front of this (passed in already handled for)
 	 */
-	afunction=(numberOfArguments,preface)=>{
+	afunction=(numberOfArguments,preface){
 		hasLamda=false;
 		if(preface.and(lte(numberOfArguments,1)),{
 			hasLamda=expect("lamda");
@@ -328,7 +328,7 @@ tokenify=(getNextLine,error)=>{
 	 * A function, or the internals of a program
 	 * @param needsCurls if true, it expects curlys
 	 */
-	block=needsCurls=>{//A function, or a program
+	block=(needsCurls) {//A function, or a program
 		needsCurls=false;
 		if(notoutermost,{
 			needsCurls=accept("openC");
@@ -351,27 +351,27 @@ tokenify=(getNextLine,error)=>{
 	};
 };
 
-makeTree=(tokens)=>{//I obviusally didn't understand how token trees worked. I'm gonna have just a _grand_ time fixing this.
+makeTree=(tokens) {//I obviusally didn't understand how token trees worked. I'm gonna have just a _grand_ time fixing this.
 
 };
 
-readFile=(name,error)=>{
+readFile=(name,error) {
 	file=IO.in.openFile(name);/// The file that is open
 	tree=makeTree(
 		tokenify(() => file.readLine(),error)
 	);
 };
 
-compileFile=(name,error)=>{
-	tree=readFile(name,val=>{
+compileFile=(name,error) {
+	tree=readFile(name,(val){
 		error("Compile error in "+name+" :\n"+er);
-	},val=>{
+	},(val){
 		error("Compile error: "+er);
 	});//do stuff with tree
 };
 
-runFile=name=>{
-	runTree(readFile(name,val=>{
+runFile=(name){
+	runTree(readFile(name,(val){
 		error("Interpreter error in "+name+" :\n"+er);
 	}));
 };
