@@ -11,15 +11,15 @@ The name of the language is an acronym:
 A programming language that spins off of this question: "Is it possible to make
 a programming language without any keywords?"
 
-The answer so far: sortof, but not really. It depends if you count operators as
+The answer so far: sort of, but not really. It depends if you count operators as
 keywords, and if you count built-in functions.
 
 There is also going to be support for many (if not all) of the aspects of LOP
 (Language Oriented Programming), what I regard to be the next programming
-paradigm. But it also has support for OOP, via syntax extentions (thanks to LOP
+paradigm. But it also has support for OOP, via syntax extensions (thanks to LOP
 ), and/or it's built-in object prototyping.
 
-It is designed to make using functions easy-peasy. Without syntax extentions,
+It is designed to make using functions easy-peasy. Without syntax extensions,
 there are 6 (ish) syntaxes to define a function, and all functions are
 first-order, so they can take other functions as arguments.
 
@@ -33,7 +33,7 @@ Here's a code sample for those interested:
 
 ```chaml
 /**
- * An implimentation of else and elif using only if
+ * An implementation of else and elif using only if
  */
 =<(b,f) {
   if(b,f);
@@ -64,9 +64,9 @@ much.
 - Functions are call by value
 - Everything is a function
 - Any operator may be applied to any variable, at all.
-  - EX: while `7.times(10)` returns `70`, a function that returns 7 multipled by a
-  function that returns 10 returns a function that returns the result of that
-  operator applied to each value, respectively.
+  - EX: while `7.times(10)` returns `70`, a function that returns 7 multiplied
+  by a function that returns 10 returns a function that returns the result of
+  that operator applied to each value, respectively.
 
 ```chaml
 retSeven=()=>7;
@@ -251,7 +251,7 @@ Supports 6 ways of declaring functions, listed below
 
 ```text
 anyVariableHere={
-  //do something upon invoction
+  //do something upon invocation
 };
 ```
 
@@ -361,7 +361,7 @@ theFunc(v);
 //`a`, `theFunc`, `theFunc.c`, `theFunc.p`, `d` and `v` are the only vars that can be changed or read here. `b` may be indirectly read through calling `theFunc.p`, but cannot be changed here
 ```
 
-Aditionally, functions can be defined within other functions. If you can read a
+Additionally, functions can be defined within other functions. If you can read a
 function, you can run it. As they are stored within variables, they follow the
 same scoping when it comes to running the function.This also applies to
 variables within functions within functions:
@@ -382,8 +382,8 @@ outerFunc={
 
 ##### When var names collide
 
-Sometimes, variable names are unintentially reused by devs. Here's an example of
-functional, yet poorly written code.
+Sometimes, variable names are unintentionally reused by devs. Here's an example
+of functional, yet poorly written code.
 
 ```text
 conflicingName=849234;
@@ -433,8 +433,8 @@ returnsTheSumOfArgs=(a,b) {
 - OVERLOAD `~` (Tilda. Sets the internal "caller" of the following closure's arg
 len to the following closure)
 - RETURN `=<`
-- LAMDA `=>`
-- SUBPROPERTYACESS `.`
+- LAMBDA `=>`
+- SUB-PROPERTY-ACCESS `.`
 
 ## Types
 
