@@ -23,7 +23,7 @@ It is designed to make using functions easy-peasy. Without syntax extensions,
 there are 6 (ish) syntaxes to define a function, and all functions are
 first-order, so they can take other functions as arguments.
 
-I'm actually looking for help with the initial runtime. Once that's done, it'l
+I'm actually looking for help with the initial runtime. Once that's done, it'll
 be bootstrapped.
 
 <!--Look at https://vim.fandom.com/wiki/Creating_your_own_syntax_files later-->
@@ -147,7 +147,7 @@ endResult=resultGetter();
         - [ ] Vector
         - [ ] Regexp
     - [ ] Writing libraries
-  - [ ] Syntax Extention
+  - [ ] Syntax Extension
     - [ ] Using a syntax module
       - [ ] Common modules
     - [ ] Writing a syntax module
@@ -220,7 +220,7 @@ section
 ## Variables
 
 All variables are functions. When set with the `=` operator, it is overwritten
-with the value on the right side. When set with the `~` (tilda) operator, the
+with the value on the right side. When set with the `~` (tilde) operator, the
 caller is overloaded.
 
 Naming conventions are identical to JavaScript; they may contain any number,
@@ -305,7 +305,7 @@ c(3,7);     // returns 10
 
 ### Overloadig functions
 
-The `~` (tilda) operator makes the function on the right the function to call
+The `~` (tilde) operator makes the function on the right the function to call
 given its number of arguments and the args that were passed in.
 
 ```chaml
@@ -430,7 +430,7 @@ returnsTheSumOfArgs=(a,b) {
 <!--NOTE to self: look at https://en.wikipedia.org/wiki/Graph_reduction-->
 
 - SET `=`
-- OVERLOAD `~` (Tilda. Sets the internal "caller" of the following closure's arg
+- OVERLOAD `~` (Tilde. Sets the internal "caller" of the following closure's arg
 len to the following closure)
 - RETURN `=<`
 - LAMBDA `=>`
@@ -441,7 +441,7 @@ len to the following closure)
 ### Type inference
 
 Types, by default, are strict as java, yet as inferred as python.
-Each variable, once initally set, retains type metadata, including the
+Each variable, once initially set, retains type metadata, including the
 constructor, and requires that all values stored in that variable are either
 directly, or indirectly constructed by the constructor bound to the variable.
 
