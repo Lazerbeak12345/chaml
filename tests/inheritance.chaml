@@ -1,0 +1,149 @@
+/**
+ * A file made for the sole purpose of testing the class system.
+ */
+Out=import("Out");
+
+/*
+Creature +-> Mammal +--> Rabbit
+         |          |
+         |          +--> Horse <-----+
+         |          |                |
+         |          +--> Dog <-------+
+         |                           |
+         +-> Reptile +-> Chameleon   |
+                     |               |
+                     +-> Aligator <--+
+                     |               |
+                     +-> Snake < ----+
+                             ^       |
+                             |       |
+Deadly +-> ChemicallyDeadly -+       |
+       |                             |
+       +-> PhysicallyDeadly ---------+
+*/
+
+/**
+ * Constructor for the creature class
+ */
+Creature=(name,weight,tame){
+	name=Str(name);//Force them to be these types
+	tame=Bool(tame);
+	/**
+	 * A creature
+	 */
+	c={};
+	c.constructor=Creature;
+	/**
+	 * What is it's name? (Skipper, Woofer, etc.)
+	 */
+	c.getName=()=>name;
+	/**
+	 * Change the name
+	 */
+	c.changeName=(n){
+		name=Str(n);
+	};
+	/**
+	 * How heavy is it?
+	 */
+	c.getWeight()=>weight;
+	/**
+	 * Is it slimy, covered in scales? Something else?
+	 */
+	c.getTexture=()=>"Can't tell.";
+	/**
+	 * Is the creature tame?
+	 */
+	c.isTame=()=>tame;
+	/**
+	 * Try to tame creature
+	 */
+	c.tame=()=>c.isTame();
+
+	c.to.Creature=()=>c;
+	=<c;
+};
+Creature~(name,weight)=>Creature(name,weight,false);
+Creature~(v)=>
+	if(v.instanceOf(Creature),{
+		=<Creature(v.getName(),v.getWeight(),v.isTame());
+	}).elif(v.instanceOf(Str),{
+		=<Creature(v,0);//Assume it's weightless
+	}).else(()=<v.to.Creature())();
+
+Mammal=(name,weight,hairLength,tame){
+	hairLength=Int(hairLength);//force into int
+
+	m=Creature(name,weight,tame);
+	m.constructor=Mammal;
+
+	m.getTexture=()=>"Has at least some hair.";
+
+	m.getHairLength=()=>hairLength;
+	m.trimHair=(l){
+		if(hairLength.gt(0).and(l.gte(hairLength)),{
+			hairLength=hairLength.minus(l);
+		});
+	};
+
+	m.to.Creature=()=>Creature(m);
+	m.to.Mammal=()=>m;
+	=<m;
+};
+Mammal.parent=Creature;
+Mammal~(name,weight,tame)=>Mammal(name,weight,1,tame);
+Mammal~(name,weight)=>Mammal(name,weight,true);
+Mammal~(v)=>
+	if(v.instanceOf(Mammal),{
+		=<Mammal(v.getName(),v.getWeight(),v.getHairLength(),v.isTame());
+	}).elif(v.instanceOf(Creature),{
+		=<Mammal(v.getName(),v.getWeight(),v.isTame());
+	}).else(()=>Mammal(Creature(v)))();
+
+Rabbit=(name,weight,hairLength){
+	r=Mammal(name,weight,hairLength,true);
+	r.constructor=Rabbit;
+
+	r.getTexture=()=>
+		if(r.getHairLength().gt(0),()=>"It's soooooo fluffy!")(()=>"EEK!")();
+
+	r.changeName=(n)=>{};//I've heard that rabbits have a hard time learning new names.
+
+	=<r;
+};
+Rabbit.parent=Mammal;
+Rabbit~(v)=>
+	if(v.instanceOf(Rabbit),{
+		=<Rabbit(v.getName(),v.getWeight(),v.getHairLength());
+	}).elif(v.instanceOf(Mammal),{
+		=<Rabbit(v.getName(),v.getWeight(),v.getHairLength(),v.isTame());
+	}).else(()=>Rabbit(Mammal(v)))();//Tell the parent constructor to handle it, then go back down the tree to this one
+
+Deadly=(v)=>
+	if(v.instanceOf(Deadly),{
+		=<Deadly(v.howDeadly());
+	}).elif(v.instanceOf(Int),{
+		d={};
+		d.howDeadly=()=>v;
+		=<d;
+	},()=>v.to.Deadly())();
+
+Horse=(name,weight,hairLength,tame){
+	h=Mammal(name,weight,hairLength,tame).ext(Deadly(1));//It's not very deadly
+	h.constructor=Horse;
+
+	h.getTexture=()=>
+		if(r.getHairLength().gt(0),()=>"It's soooooo fluffy!")(()=>"EEK!")();
+
+	=<h;
+};
+Horse~(name,weight,hairLength)=>Horse(name,weight,hairLength,false);//Wild by default
+Horse.parent={};//Tells the engine to look for .parents instead.
+Horse.parents=[Mammal,Deadly];
+Horse~(v)=>
+	if(v.instanceOf(Horse),{
+		=<Horse(v.getName(),v.getWeight(),v.getHairLength());
+	}).elif(v.instanceOf(Mammal),{
+		=<Horse(v.getName(),v.getWeight(),v.getHairLength(),v.isTame());
+	}).else(()=>Rabbit(Mammal(v)))();
+
