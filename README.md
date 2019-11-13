@@ -122,16 +122,7 @@ endResult=resultGetter();
   - [x] Variables
   - [x] Functions
   - [x] Operators
-  - [2/3] Types
-    - [x] Type inference
-    - [ ] Type constructors
-      - [ ] `Func`
-      - [ ] `Bool`
-      - [ ] `Int`
-      - [ ] `Char`
-      - [ ] `Arr`
-      - [ ] `Str`
-    - [ ] Casting
+  - [x] Types
   - [ ] Overloading
     - [ ] Overloading functions
     - [ ] Overloading types
@@ -471,40 +462,83 @@ EX: `class.to.Foo` inside of a class called `Foo`.
 
 Any more arguments are type specific.
 
-These are the default type constructors
+#### `Func`
 
-- `Func`
-- `Int`
-  - has mathmatical methods on children
-    - `plus`
-    - `minus`
-    - `times`
-    - `div`
-    - `mod`
-  - also has boolean returners on children
-    - `gt` greater than
-    - `lt` less than
-    - `gte` greater than or equal to
-    - `lte` less than or equal to
-  - other
-    - `eq`
-- `Char`
-  - getCode returns the charcode
-  - other
-    - `eq`
-- `Array`
-  - size returns the size
-  - other
-    - `eq`
-- `Bool`
-  - public `not` function returns inverse of passed in boolean
+This constructor is the default constructor for all values.
+
+When a single argument is passed in, it returns that argument, with all of its
+properties an methods stripped. It will, however, retain it's executor and its
+overloads. For example, the return of `Func(Bool)` is just `Bool` but without
+any sub-properties. In fact, aside from that crutial difference, it should
+function identically.
+
+#### `Bool`
+
+The `Bool` constructor is the constructor for booleans, and is not built in (it
+is, however globablised by default). It's actually one of the first constructors
+written in chaml. Here's some things exposed in it's definition:
+
+- `true` A function returning its first argument
+- `false` A function returning its second argument
+- public `not` function returns inverse of passed in boolean
   - has binary logic functions/methods
     - `and`
     - `or`
     - `xor` Exclusive or
   - other
     - `eq`
-- `Str` Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`.
+
+#### `Int`
+
+A built in type. One _strictly_ cannot downcast to this from a function.
+
+- has mathmatical methods on children- has mathmatical methods on children
+  - `plus`
+  - `minus`
+  - `times`
+  - `div`
+  - `mod`
+- also has boolean returners on children
+  - `gt` greater than
+  - `lt` less than
+  - `gte` greater than or equal to
+  - `lte` less than or equal to
+- other
+  - `eq`
+  - `plus`
+  - `minus`
+  - `times`
+  - `div`
+  - `mod`
+- also has boolean returners on children
+  - `gt` greater than
+  - `lt` less than
+  - `gte` greater than or equal to
+  - `lte` less than or equal to
+- other
+  - `eq`
+
+#### `Char`
+
+A constructor inheriting from `Int`. Like bool it is, by default, globalised.
+
+- getCode returns the charcode
+- other
+  - `eq`
+
+#### `Arr`
+
+An array. I'm not really sure if this should be built in or not. (it wouldn't be
+to hard to use booleans to define it, but would have some preformance drawbacks)
+
+- `.size` returns the size
+- other
+  - `eq`
+
+#### `Str`
+
+Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`. Possibly
+a default Syntax Extention? Inherits from `Arr`, of course.
 
 ## Other features
 
