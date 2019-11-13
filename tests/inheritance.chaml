@@ -60,7 +60,7 @@ Creature=(name,weight,tame){
 	 */
 	c.tame=()=>c.isTame();
 
-	c.to.Creature=()=>c;
+	c.to.Creature=()=>Creature(c);
 	=<c;
 };
 Creature~(name,weight)=>Creature(name,weight,false);
@@ -86,8 +86,7 @@ Mammal=(name,weight,hairLength,tame){
 		});
 	};
 
-	m.to.Creature=()=>Creature(m);
-	m.to.Mammal=()=>m;
+	m.to.Mammal=()=>Mammal(m);
 	=<m;
 };
 Mammal.parent=Creature;
@@ -105,10 +104,11 @@ Rabbit=(name,weight,hairLength){
 	r.constructor=Rabbit;
 
 	r.getTexture=()=>
-		if(r.getHairLength().gt(0),()=>"It's soooooo fluffy!")(()=>"EEK!")();
+		if(r.getHairLength().gt(0),"It's soooooo fluffy!","EEK!")();
 
 	r.changeName=(n)=>{};//I've heard that rabbits have a hard time learning new names.
 
+	r.to.Rabbit=()=>Rabbit(r);
 	=<r;
 };
 Rabbit.parent=Mammal;
@@ -125,6 +125,7 @@ Deadly=(v)=>
 	}).elif(v.instanceOf(Int),{
 		d={};
 		d.howDeadly=()=>v;
+		d.to.Deadly=()=>Deadly(d);
 		=<d;
 	},()=>v.to.Deadly())();
 
@@ -133,7 +134,9 @@ Horse=(name,weight,hairLength,tame){
 	h.constructor=Horse;
 
 	h.getTexture=()=>
-		if(r.getHairLength().gt(0),()=>"It's soooooo fluffy!")(()=>"EEK!")();
+		if(r.getHairLength().gt(0),"Pretty soft!","Looks cold!")();
+
+	h.to.Horse=()=>Horse(h);
 
 	=<h;
 };
@@ -141,9 +144,30 @@ Horse~(name,weight,hairLength)=>Horse(name,weight,hairLength,false);//Wild by de
 Horse.parent={};//Tells the engine to look for .parents instead.
 Horse.parents=[Mammal,Deadly];
 Horse~(v)=>
-	if(v.instanceOf(Horse),{
-		=<Horse(v.getName(),v.getWeight(),v.getHairLength());
-	}).elif(v.instanceOf(Mammal),{
+	if(v.instanceOf(Mammal),{//No need to check for a Horse, it's gonna be treated exactly the same
 		=<Horse(v.getName(),v.getWeight(),v.getHairLength(),v.isTame());
-	}).else(()=>Rabbit(Mammal(v)))();
+	}).else(()=>Horse(Mammal(v)))();
+
+Dog=(name,weight,hairLength,tame,howDeadly){
+	d=Mammal(name,weight,hairLength,tame).ext(Deadly(howDeadly));
+	d.constructor=Dog;
+
+	d.getTexture=()=>
+		if(r.getHairLength().gt(4),"It's got such long hair!")(
+			r.getHairLength().gte(0),"Pretty soft!","Looks cold!")();
+
+
+	d.to.Dog=()=>Dog(d);
+
+	=<d;
+};
+Dog~(name,weight,hairLength,tame)=>Dog(name,weight,hairLength,tame,6);
+Dog~(name,weight,hairLength)=>Dog(name,weight,hairLength,false);//Wild by default
+Dog.parent={};
+Dog.parents=[Mammal,Deadly];
+Dog~(v)=>
+	if(v.instanceOf(Mammal),{
+		=<Dog(v.getName(),v.getWeight(),v.getHairLength(),v.isTame(),v.howDeadly());
+	}).else(()=>Dog(Mammal(v)))();
+
 
