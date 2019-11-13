@@ -1,13 +1,22 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class Main {
     private static int[] version = {0,0,0};
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         if (args.length==0) helpText();
         else{
             String filename=args[0];
-            Tokeniser tok=new Tokeniser(filename);
-            System.out.print(tok.readLine());
-            System.out.print(tok.readLine());
-            tok.close();
+            try{
+                Tokeniser tok=new Tokeniser(filename);
+                System.out.print(tok.readLine());
+                System.out.print(tok.readLine());
+                tok.close();
+            }catch(FileNotFoundException e) {
+                System.out.printf("Couldn't find file \"%s\".\n",filename);
+            }catch(IOException e) {
+                System.out.printf("IOExeption with file \"%s\".",filename);
+            }
         }
     }
 
