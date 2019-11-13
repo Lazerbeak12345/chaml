@@ -4,10 +4,10 @@ public class Main {
         if (args.length==0) helpText();
         else{
             String filename=args[0];
-            FileReaderDummy a=new FileReaderDummy(filename);
-            //from testing, they have the same output. That's great!
-            a.lineByLine();
-            a.charByChar();
+            Tokeniser tok=new Tokeniser(filename);
+            System.out.print(tok.readLine());
+            System.out.print(tok.readLine());
+            tok.close();
         }
     }
 
