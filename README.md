@@ -116,7 +116,7 @@ endResult=resultGetter();
 
 ### The future TOC
 
-- [7/12] The Chameleon Programming Language Standard
+- [8/12] The Chameleon Programming Language Standard
   - [x] Table of Contents
   - [x] The compiler
   - [x] Variables
