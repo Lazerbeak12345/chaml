@@ -151,6 +151,12 @@ endResult=resultGetter();
     - [ ] Using a syntax module
       - [ ] Common modules
     - [ ] Writing a syntax module
+      - [ ] Tokeniser
+      - [ ] Parse tree
+      - [ ] AST
+      - [ ] Reverse AST
+      - [ ] Reverse Parse Tree
+      - [ ] Reverse Tokeniser
   - [x] Resources
 
 ## The compiler
