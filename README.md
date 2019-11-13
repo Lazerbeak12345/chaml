@@ -1,13 +1,5 @@
 # The CHAML Standard
 
-The name of the language is an acronym:
-
-- CHAML
-- Has
-- A
-- Modifiable
-- Language
-
 A programming language that spins off of this question: "Is it possible to make
 a programming language without any keywords?"
 
@@ -18,6 +10,14 @@ There is also going to be support for many (if not all) of the aspects of LOP
 (Language Oriented Programming), what I regard to be the next programming
 paradigm. But it also has support for OOP, via syntax extensions (thanks to LOP
 ), and/or it's built-in object prototyping.
+
+The name of the language is an acronym:
+
+- CHAML
+- Has
+- A
+- Modifiable
+- Language
 
 It is designed to make using functions easy-peasy. Without syntax extensions,
 there are 6 (ish) syntaxes to define a function, and all functions are
