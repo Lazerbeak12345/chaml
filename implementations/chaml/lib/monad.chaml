@@ -1,0 +1,9 @@
+//Implementation inspired by https://curiosity-driven.org/monads-in-javascript#identity
+Just=(value){
+	m={}.ext(Just.proto);
+	m.bind=t=>t(value);
+	m.to.String=()=>"Monad(".joinedWith(value.to.String()).joinedWith(")");
+	=<m;
+};
+/*
+//Given that 
