@@ -8,9 +8,9 @@ import java.io.Reader;
  * Tokenises a file
  */
 class Tokeniser extends Reader{
-    FileReader
+    FileReader fr;
     public Tokeniser(String fileName) throws FileNotFoundException {
-        
+        fr=new FileReader(fileName);
     }
     public String readLine() throws IOException {
         StringBuffer b=new StringBuffer();
