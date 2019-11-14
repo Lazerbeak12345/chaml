@@ -49,7 +49,7 @@ Bool.if=(b,f) {
 Bool.if~(a,b,c)=>Bool.if(a,b)(c);
 Bool.if~a=>b=>Bool.if(a,b);//Wait for the next arg
 
-Bool.while=(b,f,d) {
+Bool.while=(b,f) {
 	//WARNING: Extremely optimised "out of order" code. Make sure you 100% percent understand it before touching it.
 	=< Bool(b())(                     //Get the return of the bool satement, casting it to a bool
 		{
@@ -61,10 +61,9 @@ Bool.while=(b,f,d) {
 		},
 		()=>Bool.f;                   //or else pass a wrapped false
 	)()(                              //Call either wrapper, then act on that bool
-		()=>Bool.while(b,f,d)         //The recursive function. The only stack from here is the three args & any globals
-		,d)();                        //If the first part passed a true, call re. If it passed a false, call d
+		()=>Bool.while(b,f)           //The recursive function. The only stack from here is the three args & any globals
+		,{})();                       //If the first part passed a true, call re. If it passed a false, call d
 };
-Bool.while~(b,f)=>Bool.while(b,f,{});//The done is optional
 
 Bool~(v) {
 	=< v.instanceOf(Bool)({
