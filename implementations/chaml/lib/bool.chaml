@@ -50,20 +50,19 @@ Bool.if~(a,b,c)=>Bool.if(a,b)(c);
 Bool.if~a=>b=>Bool.if(a,b);//Wait for the next arg
 
 Bool.while=(b,f,d) {
-	re=()=>Bool.while(b,f,d);         //Define the recursor up here for minimum stack
+	//WARNING: Extremely optimised "out of order" code. Make sure you 100% percent understand it before touching it.
 	=< Bool(b())(                     //Get the return of the bool satement, casting it to a bool
 		{
 			r=f();                    //Get the return of the function satement
-			=< r.instanceOf(Nothing)( //Pass up the result
+			=< r.instanceOf(Nothing)(
 				()=>Bool.t;,          //If it didn't return anything, act like it returned true
 				()=>Bool(r);          //Or else return whatever it did, casted to a bool
-			)()(
-				re,                   //If it was true, pass the recursive func from above
-				d                     //Or else pass the "done"
-			);
+			)();                      //Pass the boolean up
 		},
-		()=>d;                        //or else pass a wrapped done
-	)()();                            //call the getter and the recursor or done func
+		()=>Bool.f;                   //or else pass a wrapped false
+	)()(                              //Call either wrapper, then act on that bool
+		()=>Bool.while(b,f,d)         //The recursive function. The only stack from here is the three args & any globals
+		,d)();                        //If the first part passed a true, call re. If it passed a false, call d
 };
 Bool.while~(b,f)=>Bool.while(b,f,{});//The done is optional
 
