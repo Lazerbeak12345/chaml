@@ -128,7 +128,7 @@ endResult=resultGetter();
     - [ ] Overloading types
     - [ ] Overloading operators
     - [ ] Overloading syntax - (points to dedicated section)
-  - [ ] Builtins
+  - [ ] Built in
     - [ ] `.ext`
   - [ ] Libraries
     - [ ] Using libraries
@@ -142,12 +142,12 @@ endResult=resultGetter();
     - [ ] Using a syntax module
       - [ ] Common modules
     - [ ] Writing a syntax module
-      - [ ] Tokeniser
+      - [ ] Tokenizer
       - [ ] Parse tree
       - [ ] AST
       - [ ] Reverse AST
       - [ ] Reverse Parse Tree
-      - [ ] Reverse Tokeniser
+      - [ ] Reverse Tokenizer
   - [x] Resources
 
 ## The compiler
@@ -156,15 +156,15 @@ endResult=resultGetter();
 
 1. Feed source code (call this file A) into tokenizer (outputs a stream). Go to
 step 2.
-2. Feed token stream into parser. If an import or syntax extention is found, go
+2. Feed token stream into parser. If an import or syntax extension is found, go
 to step 2.1, or else go to step 3.
-   1. Grab the file that the import or syntax extention requires, and pass that
+   1. Grab the file that the import or syntax extension requires, and pass that
   into step 1. (call this file file B) If it's a syntax module, go to step 2.3,
   or else go to step 2.2.
    2. Get the entire Parse tree for file B, and insert it into the proper node
    on file A's parse tree. Go to step 3 (not to be confused with step 2.3).
    3. Run File B through the interpreter (not the JIT compiler). It may modify
-  the token list, parse tree generator, Ast tree generator, interpeter, AST tree
+  the token list, parse tree generator, Ast tree generator, interpreter, AST tree
   reverser, parse tree reverser, and or the token reverser.
   This modification _only_ applies to this local file A (not file a's parent, if
   this is multiple levels deep, and not file B). Continue to step 3.
@@ -173,34 +173,34 @@ the file, or else continue to step 4.
 4. Convert the AST tree into a parse tree for the output language (or language
 family) Continue to step 5.
 5. Convert the parse tree into a token stream for the output language (or
-language family). Coontinue to step 6.
-6. Convert the token stream into the transpiled code for the output language.
+language family). Continue to step 6.
+6. Convert the token stream into the transpile code for the output language.
 (Most often this is LLVM, but I've been thinking about output to JavaScript,
 JVM, and a few others). If the compiler is in JIT mode, run the file.
 
 ### Runtime
 
 As the standard output of the file is planned to be LLVM code, it will have
-an enviroment simmilar to that one, but I am considering having JVM and/or
+an environment similar to that one, but I am considering having JVM and/or
 JavaScript as options for target languages.
 
-The exeption to this is when it's in interpeter mode, but this should function
+The exception to this is when it's in interpreter mode, but this should function
 about the same.
 
 ### Current state
 
-There are multiple parallel attemps to reach a working end-goal.
+There are multiple parallel attempts to reach a working end-goal.
 
-- The cpp implimentation is the oldest one. It right now can only just barely
+- The cpp implementation is the oldest one. It right now can only just barely
 handle some comments, sometimes. I'm not likely to continue pursuit with this
 one, I'm just using it for reference, and will most likely remove it.
-- The chaml one is 75% done, but once I realised I made a few critical mistakes
+- The chaml one is 75% done, but once I realized I made a few critical mistakes
 (such as not actually knowing what a lexer is and what a parser is), I decided
 to stop for awhile.
-  - In the lib directory are libraries that I plan to have availiable. Many are
+  - In the lib directory are libraries that I plan to have available. Many are
   highly experimental.
-  - I plan on re-writing this once a different implimentation starts working.
-- flex_bison was going to be the offical first language compiler/interpreter/
+  - I plan on re-writing this once a different implementation starts working.
+- flex_bison was going to be the official first language compiler/interpreter/
 whatever_the_heck_I_actually_got_out_of_it, but as I am not super familiar with
 C or C++ I am looking into alternatives. I actually can do basic math in the
 library as if it was actually done, but it feels unreliable.
@@ -261,7 +261,7 @@ anyVariableHere=()=> 72;// return 72
 #### One Arg
 
 ```text
-anyVariableHere=(in) {
+anyVariableHere=in {
   =<in.times(2); // return the arg times two
 };
 ```
@@ -300,7 +300,7 @@ b(3);       // returns 4
 c(3,7);     // returns 10
 ```
 
-### Overloadig functions
+### Overloading functions
 
 The `~` (tilde) operator makes the function on the right the function to call
 given its number of arguments and the args that were passed in.
@@ -383,12 +383,12 @@ Sometimes, variable names are unintentionally reused by devs. Here's an example
 of functional, yet poorly written code.
 
 ```text
-conflicingName=849234;
-funcName=conflictingName=> conflicingName();
+conflictingName=849234;
+funcName=conflictingName=> conflictingName();
 
 funcName(() => 21); //returns 21
 
-anotherName=(conflicingName) {
+anotherName=(conflictingName) {
   =<conflictingName.times(10);
 };
 
@@ -469,13 +469,13 @@ This constructor is the default constructor for all values.
 When a single argument is passed in, it returns that argument, with all of its
 properties an methods stripped. It will, however, retain it's executor and its
 overloads. For example, the return of `Func(Bool)` is just `Bool` but without
-any sub-properties. In fact, aside from that crutial difference, it should
+any sub-properties. In fact, aside from that crucial difference, it should
 function identically.
 
 #### `Bool`
 
 The `Bool` constructor is the constructor for booleans, and is not built in (it
-is, however globablised by default). It's actually one of the first constructors
+is, however globalized by default). It's actually one of the first constructors
 written in chaml. Here's some things exposed in it's definition:
 
 - `true` A function returning its first argument
@@ -492,7 +492,7 @@ written in chaml. Here's some things exposed in it's definition:
 
 A built in type. One _strictly_ cannot downcast to this from a function.
 
-- has mathmatical methods on children- has mathmatical methods on children
+- has mathematical methods on children- has mathematical methods on children
   - `plus`
   - `minus`
   - `times`
@@ -520,7 +520,7 @@ A built in type. One _strictly_ cannot downcast to this from a function.
 
 #### `Char`
 
-A constructor inheriting from `Int`. Like bool it is, by default, globalised.
+A constructor inheriting from `Int`. Like bool it is, by default, globalized.
 
 - getCode returns the charcode
 - other
@@ -529,7 +529,7 @@ A constructor inheriting from `Int`. Like bool it is, by default, globalised.
 #### `Arr`
 
 An array. I'm not really sure if this should be built in or not. (it wouldn't be
-to hard to use booleans to define it, but would have some preformance drawbacks)
+to hard to use booleans to define it, but would have some performance drawbacks)
 
 - `.size` returns the size
 - other
@@ -538,13 +538,13 @@ to hard to use booleans to define it, but would have some preformance drawbacks)
 #### `Str`
 
 Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`. Possibly
-a default Syntax Extention? Inherits from `Arr`, of course.
+a default Syntax Extension? Inherits from `Arr`, of course.
 
 ## Other features
 
 - Object inheritance
   - The core components are provided (via some built-in prototyping), but can be
-  improoved with a library.
+  improved with a library.
 - Keywords, common operators, inline xml, obj syntax sugar all to be syntax
 modules.
 
@@ -559,7 +559,7 @@ modules.
 - A lib to make ifs C-style
 - a lib to make strings their own datatype
 - a lib to make bools an instance of Int (0 or 1)
-- a lib to generate a documentaiton markdown file using comments
+- a lib to generate a documentation markdown file using comments
   - could interact with the keywords lib idea and its children
   - could interact with the AST too
 
@@ -569,7 +569,7 @@ modules.
 //Single-line C++ style.
 
 /*
-Along with muli line C style are both supported
+Along with multiline C style are both supported
 */
 
 //* single line comments are evaluated first
@@ -582,14 +582,14 @@ And_thus="this line is still reached and evaluated";
  * may be accepted.
  *
  * No IDE's are known to support the language more then they would a .txt file.
- * Replace this with a labled list of known IDE's in the future. If the count
+ * Replace this with a labeled list of known IDE's in the future. If the count
  * is greater then 20, remove this list.
  */
 ```
 
-Comments are preserved as long as possible, with few exeptions (ex: interpeting
-mode) throughout the compiling process. This means it should be possible to
-make comment dependant functionality
+Comments are preserved as long as possible, with few exceptions (ex:
+interpreting mode) throughout the compiling process. This means it should be 
+possible to make comment dependant functionality
 
 ### Typecasting
 
@@ -683,7 +683,7 @@ part of the `Bool` library
   - `else` takes a function, called only if all previous functions are false.
   Has no return.
 
-If returns a function that resolves itself. Untill this is run, the if is not
+If returns a function that resolves itself. Until this is run, the if is not
 evaluated.
 
 ```chaml
@@ -718,13 +718,13 @@ NOTE: access restriction may need to be changed
 
 - Takes 1-2 args
   - A string that must refer to either a module name, a Unix-style url to a
-    file (extention not needed), or to a URL resorce that the OS can handle.
-    - NOTE: this file can also be a Redox style URL an IPFS style adress, or a
-      git adress.
+    file (extention not needed), or to a URL resource that the OS can handle.
+    - NOTE: this file can also be a Redox style URL an IPFS style address, or a
+      git address.
   - An optional callback
 - Returns the value
 - When module is called, the module has no access to anything else and is
-  gennerally treated as its own seperate, private program. Said module may
+  generally treated as its own separate, private program. Said module may
   also call import.
   
 The imported module is logically wrapped around a function, the return of which
@@ -740,7 +740,7 @@ NOTE: access restriction may need to be changed
     - An array of strings with the below description
     - A string that exactly matches the name of the syntax conversion defined by
     `declareSyntax`.
-    - A char (or single char str) `'*'` (sigifying all)
+    - A char (or single char str) `'*'` (signifying all)
 
 ### declareSyntax
 
@@ -795,7 +795,7 @@ Great for knowing the "why" behind different different ideas.
 - [https://en.wikipedia.org/wiki/Haskell_(programming_language)](https://en.wikipedia.org/wiki/Haskell_(programming_language))
 - [http://www.stephendiehl.com/llvm/](http://www.stephendiehl.com/llvm/)
 - [https://en.wikipedia.org/wiki/Parsec_(parser)](https://en.wikipedia.org/wiki/Parsec_(parser))
-- A two parter on how lex and yacc work, respectivly
+- A two parter on how lex and yacc work, respectively
   1. [https://www.youtube.com/watch?v=54bo1qaHAfk](https://www.youtube.com/watch?v=54bo1qaHAfk)
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
@@ -806,6 +806,6 @@ Great for knowing the "why" behind different different ideas.
 C++Now 2017: Ryan Newton "Haskell taketh away: limiting side effects for
 parallel programming"
 - [https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
-- [https://www.youtube.com/watch?v=sTLkomM2P0o](https://www.youtube.com/watch?v=sTLkomM2P0o) "Introduction to building a programming language" A talk about implimenting a subset of PHP in JavaScript
+- [https://www.youtube.com/watch?v=sTLkomM2P0o](https://www.youtube.com/watch?v=sTLkomM2P0o) "Introduction to building a programming language" A talk about implementing a subset of PHP in JavaScript
 - [https://cdsmith.wordpress.com/2011/01/09/an-old-article-i-wrote/](https://cdsmith.wordpress.com/2011/01/09/an-old-article-i-wrote/) A great article on distinctions about different properties of type systems.
 - [https://www.youtube.com/watch?v=sTLkomM2P0o](https://www.youtube.com/watch?v=sTLkomM2P0o) A general overview of language design, getting perfectly in-depth.
