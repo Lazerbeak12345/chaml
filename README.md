@@ -19,7 +19,7 @@ The name of the language is an acronym:
 - Modifiable
 - Language
 
-It is designed to make using functions easy-peasy. Without syntax extensions,
+It is designed to make using functions super easy. Without syntax extensions,
 there are 6 (ish) syntaxes to define a function, and all functions are
 first-order, so they can take other functions as arguments.
 
@@ -379,8 +379,8 @@ outerFunc={
 
 ##### When var names collide
 
-Sometimes, variable names are unintentionally reused by devs. Here's an example
-of functional, yet poorly written code.
+Sometimes, variable names are unintentionally reused by developers. Here's an
+example of operable, yet poorly written code.
 
 ```text
 conflictingName=849234;
@@ -457,7 +457,7 @@ Zero returns the default value, if applicable. (Think of it like a default
 constructor)
 
 One argument returns a duplicate of this type if it is already this type.
-Elsewise, call that class's `class.to.` then whatever this class is.
+Or else, call that class's `class.to.` then whatever this class is.
 EX: `class.to.Foo` inside of a class called `Foo`.
 
 Any more arguments are type specific.
@@ -581,14 +581,14 @@ And_thus="this line is still reached and evaluated";
  * your IDE, if it supports it. Must be valid markdown, but type indicators
  * may be accepted.
  *
- * No IDE's are known to support the language more then they would a .txt file.
- * Replace this with a labeled list of known IDE's in the future. If the count
+ * No IDEs are known to support the language more then they would a .txt file.
+ * Replace this with a labeled list of known IDEs in the future. If the count
  * is greater then 20, remove this list.
  */
 ```
 
 Comments are preserved as long as possible, with few exceptions (ex:
-interpreting mode) throughout the compiling process. This means it should be 
+interpreting mode) throughout the compiling process. This means it should be
 possible to make comment dependant functionality
 
 ### Typecasting
@@ -634,7 +634,7 @@ myNumber.to.Char={
   - `Arr` If array is len of 1 and it is a number, then that number, else
   error thrown: `Casting error: Cannot cast Array to Int`
   - `Str` If the string is what would pass for a valid in-line literal of any
-  type (decimal, hex, etc.) then resolve it, elsewhise, throw:
+  type (decimal, hex, etc.) then resolve it, or else, throw:
   `Casting error: Cannot cast String(`insert string here`) to Int`
 - To `Arr`
   - empty, array len of 0
@@ -643,11 +643,11 @@ myNumber.to.Char={
   - `Int` empty array of the length of that number.
     - Optional 2nd arg: what to fill it with.
     - If not enough memory, error thrown: `Casting error: Cannot cast Int(`insert num here`) to Array`
-  - `Array` duplicate of origianl array
+  - `Array` duplicate of original array
 - To `Func` all cases: return a function that returns the input, unless it
 is empty, then throw `Casting error: Function constructor takes 1 argument`
 
-Assume that missing cases signify that that function doesn't exsist on that
+Assume that missing cases signify that that function doesn't exist on that
 object.
 
 ## Reserved functions
@@ -676,7 +676,7 @@ part of the `Bool` library
   - a function called when boolean is true.
 - Returns an object containing two methods:
   - `elif` takes the same args as if and returns the same thing as if, but the
-  function is only called if all previous `if` or `.elif` bools are false.
+  function is only called if all previous `if` or `.elif` booleans are false.
   In other words, it's only called when the state of the `if` is false. (see
   `else` below). Also returns the same thing as `if`.
   same thing(s) as `if`.
@@ -718,7 +718,7 @@ NOTE: access restriction may need to be changed
 
 - Takes 1-2 args
   - A string that must refer to either a module name, a Unix-style url to a
-    file (extention not needed), or to a URL resource that the OS can handle.
+    file (extension not needed), or to a URL resource that the OS can handle.
     - NOTE: this file can also be a Redox style URL an IPFS style address, or a
       git address.
   - An optional callback
@@ -795,7 +795,7 @@ Great for knowing the "why" behind different different ideas.
 - [https://en.wikipedia.org/wiki/Haskell_(programming_language)](https://en.wikipedia.org/wiki/Haskell_(programming_language))
 - [http://www.stephendiehl.com/llvm/](http://www.stephendiehl.com/llvm/)
 - [https://en.wikipedia.org/wiki/Parsec_(parser)](https://en.wikipedia.org/wiki/Parsec_(parser))
-- A two parter on how lex and yacc work, respectively
+- A two-parter on how lex and yacc work, respectively
   1. [https://www.youtube.com/watch?v=54bo1qaHAfk](https://www.youtube.com/watch?v=54bo1qaHAfk)
   2. [https://www.youtube.com/watch?v=__-wUHG2rfM](https://www.youtube.com/watch?v=__-wUHG2rfM)
 - [http://www.onboard.jetbrains.com/articles/04/10/lop/](http://www.onboard.jetbrains.com/articles/04/10/lop/) - From the maker of Intellij IDE and CEO of JetBrains! (concerning Language Oriented Programming)
