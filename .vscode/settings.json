@@ -54,5 +54,14 @@
 		"ratio": "cpp",
 		"shared_mutex": "cpp"
 	},
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"cSpell.words": [
+		"Chamlc",
+		"jchamlc",
+		"tokeniser"
+	],
+	"cSpell.ignoreWords": [
+		"elif",
+		"parter"
+	]
 }

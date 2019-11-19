@@ -12,7 +12,7 @@ Creature +-> Mammal +--> Rabbit
          |                           |
          +-> Reptile +-> Chameleon   |
                      |               |
-                     +-> Aligator <--+
+                     +-> Alligator <-+
                      |               |
                      +-> Snake < ----+
                              ^       |
