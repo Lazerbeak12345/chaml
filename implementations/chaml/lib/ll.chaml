@@ -1,0 +1,38 @@
+Pair=import("pair");
+LL=(firstItem) {
+	p=Pair(firstItem,()=>LL({}));
+	o={};
+	o.get=index=>
+		if(index.eq(0),
+			()=>p.first();
+		)(index.gt(0),() {
+			v=p.second()();
+			=<v.instanceOf({})(
+				{},//{} always returns {}
+				()=>v.get(index.minus(1));
+			)();
+		})();
+	o.set=(index,value){
+		if (index.eq(0),{
+			p=Pair(value,()=>p.second());
+		})(index.gt(0),{
+			p.second()().set(index.minus(1),value);
+		});
+	};
+	o.remove=index{
+		if(index.eq(0),{
+			p=p.second();
+		})(index.gt(0),{
+			p.second()().remove(index.minus(1),value);
+		});
+	};
+	o.insert=(index,value){
+		if(index.eq(0),{
+			p=Pair(value,p);
+		})(index.gt(0),{
+			p.second()().insertBetween(index.minus(1),value);
+		});
+	};
+	=<o;
+};
+=<LL;
