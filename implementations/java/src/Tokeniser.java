@@ -9,6 +9,18 @@ import java.nio.charset.Charset;
  * Tokenize a file. Made for the Java CHAML Compiler (jchamlc)
  */
 class Tokeniser{
+    public static void main(String[] args) {
+        if (args.length>1) {
+            System.out.println("Not enough args!");
+            return;
+        }
+        try{
+            Tokeniser t=new Tokeniser(args[0]);
+            //Output CSV file of tokens.
+        }catch(FileNotFoundException e) {
+            System.out.printf("There is no file by the name %s\n",args[0]);
+        }
+    }
     /**
      * The filereader that this uses internally.
      */
