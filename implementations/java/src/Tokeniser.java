@@ -16,7 +16,7 @@ class Tokeniser{
         }
         try{
             Tokeniser t=new Tokeniser(args[0]);
-            //Output CSV file of tokens.
+            //TODO: Output CSV file of tokens.
         }catch(FileNotFoundException e) {
             System.out.printf("There is no file by the name %s\n",args[0]);
         }
@@ -58,9 +58,6 @@ class Tokeniser{
     private void addAnotherToStack() throws IOException {
         backlog.append((char)fr.read());
     }
-    private boolean doesStackMatch(ChamlcToken c) {
-
-    }
     private ChamlcToken stackToTok() {
 
     }
@@ -74,10 +71,11 @@ class Tokeniser{
      */
     public ChamlcToken read() throws IOException{
         boolean matchFound=true;
-        ChamlcToken tok=new ChamlcToken(0);
+        ChamlcToken tok=new ChamlcToken(-1);
         while (matchFound) {
             addAnotherToStack();
-            matchFound=doesStackMatch(tok);
+            //matchFound=doesStackMatch(tok);
+            matchFound=stackToTok().getValue()==tok.getValue();
             if (matchFound) {//if it still matches
                 tok=stackToTok();
                 char temp=backlog.charAt(backlog.length()-1);
