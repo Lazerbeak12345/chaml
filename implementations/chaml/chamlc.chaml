@@ -1,6 +1,6 @@
 IO=import("io");
 
-//env=import("system").env; /// Location where UNIX enviroment variables are found
+//env=import("system").env; /// Location where UNIX environment variables are found
 
 tr=import("./lib/syntax-tree");
 tk=import("./lib/syntax-tokens");

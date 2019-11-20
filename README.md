@@ -226,8 +226,8 @@ upper or lowercase letter, or these: `$_`. They cannot start with a number.
 ```text
 newVar=3; // number
 anotherVar=()=>3; //function returning a number
-_yetanoth3rVar='c'; // this is just a char, but can be cast to and from a number
-arrofnums=[3,5,3,2,5,64,5,64,3];//cant change len, but you can replace the value
+yetAnotherVar='c'; // this is just a char, but can be cast to and from a number
+arrOfNumbers=[3,5,3,2,5,64,5,64,3];//cant change len, but you can replace the value
 $another="This is shorthand for an array of chars";
 theLast1=true;//And here's a bool.
 ```
