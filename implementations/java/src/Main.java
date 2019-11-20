@@ -9,8 +9,8 @@ public class Main {
             String filename=args[0];
             try{
                 Tokeniser tok=new Tokeniser(filename);
-                System.out.print(tok.readLine());
-                System.out.print(tok.readLine());
+                System.out.println(tok.read());
+                System.out.println(tok.read());
                 tok.close();
             }catch(FileNotFoundException e) {
                 System.out.printf("Couldn't find file \"%s\".\n",filename);
