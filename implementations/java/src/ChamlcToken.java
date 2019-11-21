@@ -45,7 +45,10 @@ public class ChamlcToken {
 	private String name;
 	ChamlcToken(int number,String val) {
 		this.number=number;
-		this.name=tokens[number];
+		if (number<0) {
+			this.name="Error"+Integer.toString(number);//A negative is an error code
+		}else this.name=tokens[number];
+		this.val=val;
 	}
 	ChamlcToken(String n,String val) {
 		this(nameToInt(n),val);

@@ -2,6 +2,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "CodeLens (Launch) - Tokeniser",
+			"request": "launch",
+			"mainClass": "Tokeniser",
+			"projectName": "chameleon-language_6637f1a4"
+		},
+		{
+			"type": "java",
 			"name": "CodeLens (Launch) - Main",
 			"request": "launch",
 			"mainClass": "Main"

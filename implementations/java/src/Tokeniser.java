@@ -15,8 +15,24 @@ class Tokeniser{
             return;
         }
         try{
-            Tokeniser t=new Tokeniser(args[0]);
-            //TODO: Output CSV file of tokens.
+            Tokeniser tr=new Tokeniser(args[0]);
+            //Based off of standards in https://en.wikipedia.org/wiki/Comma-separated_values (accessed 11/21/2019)
+            //Along with standards based off of personal experience working with CSVs
+            System.out.println("!TOKEN,VALUE");
+            try {
+                while(true) {
+                    ChamlcToken tok = tr.read();
+                    System.out.printf("\"%s\",\"%s\"\n",tok.getName(),tok.getVal());//Dumb CSV printer
+                    if (tok.getNumber()==-1) return;
+                }
+            } catch (IOException e) {
+                try {
+                    tr.close();
+                } catch (IOException e1) {
+                    System.out.println("\n\nError when attempting to close input file!");
+                    e1.printStackTrace();
+                }
+            }
         }catch(FileNotFoundException e) {
             System.out.printf("There is no file by the name %s\n",args[0]);
         }
@@ -54,9 +70,6 @@ class Tokeniser{
      */
     private void init() {
         backlog=new StringBuffer(0);
-    }
-    private void addAnotherToStack() throws IOException {
-        backlog.append((char)fr.read());
     }
     private ChamlcToken stackToTok() {
         if (backlog.length()==0) return new ChamlcToken(-1, "No chars in stack!");
@@ -126,13 +139,15 @@ class Tokeniser{
                 if (backlog.length()==1) return new ChamlcToken("closeS","");
                 else return scopeTooWide;
             case ' ':case '\t':case '\n':case '\r':
+                StringBuffer temp=new StringBuffer(0);//TODO: Remove this later
                 for (int i=0;i<backlog.length();i++) {
                     if (backlog.charAt(i)!=' '&&
                         backlog.charAt(i)!='\t'&&
                         backlog.charAt(i)!='\n'&&
                         backlog.charAt(i)!='\r') return new ChamlcToken(-1,"Wasn't entirely whitespace!");
+                    temp.append(backlog.charAt(i));
                 }
-                return new ChamlcToken("whitespace","");
+                return new ChamlcToken("whitespace",temp.toString());
             case '=':
                 if (backlog.length()==1) {
                     return new ChamlcToken("set","");
@@ -193,6 +208,10 @@ class Tokeniser{
         backlog=new StringBuffer(0);
         backlog.append(temp);
     }
+    private void addAnotherToStack() throws IOException {
+        backlog.append((char)fr.read());
+    }
+    boolean firstRun=true;
     /**
      * Get the next token.
      * 
@@ -202,6 +221,10 @@ class Tokeniser{
      * invalidator so it can be used later.
      */
     public ChamlcToken read() throws IOException{
+        if (firstRun) {
+            addAnotherToStack();
+            firstRun=false;
+        }
         boolean keepLooking=true;
         ChamlcToken tok=stackToTok();
         while (keepLooking) {
@@ -214,5 +237,8 @@ class Tokeniser{
         }
         eat();
         return tok;
+    }
+    public void close() throws IOException {
+        fr.close();
     }
 }
