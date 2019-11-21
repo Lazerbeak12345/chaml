@@ -2,7 +2,7 @@
  * ChamlcToken
  */
 public class ChamlcToken {
-	private int value;
+	private int number;
 	public static String[] tokens={
 		"comment",
 		"multiComment",
@@ -24,6 +24,10 @@ public class ChamlcToken {
 		"number",
 		"identifier",
 	};
+	private String val;//The value associated with the token
+	public String getVal() {
+		return val;
+	}
 	/**
 	 * Convert a given name into the respective int.
 	 * 
@@ -39,12 +43,12 @@ public class ChamlcToken {
 		return -1;
 	}
 	private String name;
-	ChamlcToken(int value) {
-		this.value=value;
-		this.name=tokens[value];
+	ChamlcToken(int number,String val) {
+		this.number=number;
+		this.name=tokens[number];
 	}
-	ChamlcToken(String n) {
-		this(nameToInt(n));
+	ChamlcToken(String n,String val) {
+		this(nameToInt(n),val);
 	}
 	/**
 	 * @return the name
@@ -53,12 +57,16 @@ public class ChamlcToken {
 		return name;
 	}
 	/**
-	 * @return the value
+	 * @return the number
 	 */
-	public int getValue() {
-		return value;
+	public int getNumber() {
+		return number;
 	}
 	public boolean equals(ChamlcToken obj) {
-		return this.getValue()==obj.getValue();
+		return this.getNumber()==obj.getNumber()&&
+			this.getVal()==obj.getVal();
+	}
+	public boolean isErrorCode() {
+		return getNumber()<0;
 	}
 }

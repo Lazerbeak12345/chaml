@@ -59,7 +59,139 @@ class Tokeniser{
         backlog.append((char)fr.read());
     }
     private ChamlcToken stackToTok() {
-
+        if (backlog.length()==0) return new ChamlcToken(-1, "No chars in stack!");
+        ChamlcToken scopeTooWide=new ChamlcToken(-1, "The scope for this token was too wide!");
+        switch(backlog.charAt(0)) {
+            case '/':
+                if (backlog.length()==1) {
+                    return new ChamlcToken(-1, "This would be a comment, but it needs more indicators.");
+                }
+                switch(backlog.charAt(1)) {
+                    case '/':
+                        StringBuffer b=new StringBuffer();
+                        for (int i=2;i<backlog.length();++i) {
+                            if (backlog.charAt(i)=='\n'&&i+1<backlog.length()) {//if there is a character after the \n
+                                return scopeTooWide;
+                            }
+                            b.append(backlog.charAt(i));
+                        }
+                        return new ChamlcToken("comment",b.toString());
+                    case'*':
+                        StringBuffer b2=new StringBuffer();
+                        for (int i=2;i<backlog.length();++i) {
+                            if (backlog.charAt(i)=='*'&&i+1<backlog.length()&&
+                                backlog.charAt(i+1)=='/'&&i+2<backlog.length()
+                                ) {//if there is a character after the * and the /
+                                return scopeTooWide;
+                            }
+                            b2.append(backlog.charAt(i));
+                        }
+                        return new ChamlcToken("multiComment",b2.toString());
+                    default: return new ChamlcToken(-1, "Stray / character!");
+                }
+            case '"':
+                StringBuffer b=new StringBuffer();
+                for (int i=2;i<backlog.length();++i) {
+                    if (backlog.charAt(i)=='"'&&i+1<backlog.length()) {//if there is a character after the "
+                        return scopeTooWide;
+                    }
+                    b.append(backlog.charAt(i));
+                }
+                return new ChamlcToken("string",b.toString());
+            case '\'':
+                ChamlcToken wouldBeChar=new ChamlcToken(-1, "This would be a char, but it's missing things.");
+                if (backlog.length()==1) return wouldBeChar;
+                char c=backlog.charAt(1);
+                if (backlog.length()==2) return wouldBeChar;
+                if (backlog.charAt(2)=='\'') {
+                    return new ChamlcToken("char",Character.toString(c));
+                }
+                return scopeTooWide;
+            case '{':
+                if (backlog.length()==1) return new ChamlcToken("openC","");
+                else return scopeTooWide;
+            case '}':
+                if (backlog.length()==1) return new ChamlcToken("closeC","");
+                else return scopeTooWide;
+            case '(':
+                if (backlog.length()==1) return new ChamlcToken("openP","");
+                else return scopeTooWide;
+            case ')':
+                if (backlog.length()==1) return new ChamlcToken("closeP","");
+                else return scopeTooWide;
+            case '[':
+                if (backlog.length()==1) return new ChamlcToken("openS","");
+                else return scopeTooWide;
+            case ']':
+                if (backlog.length()==1) return new ChamlcToken("closeS","");
+                else return scopeTooWide;
+            case ' ':case '\t':case '\n':case '\r':
+                for (int i=0;i<backlog.length();i++) {
+                    if (backlog.charAt(i)!=' '&&
+                        backlog.charAt(i)!='\t'&&
+                        backlog.charAt(i)!='\n'&&
+                        backlog.charAt(i)!='\r') return new ChamlcToken(-1,"Wasn't entirely whitespace!");
+                }
+                return new ChamlcToken("whitespace","");
+            case '=':
+                if (backlog.length()==1) {
+                    return new ChamlcToken("set","");
+                }
+                switch(backlog.charAt(1)) {
+                    case '>':return new ChamlcToken("lambda","");
+                    case '<':return new ChamlcToken("return","");
+                    default:return scopeTooWide;
+                }
+            case ';':
+                if (backlog.length()==1) return new ChamlcToken("semicolon","");
+                else return scopeTooWide;
+            case ',':
+                if (backlog.length()==1) return new ChamlcToken("comma","");
+                else return scopeTooWide;
+            case '.':
+                if (backlog.length()==1) return new ChamlcToken("subitem","");
+                else return scopeTooWide;
+            case '0':case '1':case '2':case '3':case '4':case '5':case '6':
+            case '7':case '8':case '9':
+                StringBuffer b3=new StringBuffer();
+                for (int i=2;i<backlog.length();++i) {
+                    if (!Character.isDigit(backlog.charAt(i))) {
+                        return scopeTooWide;
+                    }
+                    b3.append(backlog.charAt(i));
+                }
+                return new ChamlcToken("number",b3.toString());
+            case 'a':case 'b':case 'c':case 'd':case 'e':case 'f':case 'g':
+            case 'h':case 'i':case 'j':case 'k':case 'l':case 'm':case 'n':
+            case 'o':case 'p':case 'q':case 'r':case 's':case 't':case 'u':
+            case 'v':case 'w':case 'x':case 'y':case 'z':
+            case 'A':case 'B':case 'C':case 'D':case 'E':case 'F':case 'G':
+            case 'H':case 'I':case 'J':case 'K':case 'L':case 'M':case 'N':
+            case 'O':case 'P':case 'Q':case 'R':case 'S':case 'T':case 'U':
+            case 'V':case 'W':case 'X':case 'Y':case 'Z':
+            case '$':case '_':/*case '~':case '`':case '|':case '\\':case ':':
+            case '?':case '!':case '@':case '%':case '^':case '&':case '*':*/
+                StringBuffer b4=new StringBuffer();
+                for (int i=2;i<backlog.length();++i) {
+                    char c1=backlog.charAt(i);
+                    if (!Character.isLetterOrDigit(c1)&&
+                        c1!='$'&&
+                        c1!='_') {
+                        return scopeTooWide;
+                    }
+                    b4.append(backlog.charAt(i));
+                }
+                return new ChamlcToken("number",b4.toString());
+            default:return new ChamlcToken(-1, "Unhandled special case!");
+        }
+    }
+    /**
+     * Clear all but the latest char of the stack
+     */
+    private void eat() {
+        char temp=backlog.charAt(backlog.length()-1);
+        backlog=new StringBuffer(0);
+        backlog.append(temp);
     }
     /**
      * Get the next token.
@@ -70,19 +202,17 @@ class Tokeniser{
      * invalidator so it can be used later.
      */
     public ChamlcToken read() throws IOException{
-        boolean matchFound=true;
-        ChamlcToken tok=new ChamlcToken(-1);
-        while (matchFound) {
+        boolean keepLooking=true;
+        ChamlcToken tok=stackToTok();
+        while (keepLooking) {
             addAnotherToStack();
-            //matchFound=doesStackMatch(tok);
-            matchFound=stackToTok().getValue()==tok.getValue();
-            if (matchFound) {//if it still matches
-                tok=stackToTok();
-                char temp=backlog.charAt(backlog.length()-1);
-                backlog=new StringBuffer(0);
-                backlog.append(temp);
+            ChamlcToken temp=stackToTok();
+            keepLooking=!temp.isErrorCode();
+            if (keepLooking) {
+                tok=temp;
             }
         }
+        eat();
         return tok;
     }
 }
