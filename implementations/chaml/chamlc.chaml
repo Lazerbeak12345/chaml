@@ -5,7 +5,7 @@ IO=import("io");
 tr=import("./lib/syntax-tree");
 tk=import("./lib/syntax-tokens");
 
-//If I get stuck, here's some URLs for help 
+//If I get stuck, here's some URLs for help
 //https://en.wikipedia.org/wiki/Recursive_descent_parser
 
 // Once This file is "ready" look at these in order to get this thing compiled (in order of appearance)

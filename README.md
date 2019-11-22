@@ -227,7 +227,7 @@ interacting with the Java tokeniser, it can interact with the Chaml tokeniser.
 - Make an interpreter just like the one in Java, but written in CHAML, and
 instead of interacting with the Java Parser, it interacts with the CHAML parser
 - Make a compiler to JavaScript in Chaml that functions under the same
-requirements as the CHAML compiler.
+requirements as the CHAML interpreter.
 - Compile the entire CHAML suite to JavaScript, and stop using the Java
 components completely.
 - Remove the interpreter, and add JIT to the compiler.
