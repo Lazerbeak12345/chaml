@@ -191,9 +191,6 @@ about the same.
 
 There are multiple parallel attempts to reach a working end-goal.
 
-- The cpp implementation is the oldest one. It right now can only just barely
-handle some comments, sometimes. I'm not likely to continue pursuit with this
-one, I'm just using it for reference, and will most likely remove it.
 - The chaml one is 75% done, but once I realized I made a few critical mistakes
 (such as not actually knowing what a lexer is and what a parser is), I decided
 to stop for awhile.
@@ -204,15 +201,55 @@ to stop for awhile.
 whatever_the_heck_I_actually_got_out_of_it, but as I am not super familiar with
 C or C++ I am looking into alternatives. I actually can do basic math in the
 library as if it was actually done, but it feels unreliable.
-- java is my potential replacement for flex_bison. Very little progress, but as
-I know the datatypes well enough, I should be able to make this work.
+- java is my potential replacement for flex_bison. The tokeniser is almost
+complete, and can now export to XML.
 
 ### Plans
 
 GET IT WORKING
 
 I personally don't have any plan but this, and what is in the "Current state"
-section
+section.
+
+To be more specific:
+
+- Get the tokeniser written in java, and have the tokens exportable with a file
+format.
+- Make a parser in java that by default internally calls the tokenizer, never
+needing to interact with the tokeniser output file, but still allow for that
+to be an option. Also have exporting as a parse tree an available option.
+- Make an AST tree executor in java. Just like the parser, it should be able to
+either internally interact with the parser without going to a file format, or
+read a file.
+- Make a tokeniser just like the one in java, but written in CHAML.
+- Make a parser just like the one in java, but written in CHAML, and instead of
+interacting with the Java tokeniser, it can interact with the Chaml tokeniser.
+- Make an interpreter just like the one in Java, but written in CHAML, and
+instead of interacting with the Java Parser, it interacts with the CHAML parser
+- Make a compiler to JavaScript in Chaml that functions under the same
+requirements as the CHAML compiler.
+- Compile the entire CHAML suite to JavaScript, and stop using the Java
+components completely.
+- Remove the interpreter, and add JIT to the compiler.
+- Allow for syntax extensions to modify or remove tokens.
+- Allow for syntax extensions to modify or remove parse nodes, as well as
+allowing addition of tokens.
+- Allow for syntax extensions to modify or remove AST nodes, as well as allowing
+addition of parse nodes.
+- Modify the compiler to allow for exporting of the "native" AST.
+- Split the compiler into two programs, the AST converter, and the "native" AST
+compiler. Should both take AST files, and/or interact with the previous step.
+- Modify the "native" AST compiler to allow for exporting of the "native" parse
+tree.
+- Split the "native" AST compiler into two programs, the reverse AST generator,
+and the parse tree compiler.
+- Modify the parse tree compiler to allow for exporting of the token stream.
+- Split the parse tree compiler into the reverse Parser and the token compiler.
+- Allow for syntax extensions to modify the output tokens.
+- Allow for syntax extensions to modify the output parse tree (in any way).
+- Allow for syntax extensions to modify the output AST tree (in any way).
+- Celebrate!
+- Add another output language?
 
 ## Variables
 
