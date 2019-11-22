@@ -17,13 +17,34 @@ class Tokeniser{
             Tokeniser tr=new Tokeniser(args[0]);
             //Outputs xml
             try {
+                System.out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 while(true) {
                     ChamlcToken tok = tr.read();
                     String name=tok.getName(),
                         val=tok.getVal();
                     if (!tr.isEnd()) {
-                        if (val.length()>0) System.out.printf("<%s>%s</%s>\n",name,val,name);
-                        else System.out.printf("<%s/>\n",name);
+                        if (val.length()>0) {
+                            //https://stackoverflow.com/a/46637835
+                            System.out.printf("<%s>",name);
+                            for (int i=0;i<val.length();++i) {
+                                switch(val.charAt(i)) {
+                                    case '<':
+                                        System.out.print("&lt;");
+                                        break;
+                                    case '>':
+                                        System.out.print("&gt;");
+                                        break;
+                                    case '"':
+                                        System.out.print("&quot;");
+                                        break;
+                                    case '&':
+                                        System.out.print("&apos;");
+                                        break; 
+                                    default:System.out.print(val.charAt(i));
+                                }
+                            }
+                            System.out.printf("</%s>",name);
+                        }else System.out.printf("<%s/>\n",name);
                     }
                     if (tok.getNumber()==-1) return;
                 }
