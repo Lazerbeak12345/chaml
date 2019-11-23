@@ -17,7 +17,7 @@ class Tokeniser{
             Tokeniser tr=new Tokeniser(args[0]);
             //Outputs xml
             try {
-                System.out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='%s'>\n",args[0]);
                 while(true) {
                     ChamlcToken tok = tr.read();
                     String name=tok.getName(),
@@ -43,10 +43,13 @@ class Tokeniser{
                                     default:System.out.print(val.charAt(i));
                                 }
                             }
-                            System.out.printf("</%s>",name);
+                            System.out.printf("</%s>\n",name);
                         }else System.out.printf("<%s/>\n",name);
                     }
-                    if (tok.getNumber()==-1) return;
+                    if (tok.getNumber()==-1) {
+                        System.out.println("</tokenList>");
+                        return;
+                    }
                 }
             } catch (IOException e) {
                 try {
@@ -94,16 +97,23 @@ class Tokeniser{
     private void init() {
         backlog=new StringBuffer(0);
     }
+    //private boolean hitShabang=false;
     private ChamlcToken stackToTok() {
         if (backlog.length()==0) return new ChamlcToken(-1, "No chars in stack!");
         ChamlcToken scopeTooWide=new ChamlcToken(-1, "The scope for this token was too wide!");
         switch(backlog.charAt(0)) {
+            //case '#':
             case '/':
                 if (backlog.length()==1) {
                     return new ChamlcToken(-1, "This would be a comment, but it needs more indicators.");
                 }
                 switch(backlog.charAt(1)) {
                     case '/':
+                    //case '!':
+                        /*if (backlog.charAt(0)!='#'&&!hitShabang) {
+                            hitShabang=true;
+                            return new ChamlcToken(-1,"Malformed shabang!");
+                        }*/
                         StringBuffer b=new StringBuffer();
                         for (int i=2;i<backlog.length();++i) {
                             if (backlog.charAt(i)=='\n'&&i+1<backlog.length()) {//if there is a character after the \n
@@ -170,23 +180,19 @@ class Tokeniser{
                         backlog.charAt(i)!='\r') return new ChamlcToken(-1,"Wasn't entirely whitespace!");
                 }
                 return new ChamlcToken("whitespace","");
+            case '~':
+                if (backlog.length()==1) return new ChamlcToken("overload","");
+                else return scopeTooWide;
             case '=':
-                if (backlog.length()==1) {
-                    //try {
-                        //fr.mark(1);//TODO: fix
-                        //char c1= (char) fr.read();
-                        //fr.reset();//Go back to where it was marked.
-                        //if (c1!='>'&&c1!='<') {
-                            return new ChamlcToken("set","");
-                        //}else return scopeTooWide;
-                    //} catch (IOException e) {
-                    //    e.printStackTrace();
-                    //}
+                if (backlog.length()>2) {
+                    return scopeTooWide;
+                }
+                if (backlog.length()<2) {
+                    return new ChamlcToken("equals","");
                 }
                 switch(backlog.charAt(1)) {
                     case '>':return new ChamlcToken("lambda","");
                     case '<':return new ChamlcToken("return","");
-                    default:return scopeTooWide;
                 }
             case ';':
                 if (backlog.length()==1) return new ChamlcToken("semicolon","");

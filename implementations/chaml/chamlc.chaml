@@ -25,7 +25,7 @@ tokenify=(getNextLine,error){
 	CheckerBuiltIn={
 		a={};
 		a.builtIn=true;
-		a.action=(line,buffer)=>not(a.regexp.matches(buffer+Str(line.get(0))));
+		a.action=(line,buffer)=>not(a.regexp.matches(buffer.plus(Str(line.get(0)))));
 		=<a;
 	};
 	checkers=[

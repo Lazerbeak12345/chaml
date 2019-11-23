@@ -1,4 +1,4 @@
-#!/sh/a/bang
+//#!/sh/a/bang
 tst=import("./testLib");
 tst.suite("Core",{
 	tst.test("Export & Import was done correctly",{
@@ -11,14 +11,14 @@ tst.suite("Core",{
 	tst.test("Multi line comments are good.",{
 		count=3;
 		/* one */
-		--count;
+		count=count.minus(1);
 		/* another
 		*/
-		--count;
+		count=count.minus(1);
 		/** /
 		another
 		*/
-		--count;
+		count=count.minus(1);
 		tst.assert(count,0);
 	});
 });
