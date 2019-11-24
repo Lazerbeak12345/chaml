@@ -160,7 +160,7 @@ tokenify=(getNextLine,error){
 			},{
 				index=0;
 				sym=-1;
-				while(()=>index<checkers.len(),{
+				while(()=>index.lt(checkers.len()),{
 					if (RegExp(checkers.get(index).regexp).matches(buffer),{
 						if(checkers.get(index).action(line,buffer),{
 							sym=Symbol.get(checkers.get(index).name);
@@ -189,14 +189,14 @@ tokenify=(getNextLine,error){
 	expect=(s){
 		a=accept(s);
 		if(not(a),{
-			error("Unexpected symbol \""+Symbol.get(sym)+"\"\nWas expecting symbol \""+s+"\" instead.");
+			error("Unexpected symbol \"".plus(Symbol.get(sym)).plus("\"\nWas expecting symbol \"").plus(s).plus("\" instead."));
 		});
 		=<a;
 	};
 	reject=(s,reason){
 		isEq=eq(sym,s);
 		if(isEq,{
-			error("Rejected symbol \""+s"\"\n"+reason);
+			error("Rejected symbol \"".plus(s).plus("\"\n").plus(reason));
 		});
 		=<isEq;
 	};
@@ -364,15 +364,15 @@ readFile=(name,error) {
 
 compileFile=(name,error) {
 	tree=readFile(name,(val){
-		error("Compile error in "+name+" :\n"+er);
+		error("Compile error in ".plus(name).plus(" :\n").plus(er));
 	},(val){
-		error("Compile error: "+er);
+		error("Compile error: ".plus(er));
 	});//do stuff with tree
 };
 
 runFile=(name){
 	runTree(readFile(name,(val){
-		error("Interpreter error in "+name+" :\n"+er);
+		error("Interpreter error in ".plus(name).plus(" :\n").plus(er));
 	}));
 };
 

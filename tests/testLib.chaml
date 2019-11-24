@@ -18,18 +18,18 @@ out.assert=(a,b) {
 };
 out.run={
 	suites.assyncEach((index,suite) {
-		print("Now running suite \""+suite.name+"\"\n");
+		print("Now running suite \"".plus(suite.name).plus("\"\n"));
 		try({
 			tests.assyncForEach((index,test) {
-				print("\tNow running test \""+test.name+"\"\n");
+				print("\tNow running test \"".plus(test.name).plus("\"\n"));
 				try({
 					test();
 				},(err){
-					print.err("\tSuite \""+test.name+"\" failed with err: \n"+err.msg"\n");
+					print.err("\tSuite \"".plus(test.name).plus("\" failed with err: \n").plus(err.msg).plus("\n"));
 				});
 			});
 		},(err) {
-			print.err("Suite \""+suite.name+"\" failed with err: \n"+err.msg"\n");
+			print.err("Suite \"".plus(suite.name).plus("\" failed with err: \n").plus(err.msg).plus("\n"));
 		});
 	});
 };
