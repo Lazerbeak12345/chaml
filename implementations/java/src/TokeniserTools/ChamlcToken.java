@@ -1,8 +1,10 @@
+package TokeniserTools;
 /**
  * ChamlcToken
  */
 public class ChamlcToken {
-	private int number,row,col;
+	private int number;
+	public int row,col;
 	public static String[] tokens={
 		"comment",
 		"multiComment",
@@ -44,7 +46,7 @@ public class ChamlcToken {
 		return -1;
 	}
 	private String name;
-	ChamlcToken(int number,String val,int row,int col) {
+	public ChamlcToken(int number,String val,int row,int col) {
 		this.row=row;
 		this.col=col;
 		this.number=number;
@@ -53,7 +55,7 @@ public class ChamlcToken {
 		}else this.name=tokens[number];
 		this.val=val;
 	}
-	ChamlcToken(String n,String val,int row, int col) {
+	public ChamlcToken(String n,String val,int row, int col) {
 		this(nameToInt(n),val,row,col);
 	}
 	/**
