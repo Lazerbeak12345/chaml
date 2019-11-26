@@ -11,7 +11,7 @@ import TokeniserTools.ChamlcToken;
  */
 class Tokeniser{
 	public static void main(String[] args) {
-		if (args.length>1) {
+		if (args.length<1) {
 			System.out.println("Not enough args!");
 			return;
 		}
