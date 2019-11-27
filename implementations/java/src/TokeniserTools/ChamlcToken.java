@@ -90,12 +90,12 @@ public class ChamlcToken {
 					case '>':
 						System.out.print("&gt;");
 						break;
-					case '"':
+					case '"'://TODO: Add '
 						System.out.print("&quot;");
 						break;
 					case '&':
 						System.out.print("&apos;");
-						break; 
+						break;
 					default:System.out.print(val.charAt(i));
 				}
 			}

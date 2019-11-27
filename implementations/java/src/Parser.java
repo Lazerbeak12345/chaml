@@ -52,7 +52,7 @@ class Parser {
 	public void parse() throws IOException {
 		ParseLeaf leaf=new ParseLeaf(tr.read());
 		leaf.printAsXML();
-		ParseTree tree=new ParseTree(leaf);
+		ParseTree tree=new ParseTree("snazzy",leaf);
 		tree.printAsXML();
 	}
 }
