@@ -71,7 +71,6 @@ class Tokeniser{
 	private void init() {
 		backlog=new StringBuffer(0);
 	}
-	//private boolean hitShabang=false;
 	/**
 	 * Convert the current stack to a token, using no regexp.
 	 */
@@ -82,19 +81,13 @@ class Tokeniser{
 		if (len==0) return new ChamlcToken(-1, "No chars in stack!",row,col);
 		char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
-		switch(current) {
-			//case '#':
+		switch(current) {//TODO:Properly Handle Shabang
 			case '/':
 				if (len==1) {
 					return new ChamlcToken(-1, "This would be a comment, but it needs more indicators.",row,col);
 				}
 				switch(backlog.charAt(1)) {
 					case '/':
-					//case '!':
-						/*if (current!='#'&&!hitShabang) {
-							hitShabang=true;
-							return new ChamlcToken(-1,"Malformed shabang!");
-						}*/
 						tempBuffer=new StringBuffer();
 						for (int i=2;i<len;++i) {
 							char posC=backlog.charAt(i);
