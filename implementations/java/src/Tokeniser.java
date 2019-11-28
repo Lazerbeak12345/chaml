@@ -122,11 +122,11 @@ class Tokeniser{
 				}
 			case '"':
 				tempBuffer=new StringBuffer();
-				if (len>1)tempBuffer.append(backlog.charAt(1));
-				if (len>2&&backlog.charAt(1)=='"') {//TODO: empty strings are acting like "\"" should...
+				if (len>=2&&backlog.charAt(1)=='"') {
 					if (len==2) return new ChamlcToken("string","",row,col);//empty string
 					else return scopeTooWide;
 				}
+				if (len>1)tempBuffer.append(backlog.charAt(1));
 				for (int i=2;i<len;++i) {
 					char posC=backlog.charAt(i);
 					if (isCharEnd(posC)) return prematureEOF();
