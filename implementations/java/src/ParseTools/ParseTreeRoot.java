@@ -3,8 +3,30 @@ package ParseTools;
 import java.util.ArrayList;
 
 public class ParseTreeRoot extends ParseTree {
-	ParseTreeRoot(ArrayList<ParseNode> children,int row, int col) {
-		super("root",children, row, col);
-		// TODO Auto-generated constructor stub
+	String src;
+	public ParseTreeRoot(String src,ArrayList<ParseNode> children) {
+		super("root",children);
+		this.src=src;
+	}
+	public ParseTreeRoot(String src,ParseNode child){
+		super("root",child);
+		this.src=src;
+	}
+	public ParseTreeRoot(String src){
+		super("root",0,0);
+		this.src=src;
+	}
+	@Override
+	public void printAsXML() {
+		//TODO: filter out bad xml
+		System.out.printf("<%s row=\"%d\" col=\"%d\" src=\"%s\"",name,row,col,src);
+		if (children.size()==0) System.out.print("/>");
+		else{
+			System.out.print(">");
+			for (int i=0;i<children.size();++i) {
+				children.get(i).printAsXML();
+			}
+			System.out.print("</"+name+">");
+		}
 	}
 }

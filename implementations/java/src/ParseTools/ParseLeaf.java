@@ -17,6 +17,8 @@ public class ParseLeaf extends ParseNode {
 	}
 	@Override
 	public void printAsXML() {
+		System.out.printf("<leaf row=\"%s\" col=\"%s\">",row,col);
 		value.printAsXML();
+		System.out.println("</leaf>");
 	}
 }

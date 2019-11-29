@@ -8,8 +8,18 @@ public class ParseTree extends ParseNode {
 		super(name,row, col);
 		this.children=children;
 	}
+	public ParseTree(String name,ArrayList<ParseNode> children) {
+		super(name,children.get(0).row,children.get(0).col);
+		this.children=children;
+	}
 	public ParseTree(String name,ParseNode child,int row, int col) {
 		super(name,row, col);
+		children=new ArrayList<>();
+		children.add(child);
+	}
+	public ParseTree(String name,int row, int col) {
+		super(name,row, col);
+		children=new ArrayList<>();
 	}
 	public ParseTree(String name,ParseNode child) {
 		super(name,child.row, child.col);
@@ -19,10 +29,14 @@ public class ParseTree extends ParseNode {
 	}
 	@Override
 	public void printAsXML() {
-		System.out.printf("<%s row=\"%d\" col=\"%d\">",name,row,col);
-		for (int i=0;i<children.size();++i) {
-			children.get(i).printAsXML();
+		if (children.size()==0)
+			System.out.printf("<%s row=\"%d\" col=\"%d\"/>",name,row,col);
+		else{
+			System.out.printf("<%s row=\"%d\" col=\"%d\">",name,row,col);
+			for (int i=0;i<children.size();++i) {
+				children.get(i).printAsXML();
+			}
+			System.out.print("</"+name+">");
 		}
-		System.out.print("</"+name+">");
 	}
 }

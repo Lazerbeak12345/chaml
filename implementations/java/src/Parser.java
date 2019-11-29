@@ -50,9 +50,11 @@ class Parser {
 		
 	}
 	public void parse() throws IOException {
-		ParseLeaf leaf=new ParseLeaf(tr.read());
-		leaf.printAsXML();
-		ParseTree tree=new ParseTree("snazzy",leaf);
-		tree.printAsXML();
+		//System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='%s'>\n",args[0]);
+		//ParseLeaf leaf=new ParseLeaf(tr.read());
+		//ParseTree tree=new ParseTree("snazzy",leaf);
+		//ParseTreeRoot root=new ParseTreeRoot("",tree);
+		ParseTreeRoot root=new ParseTreeRoot("");
+		root.printAsXML();
 	}
 }
