@@ -39,4 +39,12 @@ public class ParseTree extends ParseNode {
 			System.out.print("</"+name+">");
 		}
 	}
+	/**
+	 * Add a node to the list
+	 * @param node the node to be added
+	 * @return whatever {@link ArrayList#add(Object)} returns
+	 */
+	public boolean add(ParseNode node) {
+		return children.add(node);
+	}
 }
