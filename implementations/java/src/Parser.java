@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import ParseTools.*;
+import TokeniserTools.ChamlcToken;
 
 class Parser {
 	public static void main(String[] args) {
@@ -49,12 +50,24 @@ class Parser {
 	private void init() {
 		
 	}
-	public void parse() throws IOException {
-		//System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='%s'>\n",args[0]);
-		//ParseLeaf leaf=new ParseLeaf(tr.read());
-		//ParseTree tree=new ParseTree("snazzy",leaf);
-		//ParseTreeRoot root=new ParseTreeRoot("",tree);
+	/**
+	 * Get the next token.
+	 * 
+	 * Intentionally @Override-able
+	 * @return The next token.
+	 * @throws IOException
+	 */
+	public ChamlcToken getNextToken() throws IOException {
+		return tr.read();
+	}
+	/**
+	 * Actually run the parser, completely
+	 * @return
+	 * @throws IOException
+	 */
+	public ParseTreeRoot parse() throws IOException {
 		ParseTreeRoot root=new ParseTreeRoot("");
 		root.printAsXML();
+		return root;
 	}
 }
