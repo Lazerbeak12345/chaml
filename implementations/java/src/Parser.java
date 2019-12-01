@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeMap;
+
 import ParseTools.*;
 import TokeniserTools.ChamlcToken;
 
@@ -22,7 +25,6 @@ class Parser {
 			System.out.println("Failed to read characters from given file!");
 		}
 	}
-	ArrayList<ParseNode> backlog,stack;
 	Tokeniser tr;
 	public Parser(String fileName) throws FileNotFoundException {
 		tr=new Tokeniser(fileName);
@@ -45,10 +47,49 @@ class Parser {
 		init();
 	}
 	/**
+	 * A datastructure shaped like this:
+	 * 
+	 * {
+	 * 	"name":[
+	 * 		["first","possible"],
+	 * 		["second"],
+	 * 	],
+	 *  "another":[
+	 * 		["thing"]
+	 * 	],
+	 * }
+	 */
+	private TreeMap<String,ArrayList<ArrayList<String>>> parseLogic;
+	/**
 	 * The one place to do 90% of constructor related stuff
 	 */
 	private void init() {
-		
+		stack=new ArrayList<>();
+		parseLogic=new TreeMap<>();
+		//String[] names={"root","statementList"};
+		/*final int NUMBER_OF_NAMES=3;
+		for(int i=0;i<NUMBER_OF_NAMES;++i){
+			ArrayList<String> tmp=new ArrayList<>();
+			String name;
+			switch(i) {
+				case 0:
+					name="root";
+					tmp.add("statementList");
+					break;
+				case 1:
+					name="statementList";
+					tmp.add("statement");
+					tmp.add("statementList");
+					break;
+				case 2:
+					name="statement";
+					tmp.add("");
+					break;
+				default:
+					name="ERROR IN HANDLING TREE LOGIC";
+			}
+			parseLogic.put(name,tmp);
+		}*/
 	}
 	/**
 	 * Get the next token.
@@ -60,6 +101,10 @@ class Parser {
 	public ChamlcToken getNextToken() throws IOException {
 		return tr.read();
 	}
+	private ArrayList<ParseNode> stack;
+	private void shift() throws IOException {
+		stack.add(new ParseLeaf(getNextToken()));
+	}
 	/**
 	 * Actually run the parser, completely
 	 * @return
@@ -67,6 +112,10 @@ class Parser {
 	 */
 	public ParseTreeRoot parse() throws IOException {
 		ParseTreeRoot root=new ParseTreeRoot("");
+		shift();
+		shift();
+		root.add(stack.get(0));
+		root.add(stack.get(1));
 		root.printAsXML();
 		return root;
 	}
