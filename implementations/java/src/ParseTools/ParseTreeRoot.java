@@ -5,15 +5,15 @@ import java.util.ArrayList;
 public class ParseTreeRoot extends ParseTree {
 	String src;
 	public ParseTreeRoot(String src,ArrayList<ParseNode> children) {
-		super("root",children);
+		super("ROOT",children);
 		this.src=src;
 	}
 	public ParseTreeRoot(String src,ParseNode child){
-		super("root",child);
+		super("ROOT",child);
 		this.src=src;
 	}
 	public ParseTreeRoot(String src){
-		super("root",0,0);
+		super("ROOT",0,0);
 		this.src=src;
 	}
 	@Override

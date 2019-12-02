@@ -6,7 +6,7 @@ public class ChamlcToken {
 	private int number;
 	public int row,col;
 	public static String[] tokens={
-		"comment",
+		"comment",//includes the newline
 		"multiComment",
 		"string",
 		"char",
