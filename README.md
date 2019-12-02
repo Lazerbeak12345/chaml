@@ -197,11 +197,7 @@ to stop for awhile.
   - In the lib directory are libraries that I plan to have available. Many are
   highly experimental.
   - I plan on re-writing this once a different implementation starts working.
-- flex_bison was going to be the official first language compiler/interpreter/
-whatever_the_heck_I_actually_got_out_of_it, but as I am not super familiar with
-C or C++ I am looking into alternatives. I actually can do basic math in the
-library as if it was actually done, but it feels unreliable.
-- java is my potential replacement for flex_bison. The tokeniser is almost
+- java is the official first language implementation. The tokeniser is almost
 complete, and can now export to XML.
 
 ### Plans

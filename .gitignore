@@ -1,6 +1,1 @@
-node_modules
-
-*.yy.c
-*.tab.c
-*.tab.h
-a.out
+*.class
