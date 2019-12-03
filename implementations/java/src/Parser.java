@@ -110,10 +110,11 @@ class Parser {
 		{"",	"openP","IDENTIFIER_LIST","closeP","lambda","STATEMENT"},
 		{"MULTILINE_FUNCTION"},
 		{"",	"openC","ROOT","closeC"},
-		{"",	"identifier","openC","ROOT",            "closeC"},
-		{"",	"identifier","openC","ROOT","semicolon","closeC"},//Optional semicolon
-		{"",	"openP","IDENTIFIER_LIST","closeP","openC","ROOT",            "closeC"},
-		{"",	"openP","IDENTIFIER_LIST","closeP","openC","ROOT","semicolon","closeC"},
+		{"",	"identifier","MULTILINE_FUNCTION_BODY"},
+		{"",	"openP","IDENTIFIER_LIST","closeP","MULTILINE_FUNCTION_BODY"},
+		{"MULTILINE_FUNCTION_BODY"},
+		{"",	"openC","ROOT",            "closeC"},
+		{"",	"openC","ROOT","semicolon","closeC"},//Optional semicolon
 		{"IDENTIFIER_LIST"},//A list of _only_ identifiers (>=1)
 		{"",	"identifier"},//Will require LA(1)
 		{"",	"IDENTIFIER_LIST","comma","identifier"},
