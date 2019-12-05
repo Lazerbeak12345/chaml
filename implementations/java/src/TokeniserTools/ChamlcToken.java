@@ -102,4 +102,73 @@ public class ChamlcToken {
 			System.out.printf("</%s>\n",name);
 		}else System.out.printf("<%s row=\"%d\" col=\"%d\"/>\n",name,row,col);
 	}
+	public void printLiteral() {
+		switch(name) {
+			case "comment":
+				System.out.print("//");
+				System.out.println(val);
+				break;
+			case "multiComment":
+				System.out.print("/*");
+				System.out.print(val);
+				System.out.print("*/");
+				break;
+			case "string":
+				System.out.print('"');
+				System.out.print(val);
+				System.out.print('"');
+				break;
+			case "char":
+				System.out.print('\'');
+				System.out.print(val);
+				System.out.print('\'');
+				break;
+			case "openC":
+				System.out.print('{');
+				break;
+			case "closeC":
+				System.out.print('}');
+				break;
+			case "openP":
+				System.out.print('(');
+				break;
+			case "closeP":
+				System.out.print(')');
+				break;
+			case "openS":
+				System.out.print('[');
+				break;
+			case "closeS":
+				System.out.print(']');
+				break;
+			case "whitespace":
+				System.out.print(' ');
+				break;
+			case "lambda":
+				System.out.print("=>");
+				break;
+			case "return":
+				System.out.print("<=");
+				break;
+			case "equals":
+				System.out.print('=');
+				break;
+			case "overload":
+				System.out.print('~');
+				break;
+			case "semicolon":
+				System.out.print(';');
+				break;
+			case "comma":
+				System.out.print(',');
+				break;
+			case "subitem":
+				System.out.print('.');
+				break;
+			case "identifier":
+			case "number":
+				System.out.print(val);
+				break;
+		}
+	}
 }
