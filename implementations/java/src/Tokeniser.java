@@ -81,12 +81,18 @@ class Tokeniser{
 		if (len==0) return new ChamlcToken(-1, "No chars in stack!",row,col);
 		char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
-		switch(current) {//TODO:Properly Handle Shabang
+		switch(current) {
+			case '#':
+				if (backlog.charAt(1)=='!') {
+					if (row!=1||col!=1) return new ChamlcToken(-1,"out of place shabang!",row,col);
+				}
 			case '/':
 				if (len==1) {
 					return new ChamlcToken(-1, "This would be a comment, but it needs more indicators.",row,col);
 				}
 				switch(backlog.charAt(1)) {
+					case '!':
+						if (current!='#') return new ChamlcToken(-1, "Stray ! character!",row,col);
 					case '/':
 						tempBuffer=new StringBuffer();
 						for (int i=2;i<len;++i) {
@@ -111,7 +117,9 @@ class Tokeniser{
 							if (i<len-2) tempBuffer.append(posC);
 						}
 						return new ChamlcToken("multiComment",tempBuffer.toString(),row,col);
-					default: return new ChamlcToken(-1, "Stray / character!",row,col);
+					default: 
+						if (current=='/') return new ChamlcToken(-1, "Stray / character!",row,col);
+						else return new ChamlcToken(-1, "Stray # character!",row,col);	
 				}
 			case '"':
 				tempBuffer=new StringBuffer();
