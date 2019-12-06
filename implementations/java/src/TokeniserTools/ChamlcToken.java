@@ -165,8 +165,9 @@ public class ChamlcToken {
 			case "subitem":
 				System.out.print('.');
 				break;
-			case "identifier":
 			case "number":
+			case "identifier":
+			default:
 				System.out.print(val);
 				break;
 		}
