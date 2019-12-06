@@ -1,5 +1,5 @@
-useSyntax("throw");//Is this how it should be?
-print=import("print");
+#+[throw]//Is this how it should be?
+#<[print]
 suites=[];
 out=()=>out;
 out.suite=(name,callback) {
