@@ -80,19 +80,17 @@ class Parser {
 		{"",	"comment"},
 		{"",	"multiComment"},
 		{"",	"WS_OR_COMMENT","WS_OR_COMMENT"},
-		{"STATEMENT"},//TODO: make a "CALLABLE" (high priority)
+		{"STATEMENT"},
 		{"",	"WS_OR_COMMENT","STATEMENT"},//before every statement, or collection of statements, allow WS or COMMENT
 		{"",	"identifier","equals","string"},
 		{"",	"identifier","equals","char"},
 		{"",	"identifier","equals","number"},
 		{"",	"identifier","equals","FUNCTION"},
 		{"",	"identifier","equals","STATEMENT"},//Two or more vars can share a value
-		{"",	"identifier",                      "openP","VALUE_LIST",     "closeP"},
-		{"",	"identifier",                      "openP","IDENTIFIER_LIST","closeP"},//A list of identifiers could still be a list of values.
-		{"",	"STATEMENT",                       "openP","VALUE_LIST",     "closeP"},//You can call the return of a function
-		{"",	"STATEMENT",                       "openP","IDENTIFIER_LIST","closeP"},
-		{"",	"STATEMENT","subitem","identifier","openP","VALUE_LIST",     "closeP"},//You can call the subitem of a statement
-		{"",	"STATEMENT","subitem","identifier","openP","IDENTIFIER_LIST","closeP"},
+		{"",	"identifier",                      "FUNCTION_CALL"},
+		{"",	"STATEMENT",                       "FUNCTION_CALL"},//You can call the return of a function
+		{"",	"STATEMENT","subitem","identifier","FUNCTION_CALL"},//You can call the subitem of a statement
+		//TODO: Make "EXPRESSION"
 		{"VALUE_LIST"},
 		{"",	"string"},
 		{"",	"char"},
@@ -104,6 +102,9 @@ class Parser {
 		{"FUNCTION"},
 		{"",	"INLINE_FUNCTION"},
 		{"",	"MULTILINE_FUNCTION"},
+		{"FUNCTION_CALL"},
+		{"",	"openP","VALUE_LIST",     "closeP"},
+		{"",	"openP","IDENTIFIER_LIST","closeP"},//A list of identifiers could still be a list of values. (conflict with MULTILINE FUNCTION[1])
 		{"INLINE_FUNCTION"},
 		{"",	"openP","closeP",                  "lambda","STATEMENT"},
 		{"",	"identifier",                      "lambda","STATEMENT"},
