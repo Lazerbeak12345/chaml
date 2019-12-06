@@ -85,6 +85,16 @@ class Tokeniser{
 			case '#':
 				if (backlog.charAt(1)=='!') {
 					if (row!=1||col!=1) return new ChamlcToken(-1,"out of place shabang!",row,col);
+				}else{
+					if (backlog.length()>3) return scopeTooWide;
+					if (backlog.length()==2) return new ChamlcToken(-1, "pre-processor directive needs one more character", row, col);
+					switch(backlog.charAt(1)){
+						case '<'://#<[
+							return new ChamlcToken("import","",row,col);
+						case '+'://#+[
+							return new ChamlcToken("syntaxExtension","",row,col);
+					}
+					break;
 				}
 			case '/':
 				if (len==1) {

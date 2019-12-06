@@ -7,6 +7,8 @@ public class ChamlcToken {
 	public int row,col;
 	public static String[] tokens={
 		"comment",//includes the newline
+		"import",
+		"syntaxExtension",
 		"multiComment",
 		"string",
 		"char",
@@ -165,6 +167,11 @@ public class ChamlcToken {
 			case "subitem":
 				System.out.print('.');
 				break;
+			case "import":
+				System.out.print("#[");
+				break;
+			case "syntaxExtension":
+				System.out.print("#+");
 			case "number":
 			case "identifier":
 			default:
