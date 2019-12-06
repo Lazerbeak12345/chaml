@@ -168,10 +168,10 @@ public class ChamlcToken {
 				System.out.print('.');
 				break;
 			case "import":
-				System.out.print("#[");
+				System.out.print("#<[");
 				break;
 			case "syntaxExtension":
-				System.out.print("#+");
+				System.out.print("#+[");
 			case "number":
 			case "identifier":
 			default:
