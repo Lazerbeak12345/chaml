@@ -4,8 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeMap;
+//import java.util.HashMap;
 
 import ParseTools.*;
 import TokeniserTools.ChamlcToken;
@@ -59,7 +58,7 @@ class Parser {
 	 * 	],
 	 * }
 	 */
-	private TreeMap<String,ArrayList<ArrayList<String>>> parseLogic;
+	//private HashMap<String,ArrayList<ArrayList<String>>> parseLogic;
 	/**
 	 * An easy to modify parseLogic. follows this JSON structure:
 	 * 
@@ -71,7 +70,8 @@ class Parser {
 	 * 	["","thing"]
 	 * ]
 	 */
-	private final String[][] tempParseLogic={
+	//private final String[][] tempParseLogic={
+	private final String[][] parseLogic={
 		{"ROOT"},//Think of ROOT as a "STATEMENT_LIST"
 		{"",	"STATEMENT"},
 		{"",	"ROOT","semicolon","ROOT"},//This is, in my opinion, an easier way to do a list
@@ -126,30 +126,21 @@ class Parser {
 	 */
 	private void init() {
 		stack=new ArrayList<>();
-		parseLogic=new TreeMap<>();
-		//String[] names={"ROOT","STATEMENT_LIST"};
-		/*final int NUMBER_OF_NAMES=3;
-		for(int i=0;i<NUMBER_OF_NAMES;++i){
-			ArrayList<String> tmp=new ArrayList<>();
-			String name;
-			switch(i) {
-				case 0:
-					name="ROOT";
-					tmp.add("STATEMENT_LIST");
-					break;
-				case 1:
-					name="STATEMENT_LIST";
-					tmp.add("STATEMENT");
-					tmp.add("STATEMENT_LIST");
-					break;
-				case 2:
-					name="STATEMENT";
-					tmp.add("");
-					break;
-				default:
-					name="ERROR IN HANDLING TREE LOGIC";
+		/*parseLogic=new HashMap<>();//TODO: It's probably actually easier to just use exactly what I have
+		var currentName=new String();
+		ArrayList<ArrayList<String>> value;
+		for (int i=0;i<tempParseLogic.length;++i) {
+			String[] row=tempParseLogic[i];
+			if (row.length==1) {
+				if (currentName!="") {
+					//TODO: Write data to table
+				}
+				currentName=row[0];
+				value=new ArrayList<>();
+			}else if(row[0]=="") {
+				var temp=new ArrayList<String>();
+				//TODO: Add this row, excuding the first item, to `value`
 			}
-			parseLogic.put(name,tmp);
 		}*/
 	}
 	/**

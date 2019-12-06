@@ -76,25 +76,28 @@ class Tokeniser{
 	 */
 	private ChamlcToken stackToTok() {
 		final int row=this.row,col=this.col;
-		int len=backlog.length();
-		ChamlcToken scopeTooWide=new ChamlcToken(-1, "The scope for this token was too wide!",row,col);
+		final int len=backlog.length();
+		final ChamlcToken scopeTooWide=new ChamlcToken(-1, "The scope for this token was too wide!",row,col);
 		if (len==0) return new ChamlcToken(-1, "No chars in stack!",row,col);
-		char current=backlog.charAt(0);
+		final char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
 		switch(current) {
 			case '#':
+				if (len==1) {
+					return new ChamlcToken(-1, "This would be a shabang or a pre-processor directive but it needs more chars",row,col);
+				}
 				if (backlog.charAt(1)=='!') {
 					if (row!=1||col!=1) return new ChamlcToken(-1,"out of place shabang!",row,col);
 				}else{
-					if (backlog.length()>3) return scopeTooWide;
-					if (backlog.length()==2) return new ChamlcToken(-1, "pre-processor directive needs one more character", row, col);
+					if (len>3) return scopeTooWide;
+					if (len==2) return new ChamlcToken(-1, "pre-processor directive needs one more character", row, col);
 					switch(backlog.charAt(1)){
 						case '<'://#<[
 							return new ChamlcToken("import","",row,col);
 						case '+'://#+[
 							return new ChamlcToken("syntaxExtension","",row,col);
 					}
-					break;
+					return new ChamlcToken(-1, "Stray # character!",row,col);
 				}
 			case '/':
 				if (len==1) {
@@ -129,7 +132,7 @@ class Tokeniser{
 						return new ChamlcToken("multiComment",tempBuffer.toString(),row,col);
 					default: 
 						if (current=='/') return new ChamlcToken(-1, "Stray / character!",row,col);
-						else return new ChamlcToken(-1, "Stray # character!",row,col);	
+						else return new ChamlcToken(-1, "Stray # character!",row,col);
 				}
 			case '"':
 				tempBuffer=new StringBuffer();
