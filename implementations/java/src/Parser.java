@@ -121,12 +121,6 @@ class Parser {
 		{"",	"IDENTIFIER_LIST","comma","IDENTIFIER_LIST"},
 	};
 	/**
-	 * Return true when a reduction is made, false if nothing changed
-	 */
-	public boolean reduce(){
-		return true;//TODO: Dummy function
-	}
-	/**
 	 * The one place to do 90% of constructor related stuff
 	 */
 	private void init() {
@@ -159,6 +153,32 @@ class Parser {
 		return tr.read();
 	}
 	private ArrayList<ParseNode> stack;
+	/**
+	 * Return true when a reduction is made, false if nothing changed
+	 */
+	public boolean reduce(){
+		//number largest
+		//Iterate over items in parseLogic
+			//If the length is greater than 1
+				//Iterate over items in this item in reverse
+					//match count=0
+					//if this item.name matches the same position in the stack
+						//increase match count by 1
+					//else if match count is greater than zero and equal to item.len-1
+						//if match count is greater than parseLogic[largest].size()-1
+							//largest = index of parselogic
+		//if largest 
+		//get name of reduction
+		//make tree node of name
+		//add all matched nodes (parseLogic[largest].size()-2) to tree
+		//remove matched nodes from stack
+		//insert tree into stack
+		return true;//TODO: Dummy function
+	}
+	/**
+	 * Move a token over
+	 * @throws IOException
+	 */
 	private void shift() throws IOException {
 		stack.add(new ParseLeaf(getNextToken()));
 	}
