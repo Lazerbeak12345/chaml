@@ -121,6 +121,12 @@ class Parser {
 		{"",	"IDENTIFIER_LIST","comma","IDENTIFIER_LIST"},
 	};
 	/**
+	 * Return true when a reduction is made, false if nothing changed
+	 */
+	public boolean reduce(){
+		return true;//TODO: Dummy function
+	}
+	/**
 	 * The one place to do 90% of constructor related stuff
 	 */
 	private void init() {
