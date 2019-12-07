@@ -82,20 +82,19 @@ class Parser {
 		{"",	"WS_OR_COMMENT","WS_OR_COMMENT"},
 		{"STATEMENT"},
 		{"",	"WS_OR_COMMENT","STATEMENT"},//before every statement, or collection of statements, allow WS or COMMENT
-		{"",	"identifier","equals","string"},
-		{"",	"identifier","equals","char"},
-		{"",	"identifier","equals","number"},
-		{"",	"identifier","equals","FUNCTION"},
-		{"",	"identifier","equals","STATEMENT"},//Two or more vars can share a value
-		{"",	"identifier",                      "FUNCTION_CALL"},
-		{"",	"STATEMENT",                       "FUNCTION_CALL"},//You can call the return of a function
-		{"",	"STATEMENT","subitem","identifier","FUNCTION_CALL"},//You can call the subitem of a statement
-		//TODO: Make "EXPRESSION"
-		{"VALUE_LIST"},
+		{"",	"identifier","equals","EXPRESSION"},
+		//{"",	"identifier","equals","STATEMENT"},//Two or more vars can share a value
+		{"EXPRESSION"},
 		{"",	"string"},
+		{"",	"char"},
 		{"",	"char"},
 		{"",	"number"},
 		{"",	"FUNCTION"},
+		{"",	"EXPRESSION","subitem","identifier"},
+		{"",	"EXPRESSION","FUNCTION_CALL"},
+		{"",	"identifier","FUNCTION_CALL"},
+		{"VALUE_LIST"},
+		{"",	"EXPRESSION"},
 		{"",	"VALUE_LIST","comma","VALUE_LIST"},
 		{"",	"VALUE_LIST","comma","IDENTIFIER_LIST"},//If there are identifiers mixed in, grab them too.
 		{"",	"IDENTIFIER_LIST","comma","VALUE_LIST"},
