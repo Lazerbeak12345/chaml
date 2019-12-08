@@ -1,5 +1,5 @@
 /**
- * An implimentation of else and elif using only if
+ * An implementation of else and elif using only if
  */
 =<(b,f) {
 	if(b,f);

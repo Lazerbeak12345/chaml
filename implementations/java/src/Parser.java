@@ -138,7 +138,7 @@ class Parser {
 				value=new ArrayList<>();
 			}else if(row[0]=="") {
 				var temp=new ArrayList<String>();
-				//TODO: Add this row, excuding the first item, to `value`
+				//TODO: Add this row, excluding the first item, to `value`
 			}
 		}*/
 	}
