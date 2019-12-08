@@ -158,15 +158,24 @@ class Parser {
 	 */
 	public boolean reduce(){
 		//number largest
+		int largest=-1;
 		//Iterate over items in parseLogic
+		for(int i=0;i<parseLogic.length;++i) {
+			String[] row=parseLogic[i];
 			//If the length is greater than 1
+			if(row.length>1){
 				//Iterate over items in this item in reverse
+				for(int ii=0;ii<row.length;++ii) {
 					//match count=0
+					int matchCount=0;
 					//if this item.name matches the same position in the stack
 						//increase match count by 1
 					//else if match count is greater than zero and equal to item.len-1
 						//if match count is greater than parseLogic[largest].size()-1
 							//largest = index of parselogic
+				}
+			}
+		}
 		//if largest 
 		//get name of reduction
 		//make tree node of name
