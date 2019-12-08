@@ -1,4 +1,4 @@
-Pair=import("pair");
+Pair=#<[pair];
 LL=(firstItem) {
 	p=Pair(firstItem,()=>LL({}));
 	o={};

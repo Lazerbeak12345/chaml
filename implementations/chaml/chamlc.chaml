@@ -1,9 +1,9 @@
-IO=import("io");
+IO=#<[io];
 
-//env=import("system").env; /// Location where UNIX environment variables are found
+//env=#<[system].env; /// Location where UNIX environment variables are found
 
-tr=import("./lib/syntax-tree");
-tk=import("./lib/syntax-tokens");
+tr=#<[./lib/syntax-tree"];
+tk=#<[./lib/syntax-tokens"];
 
 //If I get stuck, here's some URLs for help
 //https://en.wikipedia.org/wiki/Recursive_descent_parser

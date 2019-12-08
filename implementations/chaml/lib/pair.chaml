@@ -2,7 +2,7 @@
  * This is converted from lamda code on Benjamin C. Pierce's "Type Systems for
  * Programming Languages," January 15, 2000 draft
  */
-Bool=import("bool");
+Bool=#<[bool];
 Pair=(f,s) {
 	p=(b)=>b(f,s);
 	p.get=p;

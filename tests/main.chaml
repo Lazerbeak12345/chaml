@@ -1,5 +1,5 @@
-//#!/sh/a/bang
-tst=import("./testLib");
+#!/sh/a/bang
+tst=#<[./testLib];
 tst.suite("Core",{
 	tst.test("Export & Import was done correctly",{
 		tst.assert(0,0);

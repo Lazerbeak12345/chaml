@@ -1,4 +1,4 @@
-Bool=import("bool");
+Bool=#<[bool];
 if=Bool.if;
 and=Bool.and;
 or=Bool.or;

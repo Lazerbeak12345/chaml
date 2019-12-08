@@ -1,5 +1,5 @@
-#+[throw]//Is this how it should be?
-#<[print]
+#+[throw];//Is this how it should be?
+print=#<[print];//Import print
 suites=[];
 out=()=>out;
 out.suite=(name,callback) {

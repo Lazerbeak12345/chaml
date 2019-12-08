@@ -1,7 +1,7 @@
 /**
  * A file made for the sole purpose of testing the class system.
  */
-Out=import("Out");
+Out=#<[Out];
 
 /*
 Creature +-> Mammal +--> Rabbit

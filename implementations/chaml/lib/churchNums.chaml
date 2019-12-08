@@ -3,8 +3,8 @@
  * This is converted from lamda code on Benjamin C. Pierce's "Type Systems for
  * Programming Languages," January 15, 2000 draft
  */
-Bool=import("bool");
-Pair=import("pair");
+Bool=#<[bool];
+Pair=#<[pair];
 c={};
 
 zero=Bool.f;
