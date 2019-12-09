@@ -200,7 +200,7 @@ class Tokeniser{
 					case '<':return new ChamlcToken("return","",row,col);
 				}
 			case ';':
-				if (len==1) return new ChamlcToken("semicolon","",row,col);
+				if (len==1) return new ChamlcToken("statementSeparator","",row,col);
 				else return scopeTooWide;
 			case ',':
 				if (len==1) return new ChamlcToken("comma","",row,col);

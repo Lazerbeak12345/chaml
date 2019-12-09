@@ -23,7 +23,7 @@ public class ChamlcToken {
 		"return",
 		"equals",
 		"overload",
-		"semicolon",
+		"statementSeparator",
 		"comma",
 		"subitem",
 		"number",
@@ -158,7 +158,7 @@ public class ChamlcToken {
 			case "overload":
 				System.out.print('~');
 				break;
-			case "semicolon":
+			case "statementSeparator":
 				System.out.print(';');
 				break;
 			case "comma":
