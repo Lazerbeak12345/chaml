@@ -17,7 +17,17 @@ class Parser {
 		}
 		try {
 			Parser par = new Parser(args[0]);
-			par.parse();
+			var t=par.parse();//.get(0).printAsXML();
+			System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<parseNodes src='%s'>\n",args[0]);
+			if(t.size()!=1) {
+				System.out.printf("<parseError leftoverCount=\"%d\">",t.size());
+				for(int i=0;i<t.size();++i){
+					t.get(i).printAsXML();
+					System.out.println();
+				}
+				System.out.print("</parseError>");
+			}else t.get(t.size()-1).printAsXML(); 
+			System.out.println("</parseNodes>");
 		} catch (FileNotFoundException e) {
 			System.out.printf("A file of the name \"%s\" could not be found!",args[0]);
 		} catch (IOException e) {
@@ -74,7 +84,7 @@ class Parser {
 	private final String[][] parseLogic={
 		{"ROOT"},//Think of ROOT as a "STATEMENT_LIST"
 		{"",	"STATEMENT"},
-		{"",	"ROOT","semicolon","ROOT"},//This is, in my opinion, an easier way to do a list
+		{"",	"ROOT","statementSeparator","STATEMENT"},
 		{"WS_OR_COMMENT"},
 		{"",	"whitespace"},
 		{"",	"comment"},
@@ -125,22 +135,6 @@ class Parser {
 	 */
 	private void init() {
 		stack=new ArrayList<>();
-		/*parseLogic=new HashMap<>();//TODO: It's probably actually easier to just use exactly what I have
-		var currentName=new String();
-		ArrayList<ArrayList<String>> value;
-		for (int i=0;i<tempParseLogic.length;++i) {
-			String[] row=tempParseLogic[i];
-			if (row.length==1) {
-				if (currentName!="") {
-					//TODO: Write data to table
-				}
-				currentName=row[0];
-				value=new ArrayList<>();
-			}else if(row[0]=="") {
-				var temp=new ArrayList<String>();
-				//TODO: Add this row, excluding the first item, to `value`
-			}
-		}*/
 	}
 	/**
 	 * Get the next token.
@@ -152,57 +146,74 @@ class Parser {
 	public ChamlcToken getNextToken() throws IOException {
 		return tr.read();
 	}
+	public boolean isNextTokenReady() {
+		return !tr.isEnd();
+	}
 	private ArrayList<ParseNode> stack;
 	/**
 	 * Return true when a reduction is made, false if nothing changed
 	 */
 	public boolean reduce(){
-		//number largest
+		if (hitError) return true;
 		int largest=-1;
-		//Iterate over items in parseLogic
+		String reductionName="ERROR";
 		for(int i=0;i<parseLogic.length;++i) {
 			String[] row=parseLogic[i];
-			//If the length is greater than 1
-			if(row.length>1){
-				//Iterate over items in this item in reverse
-				for(int ii=0;ii<row.length;++ii) {
-					//match count=0
-					int matchCount=0;
-					//if this item.name matches the same position in the stack
-						//increase match count by 1
-					//else if match count is greater than zero and equal to item.len-1
-						//if match count is greater than parseLogic[largest].size()-1
-							//largest = index of parselogic
+			if(row.length<1)
+				continue;
+			else if(row.length==1)
+				reductionName=row[0];
+			else if(stack.size()>=row.length-1){
+				for(int amountFromEnd=0;amountFromEnd<row.length;++amountFromEnd){
+					int matchCount=0,
+						rowPos=(row.length-1)-amountFromEnd,
+						stackPos=(stack.size()-1)-amountFromEnd;
+					if(stackPos<0) continue;
+					if(row[
+						rowPos
+						].equals(stack.get(
+							stackPos
+							).getName()))
+						matchCount++;
+					else if(matchCount>0&&matchCount==row.length-1
+						&&(largest==-1||matchCount>parseLogic[largest].length-1))
+							largest=i;
 				}
 			}
 		}
-		//if largest 
-		//get name of reduction
-		//make tree node of name
-		//add all matched nodes (parseLogic[largest].size()-2) to tree
-		//remove matched nodes from stack
-		//insert tree into stack
-		return true;//TODO: Dummy function
+		if(largest!=-1) {
+			//Make list of nodes to add to tree
+			var nodes=new ArrayList<ParseNode>();
+			int count=parseLogic[largest].length-1;//Don't count the first object
+			for(int i=0;i<=count;++i){
+				nodes.add(stack.remove(stack.size()-1));
+			}
+			stack.add(new ParseTree(reductionName,nodes));
+			return true;
+		}else return false;
 	}
 	/**
 	 * Move a token over
 	 * @throws IOException
 	 */
 	private void shift() throws IOException {
-		stack.add(new ParseLeaf(getNextToken()));
+		//stack.add(new ParseLeaf(getNextToken()));
+		var n=new ParseLeaf(getNextToken());
+		hitError=n.getNumber()<0;
+		stack.add(n);
 	}
+	boolean hitError=false;
 	/**
 	 * Actually run the parser, completely
 	 * @return
 	 * @throws IOException
 	 */
-	public ParseTreeRoot parse() throws IOException {
-		ParseTreeRoot root=new ParseTreeRoot("");
-		shift();
-		shift();
-		root.add(stack.get(0));
-		root.add(stack.get(1));
-		root.printAsXML();
-		return root;
+	public ArrayList<ParseNode> parse() throws IOException {
+		while(isNextTokenReady()&&!hitError) {
+			do{
+				shift();
+			}while(!reduce()&&isNextTokenReady()&&!hitError);
+		}
+		return stack;
 	}
 }

@@ -30,13 +30,13 @@ public class ParseTree extends ParseNode {
 	@Override
 	public void printAsXML() {
 		if (children.size()==0)
-			System.out.printf("<%s row=\"%d\" col=\"%d\"/>",name,row,col);
+			System.out.printf("<%s row=\"%d\" col=\"%d\"/>", getName(), row, col);
 		else{
-			System.out.printf("<%s row=\"%d\" col=\"%d\">",name,row,col);
+			System.out.printf("<%s row=\"%d\" col=\"%d\">", getName(), row, col);
 			for (int i=0;i<children.size();++i) {
 				children.get(i).printAsXML();
 			}
-			System.out.print("</"+name+">");
+			System.out.print("</"+ getName() + ">");
 		}
 	}
 	/**

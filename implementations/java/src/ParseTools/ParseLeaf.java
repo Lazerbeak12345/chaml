@@ -2,23 +2,18 @@ package ParseTools;
 import TokeniserTools.ChamlcToken;
 
 public class ParseLeaf extends ParseNode {
-	ChamlcToken value;//The token itself holds the value
-	public ParseLeaf(ChamlcToken value,int row, int col) {
-		super(value.getName(),row, col);
-		this.value=value;
-	}
+	String value;
 	public ParseLeaf(ChamlcToken value) {
 		super(value.getName(),value.row,value.col);
-		this.value=value;
+		this.value=value.getVal();
 	}
-	public ParseLeaf(String n,String val,int row, int col) {
-		super(n,row,col);
-		this.value=new ChamlcToken(n, val, row, col);
+	public int getNumber() {//TODO: remove this code to save on memory later
+		return new ChamlcToken(getName(), value, row, col).getNumber();
 	}
 	@Override
 	public void printAsXML() {
 		System.out.printf("<leaf row=\"%s\" col=\"%s\">",row,col);
-		value.printAsXML();
+		new ChamlcToken(getName(), value, row, col).printAsXML();
 		System.out.println("</leaf>");
 	}
 }

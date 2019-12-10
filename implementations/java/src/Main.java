@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 //import java.io.FileNotFoundException;
 //import java.io.IOException;
 
@@ -8,6 +10,7 @@ public class Main {
 		//else{
 			String[]a={"tests/testLib.chaml"};
 			Tokeniser.main(a);
+			//Parser.main(a);
 			/*String filename=args[0];
 			try{
 				Tokeniser tok=new Tokeniser(filename);
