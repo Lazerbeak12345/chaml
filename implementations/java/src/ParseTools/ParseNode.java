@@ -16,7 +16,10 @@ public abstract class ParseNode{
 		this.col=col;
 		this.number=nameToInt(name);
 	}
-	int number;
+	private int number;
+	public int getNumber() {
+		return number;
+	}
 	/**
 	 * Convert a given name into the respective int.
 	 * 
@@ -29,7 +32,7 @@ public abstract class ParseNode{
 		for (int i=0;i<nodes.length;++i) {
 			if (name.equals(nodes[i])) return i+ChamlcToken.tokens.length;
 		}
-		return -1;
+		return ChamlcToken.nameToInt(name);
 	}
 	/**
 	 * Get the name
@@ -37,7 +40,9 @@ public abstract class ParseNode{
 	public String getName() {
 		if (number<0) {
 			return "ERROR";//A negative is an error code
-		}else return nodes[number];
+		}else if(number<ChamlcToken.tokens.length){
+			return ChamlcToken.tokens[number];
+		}else return nodes[number-ChamlcToken.tokens.length];
 	}
 	/**
 	 * Print this ParseNode as XML
