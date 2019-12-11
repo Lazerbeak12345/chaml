@@ -71,6 +71,7 @@ class Tokeniser{
 	private void init() {
 		backlog=new StringBuffer(0);
 	}
+	boolean needsMoreChars=false;
 	/**
 	 * Convert the current stack to a token, using no regexp.
 	 */
@@ -82,15 +83,19 @@ class Tokeniser{
 		final char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
 		switch(current) {
-			case '#':
+			case '#'://TODO: because the [] could be escaping anything, I need to make this into a loop-style
 				if (len==1) {
+					needsMoreChars=true;
 					return new ChamlcToken(-1, "This would be a shabang or a pre-processor directive but it needs more chars",row,col);
 				}
 				if (backlog.charAt(1)=='!') {
 					if (row!=1||col!=1) return new ChamlcToken(-1,"out of place shabang!",row,col);
 				}else{
 					if (len>3) return scopeTooWide;
-					if (len==2) return new ChamlcToken(-1, "pre-processor directive needs one more character", row, col);
+					if (len==2) {
+						needsMoreChars=true;
+						return new ChamlcToken(-1, "pre-processor directive needs one more character", row, col);
+					}
 					switch(backlog.charAt(1)){
 						case '<'://#<[
 							return new ChamlcToken("import","",row,col);
@@ -101,6 +106,7 @@ class Tokeniser{
 				}
 			case '/':
 				if (len==1) {
+					needsMoreChars=true;
 					return new ChamlcToken(-1, "This would be a comment, but it needs more indicators.",row,col);
 				}
 				switch(backlog.charAt(1)) {
@@ -300,14 +306,16 @@ class Tokeniser{
 			addAnotherToStack();
 			firstRun=false;
 		}
-		boolean keepLooking=true;
 		ChamlcToken tok=stackToTok();
+		boolean keepLooking=true;
+		needsMoreChars=false;
 		while (keepLooking) {
 			addAnotherToStack();
 			ChamlcToken temp=stackToTok();
-			keepLooking=!(temp.isErrorCode()||endOfFile);
+			keepLooking=needsMoreChars||!(temp.isErrorCode()||endOfFile);
 			if (keepLooking) {
 				tok=temp;
+				needsMoreChars=false;
 			}
 		}
 		eat();

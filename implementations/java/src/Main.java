@@ -1,5 +1,4 @@
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
+import java.io.IOException;
 
 public class Main {
 	//private static int[] version = {0,0,0};
@@ -7,8 +6,14 @@ public class Main {
 		//if (args.length==0) helpText();
 		//else{
 			String[]a={"tests/testLib.chaml"};
-			Tokeniser.main(a);
-			//Parser.main(a);
+			//String[]a={"implementations/chaml/lib/syntax-tree.chaml"};
+			//if(args.length==0||args[0]=="t")
+			char c;
+			try{c=(char) System.in.read();}catch(IOException e){e.printStackTrace();return;}
+			if(c=='t')
+				Tokeniser.main(a);
+			else
+				Parser.main(a);
 			/*String filename=args[0];
 			try{
 				Tokeniser tok=new Tokeniser(filename);
