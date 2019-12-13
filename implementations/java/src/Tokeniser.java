@@ -82,7 +82,7 @@ class Tokeniser{
 		final char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
 		switch(current) {
-			case '#'://TODO: because the [] could be escaping anything, I need to make this into a loop-style
+			case '#':
 				if (len==1) {
 					needsMoreChars=true;
 					return new ChamlcToken(-1, "This would be a shabang or a pre-processor directive but it needs more chars",row,col);
@@ -90,18 +90,30 @@ class Tokeniser{
 				if (backlog.charAt(1)=='!') {
 					if (row!=1||col!=1) return new ChamlcToken(-1,"out of place shabang!",row,col);
 				}else{
-					if (len>3) return scopeTooWide;
 					if (len==2) {
 						needsMoreChars=true;
 						return new ChamlcToken(-1, "pre-processor directive needs one more character", row, col);
 					}
+					int tokenType=-1;
 					switch(backlog.charAt(1)){
 						case '<'://#<[
-							return new ChamlcToken("import","",row,col);
+							tokenType=ChamlcToken.nameToInt("import");
+							break;
 						case '+'://#+[
-							return new ChamlcToken("syntaxExtension","",row,col);
+							tokenType=ChamlcToken.nameToInt("syntaxExtension");
+							break;
+						default:return new ChamlcToken(-1, "Stray '"+backlog.charAt(1)+"' after #!", row, col);
 					}
-					return new ChamlcToken(-1, "Stray # character!",row,col);
+					tempBuffer=new StringBuffer();
+					for (int i=2;i<len;++i) {
+						char posC=backlog.charAt(i);
+						if (isCharEnd(posC)) return prematureEOF();
+						if (posC==']'&&i+1<len) {//if there is a character after the ]
+							return scopeTooWide;
+				}
+						if (i<len-1) tempBuffer.append(posC);
+					}
+					return new ChamlcToken(tokenType,tempBuffer.toString(),row,col);
 				}
 			case '/':
 				if (len==1) {
@@ -110,7 +122,7 @@ class Tokeniser{
 				}
 				switch(backlog.charAt(1)) {
 					case '!':
-						if (current!='#') return new ChamlcToken(-1, "Stray ! character!",row,col);
+						if (current!='#') return new ChamlcToken(-1, "Stray '!' character following a '#'!",row,col);
 					case '/':
 						tempBuffer=new StringBuffer();
 						for (int i=2;i<len;++i) {
@@ -278,7 +290,7 @@ class Tokeniser{
 		backlog.delete(0,backlog.length());
 		backlog.append(temp);
 	}
-	private int row=1,col=1;
+	private int row=1,col=1;//TODO: Keep track of start & end positions
 	private void addAnotherToStack() throws IOException {
 		char c=(char)fr.read();
 		if (c=='\n') {
@@ -314,7 +326,7 @@ class Tokeniser{
 			ChamlcToken temp=stackToTok();
 			keepLooking=needsMoreChars||!(temp.isErrorCode()||endOfFile);
 			if (keepLooking) {
-				tok=temp;
+				if(!temp.isErrorCode()) tok=temp;
 				needsMoreChars=false;
 			}
 		}
