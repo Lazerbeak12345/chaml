@@ -203,6 +203,7 @@ class Tokeniser{
 				switch(backlog.charAt(1)) {
 					case '>':return new ChamlcToken("lambda","",row,col);
 					case '<':return new ChamlcToken("return","",row,col);
+					default:return new ChamlcToken(-1,"Stray '"+backlog.charAt(1)+"' character following '='!",row,col);
 				}
 			case ';':
 				if (len==1) return new ChamlcToken("statementSeparator","",row,col);
