@@ -17,10 +17,10 @@ out.assert=(a,b) {
 	});
 };
 out.run={
-	suites.assyncEach((index,suite) {
+	suites.asyncEach((index,suite) {
 		print("Now running suite \"".plus(suite.name).plus("\"\n"));
 		try({
-			tests.assyncForEach((index,test) {
+			tests.asyncForEach((index,test) {
 				print("\tNow running test \"".plus(test.name).plus("\"\n"));
 				try({
 					test();
