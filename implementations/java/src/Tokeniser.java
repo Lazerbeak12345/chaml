@@ -76,10 +76,9 @@ class Tokeniser{
 	 * Convert the current stack to a token, using no regexp.
 	 */
 	private ChamlcToken stackToTok() {
-		final int row=this.row,col=this.col;
-		final int len=backlog.length();
-		final ChamlcToken scopeTooWide=new ChamlcToken(-1, "The scope for this token was too wide!",row,col);
+		final int row=this.row,col=this.col,len=backlog.length();
 		if (len==0) return new ChamlcToken(-1, "No chars in stack!",row,col);
+		final ChamlcToken scopeTooWide=new ChamlcToken(-1, "The scope for this token was too wide!",row,col);
 		final char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
 		switch(current) {
