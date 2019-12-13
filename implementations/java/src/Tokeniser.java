@@ -275,7 +275,7 @@ class Tokeniser{
 	 */
 	private void eat() {
 		char temp=backlog.charAt(backlog.length()-1);
-		backlog=new StringBuffer(0);
+		backlog.delete(0,backlog.length());
 		backlog.append(temp);
 	}
 	private int row=1,col=1;
