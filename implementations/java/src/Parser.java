@@ -91,6 +91,8 @@ class Parser {
 		{"",	"multiComment"},
 		{"",	"WS_OR_COMMENT","WS_OR_COMMENT"},
 		{"STATEMENT"},
+		{"",	"import"},
+		{"",	"syntaxExtension"},
 		{"",	"WS_OR_COMMENT","STATEMENT"},//before every statement, or collection of statements, allow WS or COMMENT
 		{"",	"identifier","equals","EXPRESSION"},
 		//{"",	"identifier","equals","STATEMENT"},//Two or more vars can share a value
