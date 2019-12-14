@@ -63,17 +63,12 @@ much.
   - Syntax modules included at the beginning of the file, much like imports
 - Functions are call by value
 - Everything is a function
-- Any operator may be applied to any variable, at all.
-  - EX: while `7.times(10)` returns `70`, a function that returns 7 multiplied
-  by a function that returns 10 returns a function that returns the result of
-  that operator applied to each value, respectively.
-
-```chaml
-retSeven=()=>7;
-retTen=()=>10;
-resultGetter=retSeven.times(retTen);
-endResult=resultGetter();
-```
+- Any operator may be applied to any (or no) variable/value.
+  - The operators in this list are in two groups. Operations on the value are
+  `.` and the function call, where it is `(` evoked, `,` separated, and `)`
+  terminated list of argument values. Operations on the variable are `=` (for
+  assignment) and `~` (for overloading of a function with a deduced [yet
+  definitively given] argument length)
 
 ## Table of Contents
 
