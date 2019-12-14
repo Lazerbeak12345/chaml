@@ -118,7 +118,7 @@ much.
   - [x] Functions
   - [x] Operators
   - [x] Types
-  - [ ] Overloading
+  - [1/5] Overloading
     - [ ] Overloading functions
     - [ ] Overloading types
     - [ ] Overloading operators
@@ -567,6 +567,25 @@ to hard to use booleans to define it, but would have some performance drawbacks)
 
 Strings are just arrays of chars. Shorthand for `['h','i']` is `"hi"`. Possibly
 a default Syntax Extension? Inherits from `Arr`, of course.
+
+## Overloading
+
+The CHAML language (and one might even say _the CHAMLc programming environment_)
+is designed to allow for as much overloading as possible.
+
+Most languages have this concept, but just in case you either haven't heard of
+it, or don't know what it's called (or perhaps even need a refresher):
+
+In computer programming, overloading most often refers to the ability to
+situationally extend, at a very "meta" programming level, what the default
+"core" functionality of the language is. (An example could be an API programmer
+allowing an object that is part of the API to be multiplied by a scalar, where
+that object, by default, does not allow this. Matrices could be an application
+of this example)
+
+Examples of varieties include function overloading (most common), operator
+overloading (less common), and _syntax_ overloading (least common).
+CHAML supports all three.
 
 ## Other features
 
