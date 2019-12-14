@@ -65,9 +65,9 @@ much.
 - Everything is a function
 - Any operator may be applied to any (or no) variable/value.
   - The operators in this list are in two groups. Operations on the value are
-  `.` and the function call, where it is `(` evoked, `,` separated, and `)`
-  terminated list of argument values. Operations on the variable are `=` (for
-  assignment) and `~` (for overloading of a function with a deduced [yet
+  `.` `=<` `=>`, and the function call, where it is `(` evoked, `,` separated,
+  and `)` terminated list of argument values. Operations on the variable are `=`
+  (for assignment) and `~` (for overloading of a function with a deduced [yet
   definitively given] argument length)
 
 ## Table of Contents
