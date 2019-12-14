@@ -6,14 +6,16 @@ import TokeniserTools.ChamlcToken;
  * A tree or leaf node
  */
 public abstract class ParseNode{
-	int row,col;
+	int row,col,start_r,start_c;
 	public static String[] nodes={
 		"_leaf_",
 		"ROOT"
 	};
-	public ParseNode(String name,int row,int col) {
+	public ParseNode(String name,int row,int col,int start_r,int start_c) {
 		this.row=row;
 		this.col=col;
+		this.start_r=start_r;
+		this.start_c=start_c;
 		this.number=nameToInt(name);
 	}
 	private int number;

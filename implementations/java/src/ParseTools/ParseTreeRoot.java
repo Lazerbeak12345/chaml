@@ -19,12 +19,12 @@ public class ParseTreeRoot extends ParseTree {
 	@Override
 	public void printAsXML() {
 		//TODO: filter out bad xml
-		System.out.printf("<%s row=\"%d\" col=\"%d\" src=\"%s\"", getName(), row, col, src);
-		if (children.size()==0) System.out.print("/>");
+		System.out.printf("<%s row=\"%d\" col=\"%d\" src=\"%s\" start_c=\"%d\" start_r=\"%d\"", getName(), row, col, src);
+		if (size()==0) System.out.print("/>");
 		else{
 			System.out.print(">");
-			for (int i=0;i<children.size();++i) {
-				children.get(i).printAsXML();
+			for (int i=0;i<size();++i) {
+				getChild(i).printAsXML();
 			}
 			System.out.print("</"+ getName() + ">");
 		}
