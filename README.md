@@ -95,6 +95,8 @@ much.
       - From inside a one-liner
       - From a block function
   - Operators
+  - Overloading
+    - Overloading functions
   - Other features
   - Syntax
     - Comments
@@ -118,8 +120,8 @@ much.
   - [x] Functions
   - [x] Operators
   - [x] Types
-  - [1/5] Overloading
-    - [ ] Overloading functions
+  - [2/5] Overloading
+    - [x] Overloading functions
     - [ ] Overloading types
     - [ ] Overloading operators
     - [ ] Overloading syntax - (points to dedicated section)
@@ -586,6 +588,10 @@ of this example)
 Examples of varieties include function overloading (most common), operator
 overloading (less common), and _syntax_ overloading (least common).
 CHAML supports all three.
+
+### Overloading functions in CHAML
+
+go to [Functions/Overloading functions]
 
 ## Other features
 
