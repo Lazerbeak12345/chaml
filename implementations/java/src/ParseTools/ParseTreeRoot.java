@@ -13,13 +13,13 @@ public class ParseTreeRoot extends ParseTree {
 		this.src=src;
 	}
 	public ParseTreeRoot(String src){
-		super("ROOT",0,0);
+		super("ROOT",0,0,0,0);
 		this.src=src;
 	}
 	@Override
 	public void printAsXML() {
 		//TODO: filter out bad xml
-		System.out.printf("<%s row=\"%d\" col=\"%d\" src=\"%s\" start_c=\"%d\" start_r=\"%d\"", getName(), row, col, src);
+		System.out.printf("<%s src=\"%s\" row=\"%d\" col=\"%d\" start_c=\"%d\" start_r=\"%d\"",getName(),src,row,col,start_r,start_c);
 		if (size()==0) System.out.print("/>");
 		else{
 			System.out.print(">");

@@ -3,34 +3,34 @@ print=#<[print];//Import print
 suites=[];
 out=()=>out;
 out.suite=(name,callback) {
-	callback.name=name;
-	suites.push(callback);
+    callback.name=name;
+    suites.push(callback);
 };
 tests=[];
 out.test=(name,callback) {
-	callback.name=name;
-	tests.push(callback);
+    callback.name=name;
+    tests.push(callback);
 };
 out.assert=(a,b) {
-	if(not(eq(a,b)),{
-		throw("Assert failed!");
-	});
+    if(not(eq(a,b)),{
+        throw("Assert failed!");
+    });
 };
 out.run={
-	suites.asyncEach((index,suite) {
-		print("Now running suite \"".plus(suite.name).plus("\"\n"));
-		try({
-			tests.asyncForEach((index,test) {
-				print("\tNow running test \"".plus(test.name).plus("\"\n"));
-				try({
-					test();
-				},(err){
-					print.err("\tSuite \"".plus(test.name).plus("\" failed with err: \n").plus(err.msg).plus("\n"));
-				});
-			});
-		},(err) {
-			print.err("Suite \"".plus(suite.name).plus("\" failed with err: \n").plus(err.msg).plus("\n"));
-		});
-	});
+    suites.asyncEach((index,suite) {
+        print("Now running suite \"".plus(suite.name).plus("\"\n"));
+        try({
+            tests.asyncForEach((index,test) {
+                print("\tNow running test \"".plus(test.name).plus("\"\n"));
+                try({
+                    test();
+                },(err){
+                    print.err("\tSuite \"".plus(test.name).plus("\" failed with err: \n").plus(err.msg).plus("\n"));
+                });
+            });
+        },(err) {
+            print.err("Suite \"".plus(suite.name).plus("\" failed with err: \n").plus(err.msg).plus("\n"));
+        });
+    });
 };
 =<out;

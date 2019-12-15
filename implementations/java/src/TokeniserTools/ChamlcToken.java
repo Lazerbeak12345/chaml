@@ -50,6 +50,8 @@ public class ChamlcToken {
 	public ChamlcToken(int number,String val,int row,int col,int start_r,int start_c) {
 		this.row=row;
 		this.col=col;
+		this.start_r=start_r;
+		this.start_c=start_c;
 		this.number=number;
 		this.val=val;
 	}
@@ -80,8 +82,8 @@ public class ChamlcToken {
 	public void printAsXML() {
 		if (val.length()>0) {
 			//https://stackoverflow.com/a/46637835
-			if (number>=0)System.out.printf("<%s row=\"%d\" col=\"%d\" start_c=\"%d\" start_r=\"%d\">",getName(),row,col,start_c,start_r);
-			else System.out.printf("<%s code=\"%d\" row=\"%d\" col=\"%d\" start_c=\"%d\" start_r=\"%d\">",getName(),number*-1,row,col,start_c,start_r);
+			if (number>=0)System.out.printf("<%s row=\"%d\" col=\"%d\" start_r=\"%d\" start_c=\"%d\">",getName(),row,col,start_r,start_c);
+			else System.out.printf("<%s code=\"%d\" row=\"%d\" col=\"%d\" start_r=\"%d\" start_c=\"%d\">",getName(),number*-1,row,col,start_r,start_c);
 			for (int i=0;i<val.length();++i) {
 				switch(val.charAt(i)) {
 					case '<':
@@ -103,7 +105,7 @@ public class ChamlcToken {
 				}
 			}
 			System.out.printf("</%s>\n",getName());
-		}else System.out.printf("<%s row=\"%d\" col=\"%d\" start_c=\"%d\" start_r=\"%d\"/>\n",getName(),row,col,start_c,start_r);
+		}else System.out.printf("<%s row=\"%d\" col=\"%d\" start_r=\"%d\" start_c=\"%d\"/>\n",getName(),row,col,start_r,start_c);
 	}
 	public void printLiteral() {
 		switch(getName()) {
