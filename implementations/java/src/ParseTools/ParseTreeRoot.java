@@ -8,14 +8,14 @@ public class ParseTreeRoot extends ParseTree {
 		super("ROOT",children);
 		this.src=src;
 	}
-	public ParseTreeRoot(String src,ParseNode child){
+	/*public ParseTreeRoot(String src,ParseNode child){
 		super("ROOT",child);
 		this.src=src;
-	}
-	public ParseTreeRoot(String src){
+	}*/
+	/*public ParseTreeRoot(String src){
 		super("ROOT",0,0,0,0);
 		this.src=src;
-	}
+	}*/
 	@Override
 	public void printAsXML() {
 		//TODO: filter out bad xml

@@ -1,6 +1,6 @@
 package ParseTools;
 
-import TokeniserTools.ChamlcToken;
+//import TokeniserTools.ChamlcToken;
 
 /**
  * A tree or leaf node
@@ -18,7 +18,7 @@ public abstract class ParseNode{
 		this.start_c=start_c;
 		this.number=nameToInt(name);
 	}
-	private int number;
+	private int number;//,tokNumber=0;
 	public int getNumber() {
 		return number;
 	}
@@ -32,9 +32,10 @@ public abstract class ParseNode{
 	 */
 	public static int nameToInt(String name) {
 		for (int i=0;i<nodes.length;++i) {
-			if (name.equals(nodes[i])) return i+ChamlcToken.tokens.length;
+			if (name.equals(nodes[i])) return i;//+ChamlcToken.tokens.length;
 		}
-		return ChamlcToken.nameToInt(name);
+		return -17;
+		//return ChamlcToken.nameToInt(name);
 	}
 	/**
 	 * Get the name
@@ -42,9 +43,10 @@ public abstract class ParseNode{
 	public String getName() {
 		if (number<0) {
 			return "ERROR";//A negative is an error code
-		}else if(number<ChamlcToken.tokens.length){
-			return ChamlcToken.tokens[number];
-		}else return nodes[number-ChamlcToken.tokens.length];
+		//}else if(number<ChamlcToken.tokens.length){
+		//	System.out.print("<!--??-->");
+		//	return ChamlcToken.tokens[number];
+		}else return nodes[number];//-ChamlcToken.tokens.length];
 	}
 	/**
 	 * Print this ParseNode as XML

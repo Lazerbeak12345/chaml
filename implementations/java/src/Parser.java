@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-//import java.util.HashMap;
 
 import ParseTools.*;
 import TokeniserTools.ChamlcToken;
@@ -19,14 +18,16 @@ class Parser {
 			Parser par = new Parser(args[0]);
 			var t=par.parse();//.get(0).printAsXML();
 			System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<parseNodes src='%s'>\n",args[0]);
-			if(t.size()!=1) {
+			/*if(t.size()!=1) {
 				System.out.printf("<parseError leftoverCount=\"%d\">",t.size());
 				for(int i=0;i<t.size();++i){
 					t.get(i).printAsXML();
 					System.out.println();
 				}
 				System.out.print("</parseError>");
-			}else t.get(t.size()-1).printAsXML(); 
+			}else */
+			new ParseTreeRoot(args[0],t).printAsXML();
+			//t.get(t.size()-1).printAsXML(); 
 			System.out.println("</parseNodes>");
 		} catch (FileNotFoundException e) {
 			System.out.printf("A file of the name \"%s\" could not be found!",args[0]);
@@ -69,6 +70,8 @@ class Parser {
 	 * }
 	 */
 	//private HashMap<String,ArrayList<ArrayList<String>>> parseLogic;
+	//private int[][] parseTransforms;
+	//private String[] parseNames;
 	/**
 	 * An easy to modify parseLogic. follows this JSON structure:
 	 * 
@@ -80,7 +83,6 @@ class Parser {
 	 * 	["","thing"]
 	 * ]
 	 */
-	//private final String[][] tempParseLogic={
 	private final String[][] parseLogic={
 		{"ROOT"},//Think of ROOT as a "STATEMENT_LIST"
 		{"",	"STATEMENT"},
@@ -199,7 +201,6 @@ class Parser {
 	 * @throws IOException
 	 */
 	private void shift() throws IOException {
-		//stack.add(new ParseLeaf(getNextToken()));
 		var n=new ParseLeaf(getNextToken());
 		hitError=n.getNumber()<0;
 		stack.add(n);
