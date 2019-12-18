@@ -81,22 +81,22 @@ class Tokeniser{
 	 */
 	private ChamlcToken stackToTok() {
 		final int row=this.row,col=this.col,len=backlog.length();
-		if (len==0) return new ChamlcToken(-1, "No chars in stack!",row,col,start_r,start_c);
-		final ChamlcToken scopeTooWide=new ChamlcToken(-1, "The scope for this token was too wide!",row,col,start_r,start_c);
+		if (len==0) return new ChamlcToken(-2, "No chars in stack!",row,col,start_r,start_c);
+		final ChamlcToken scopeTooWide=new ChamlcToken(-3, "The scope for this token was too wide!",row,col,start_r,start_c);
 		final char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
 		switch(current) {
 			case '#':{
 				if (len==1) {
 					needsMoreChars=true;
-					return new ChamlcToken(-1, "This would be a shabang or a pre-processor directive but it needs more chars",row,col,start_r,start_c);
+					return new ChamlcToken(-4, "This would be a shabang or a pre-processor directive but it needs more chars",row,col,start_r,start_c);
 				}
 				if (backlog.charAt(1)=='!') {
-					if (row!=1||col!=1) return new ChamlcToken(-1,"out of place shabang!",row,col,start_r,start_c);
+					if (row!=1||col!=1) return new ChamlcToken(-5,"out of place shabang!",row,col,start_r,start_c);
 				}else{
 					if (len==2) {
 						needsMoreChars=true;
-						return new ChamlcToken(-1, "pre-processor directive needs one more character",row,col,start_r,start_c);
+						return new ChamlcToken(-6, "pre-processor directive needs one more character",row,col,start_r,start_c);
 					}
 					int tokenType=-1;
 					switch(backlog.charAt(1)){
@@ -106,10 +106,10 @@ class Tokeniser{
 						case '+'://#+[
 							tokenType=ChamlcToken.nameToInt("syntaxExtension");
 							break;
-						default:return new ChamlcToken(-1, "Stray '"+backlog.charAt(1)+"' after #!",row,col,start_r,start_c);
+						default:return new ChamlcToken(-7, "Stray '"+backlog.charAt(1)+"' after #!",row,col,start_r,start_c);
 					}
 					tempBuffer=new StringBuffer();
-					for (int i=2;i<len;++i) {
+					for (int i=3;i<len;++i) {
 						char posC=backlog.charAt(i);
 						if (isCharEnd(posC)) return prematureEOF();
 						if (posC==']'&&i+1<len) {//if there is a character after the ]
@@ -122,11 +122,11 @@ class Tokeniser{
 			}case '/':{
 				if (len==1) {
 					needsMoreChars=true;
-					return new ChamlcToken(-1, "This would be a comment, but it needs more indicators.",row,col,start_r,start_c);
+					return new ChamlcToken(-8, "This would be a comment, but it needs more indicators.",row,col,start_r,start_c);
 				}
 				switch(backlog.charAt(1)) {
 					case '!':
-						if (current!='#') return new ChamlcToken(-1, "Stray '!' character following a '#'!",row,col,start_r,start_c);
+						if (current!='#') return new ChamlcToken(-9, "Stray '!' character following a '#'!",row,col,start_r,start_c);
 					case '/':
 						tempBuffer=new StringBuffer();
 						for (int i=2;i<len;++i) {
@@ -152,8 +152,8 @@ class Tokeniser{
 						}
 						return new ChamlcToken("multiComment",tempBuffer.toString(),row,col,start_r,start_c);
 					default: 
-						if (current=='/') return new ChamlcToken(-1, "Stray / character!",row,col,start_r,start_c);
-						else return new ChamlcToken(-1, "Stray # character!",row,col,start_r,start_c);
+						if (current=='/') return new ChamlcToken(-10, "Stray / character!",row,col,start_r,start_c);
+						else return new ChamlcToken(-11, "Stray # character!",row,col,start_r,start_c);
 				}
 			}case '"':{
 				tempBuffer=new StringBuffer();
@@ -173,8 +173,10 @@ class Tokeniser{
 				}
 				return new ChamlcToken("string",tempBuffer.toString(),row,col,start_r,start_c);
 			}case '\'':{
-				ChamlcToken wouldBeChar=new ChamlcToken(-1, "This would be a char, but it's missing things.",row,col,start_r,start_c);
-				if (len<=2) return wouldBeChar;
+				if (len<=2) {
+					needsMoreChars=true;
+					return new ChamlcToken(-12, "This would be a char, but it's missing things.",row,col,start_r,start_c);
+				}
 				if (backlog.charAt(2)=='\'') {
 					return new ChamlcToken("char",Character.toString(backlog.charAt(1)),row,col,start_r,start_c);
 				}
@@ -203,7 +205,7 @@ class Tokeniser{
 					if (posC!=' '&&
 						posC!='\t'&&
 						posC!='\n'&&
-						posC!='\r') return new ChamlcToken(-1,"Wasn't entirely whitespace!",row,col,start_r,start_c);
+						posC!='\r') return new ChamlcToken(-13,"Wasn't entirely whitespace!",row,col,start_r,start_c);
 				}
 				return new ChamlcToken("whitespace",tempBuffer.toString(),row,col,start_r,start_c);
 			}case '~':{
@@ -219,7 +221,7 @@ class Tokeniser{
 				switch(backlog.charAt(1)) {
 					case '>':return new ChamlcToken("lambda","",row,col,start_r,start_c);
 					case '<':return new ChamlcToken("return","",row,col,start_r,start_c);
-					default:return new ChamlcToken(-1,"Stray '"+backlog.charAt(1)+"' character following '='!",row,col,start_r,start_c);
+					default:return new ChamlcToken(-14,"Stray '"+backlog.charAt(1)+"' character following '='!",row,col,start_r,start_c);
 				}
 			}case ';':{
 				if (len==1) return new ChamlcToken("statementSeparator","",row,col,start_r,start_c);
@@ -273,10 +275,10 @@ class Tokeniser{
 			}default:{
 				if (isCharEnd(current)){
 					endOfFile=true;
-					return new ChamlcToken(-1,"eof",row,col,start_r,start_c);
+					return new ChamlcToken(-15,"eof",row,col,start_r,start_c);
 				}
-				return new ChamlcToken(-1, "Unhandled special case in tokeniser "+backlog.toString(),row,col,start_r,start_c);
-				}
+				return new ChamlcToken(-16, "Unhandled special case in tokeniser "+backlog.toString(),row,col,start_r,start_c);
+			}
 		}
 	}
 	private Boolean isCharEnd(char c) {
@@ -286,7 +288,7 @@ class Tokeniser{
 	private Boolean hitEarlyEOF=false;
 	private ChamlcToken prematureEOF() {
 		hitEarlyEOF=true;
-		return new ChamlcToken(-1, "Received an EOF too early! Was expecting the rest of a token!",row,col,start_r,start_c);
+		return new ChamlcToken(-17, "Received an EOF too early! Was expecting the rest of a token!",row,col,start_r,start_c);
 	}
 	private Boolean endOfFile=false;
 	public Boolean isEnd() {
