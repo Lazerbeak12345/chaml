@@ -86,7 +86,7 @@ class Tokeniser{
 		final char current=backlog.charAt(0);
 		StringBuffer tempBuffer;
 		switch(current) {
-			case '#':
+			case '#':{
 				if (len==1) {
 					needsMoreChars=true;
 					return new ChamlcToken(-1, "This would be a shabang or a pre-processor directive but it needs more chars",row,col,start_r,start_c);
@@ -119,7 +119,7 @@ class Tokeniser{
 					}
 					return new ChamlcToken(tokenType,tempBuffer.toString(),row,col,start_r,start_c);
 				}
-			case '/':
+			}case '/':{
 				if (len==1) {
 					needsMoreChars=true;
 					return new ChamlcToken(-1, "This would be a comment, but it needs more indicators.",row,col,start_r,start_c);
@@ -155,7 +155,7 @@ class Tokeniser{
 						if (current=='/') return new ChamlcToken(-1, "Stray / character!",row,col,start_r,start_c);
 						else return new ChamlcToken(-1, "Stray # character!",row,col,start_r,start_c);
 				}
-			case '"':
+			}case '"':{
 				tempBuffer=new StringBuffer();
 				if (len>=2&&backlog.charAt(1)=='"') {
 					if (len==2) return new ChamlcToken("string","",row,col,start_r,start_c);//empty string
@@ -172,32 +172,32 @@ class Tokeniser{
 					if (i<len-1)tempBuffer.append(posC);
 				}
 				return new ChamlcToken("string",tempBuffer.toString(),row,col,start_r,start_c);
-			case '\'':
+			}case '\'':{
 				ChamlcToken wouldBeChar=new ChamlcToken(-1, "This would be a char, but it's missing things.",row,col,start_r,start_c);
 				if (len<=2) return wouldBeChar;
 				if (backlog.charAt(2)=='\'') {
 					return new ChamlcToken("char",Character.toString(backlog.charAt(1)),row,col,start_r,start_c);
 				}
 				return scopeTooWide;
-			case '{':
+			}case '{':{
 				if (len==1) return new ChamlcToken("openC","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case '}':
+			}case '}':{
 				if (len==1) return new ChamlcToken("closeC","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case '(':
+			}case '(':{
 				if (len==1) return new ChamlcToken("openP","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case ')':
+			}case ')':{
 				if (len==1) return new ChamlcToken("closeP","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case '[':
+			}case '[':{
 				if (len==1) return new ChamlcToken("openS","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case ']':
+			}case ']':{
 				if (len==1) return new ChamlcToken("closeS","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case ' ':case '\t':case '\n':case '\r':
+			}case ' ':case '\t':case '\n':case '\r':{
 				for (int i=0;i<len;i++) {//no need to check for EOF here
 					char posC=backlog.charAt(i);
 					if (posC!=' '&&
@@ -206,10 +206,10 @@ class Tokeniser{
 						posC!='\r') return new ChamlcToken(-1,"Wasn't entirely whitespace!",row,col,start_r,start_c);
 				}
 				return new ChamlcToken("whitespace",tempBuffer.toString(),row,col,start_r,start_c);
-			case '~':
+			}case '~':{
 				if (len==1) return new ChamlcToken("overload","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case '=':
+			}case '=':{
 				if (len>2) {
 					return scopeTooWide;
 				}
@@ -221,18 +221,18 @@ class Tokeniser{
 					case '<':return new ChamlcToken("return","",row,col,start_r,start_c);
 					default:return new ChamlcToken(-1,"Stray '"+backlog.charAt(1)+"' character following '='!",row,col,start_r,start_c);
 				}
-			case ';':
+			}case ';':{
 				if (len==1) return new ChamlcToken("statementSeparator","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case ',':
+			}case ',':{
 				if (len==1) return new ChamlcToken("comma","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case '.':
+			}case '.':{
 				if (len==1) return new ChamlcToken("subitem","",row,col,start_r,start_c);
 				else return scopeTooWide;
-			case '0':case '1':case '2':case '3':case '4':case '5':case '6':
+			}case '0':case '1':case '2':case '3':case '4':case '5':case '6':
 			case '7':case '8':case '9':
-			case '-'://Also allow for negative numbers
+			case '-':{//Also allow for negative numbers
 				tempBuffer=new StringBuffer();
 				for (int i=0;i<len;++i) {
 					char posC=backlog.charAt(i);
@@ -244,7 +244,7 @@ class Tokeniser{
 					tempBuffer.append(posC);
 				}
 				return new ChamlcToken("number",tempBuffer.toString(),row,col,start_r,start_c);
-			case 'a':case 'b':case 'c':case 'd':case 'e':case 'f':case 'g':
+			}case 'a':case 'b':case 'c':case 'd':case 'e':case 'f':case 'g':
 			case 'h':case 'i':case 'j':case 'k':case 'l':case 'm':case 'n':
 			case 'o':case 'p':case 'q':case 'r':case 's':case 't':case 'u':
 			case 'v':case 'w':case 'x':case 'y':case 'z':
@@ -252,25 +252,31 @@ class Tokeniser{
 			case 'H':case 'I':case 'J':case 'K':case 'L':case 'M':case 'N':
 			case 'O':case 'P':case 'Q':case 'R':case 'S':case 'T':case 'U':
 			case 'V':case 'W':case 'X':case 'Y':case 'Z':
-			case '$':case '_':/*case '~':case '`':case '|':case '\\':case ':':
-			case '?':case '!':case '@':case '%':case '^':case '&':case '*':*/
-				tempBuffer=new StringBuffer();
+			case '$':case '_':case '`':case '|':case'\\':case ':':case '<':
+			case '?':case '!':case '@':case '%':case '^':case '&':case '*':
+			case '>':{
+				tempBuffer=new StringBuffer();//TODO: remove debug code
 				for (int i=0;i<len;++i) {
 					char posC=backlog.charAt(i);
 					if (isCharEnd(posC)) return prematureEOF();
-					if ((!Character.isLetterOrDigit(posC))&&
+					if ((!(Character.isLetterOrDigit(posC)
+						||posC=='$'||posC=='_'||posC=='`'||posC=='|'||posC=='\\'
+						||posC==':'||posC=='?'||posC=='!'||posC=='@'||posC=='%'
+						||posC=='^'||posC=='&'||posC=='*'||posC=='>'||posC=='<'//Valid strange characters that can start a token
+						||posC=='/'))&&//Valid strange characters that can't start a token
 						posC!='$'&&posC!='_') {
 						return scopeTooWide;
 					}
 					tempBuffer.append(posC);
 				}
 				return new ChamlcToken("identifier",tempBuffer.toString(),row,col,start_r,start_c);
-			default:
+			}default:{
 				if (isCharEnd(current)){
 					endOfFile=true;
 					return new ChamlcToken(-1,"eof",row,col,start_r,start_c);
 				}
 				return new ChamlcToken(-1, "Unhandled special case in tokeniser "+backlog.toString(),row,col,start_r,start_c);
+				}
 		}
 	}
 	private Boolean isCharEnd(char c) {
