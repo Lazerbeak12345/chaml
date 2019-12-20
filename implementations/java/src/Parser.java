@@ -70,8 +70,8 @@ class Parser {
 	 * }
 	 */
 	//private HashMap<String,ArrayList<ArrayList<String>>> parseLogic;
-	//private int[][] parseTransforms;
-	//private String[] parseNames;
+	private int[][] parseTransforms;
+	private int[] parseNames;
 	/**
 	 * An easy to modify parseLogic. follows this JSON structure:
 	 * 
@@ -139,6 +139,22 @@ class Parser {
 	 */
 	private void init() {
 		stack=new ArrayList<>();
+		int reductionName=-1;
+		for(int i=0;i<parseLogic.length;++i) {
+			String[] row=parseLogic[i];
+			if(row.length<1)
+				continue;
+			else if(row.length==1)
+				reductionName=ParseNode.nameToInt(row[0]);
+			else{
+				int[] newR={};
+				for(int j=0;j<row.length;++j){
+					newR[j]=ParseNode.nameToInt(row[j]);
+				}
+				parseTransforms[i]=newR;
+				parseNames[i]=reductionName;
+			}
+		}
 	}
 	/**
 	 * Get the next token.
@@ -158,9 +174,25 @@ class Parser {
 	 * Return true when a reduction is made, false if nothing changed
 	 */
 	public boolean reduce(){
-		if (hitError) return true;
+		return false;
+		/*if (hitError) return true;
 		int largest=-1;
-		String reductionName="ERROR";
+		//*
+
+		//iterate over positions in the "stack" (starting at 0)
+			//iterate over transforms
+				//iterate over items in transform
+					//if this transform item does not match
+						//go to next transform
+				//if (largest==-1) or (the length of this transform is greater than the length of the longest thus far)
+					//set the longest to be this one
+			//if longest is -1, continue
+			//iterate over items in transform in reverse
+				//remove last item from stack, and add it to the front of an array list
+			//make tree node of reduction name with stack item, adding to end of stack
+			//exit
+
+		/*String reductionName="ERROR";
 		for(int i=0;i<parseLogic.length;++i) {
 			String[] row=parseLogic[i];
 			if(row.length<1)
@@ -194,7 +226,7 @@ class Parser {
 			}
 			stack.add(new ParseTree(reductionName,nodes));
 			return true;
-		}else return false;
+		}else return false;//*/
 	}
 	/**
 	 * Move a token over
