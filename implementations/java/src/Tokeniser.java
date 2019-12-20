@@ -207,7 +207,7 @@ class Tokeniser{
 						posC!='\n'&&
 						posC!='\r') return new ChamlcToken(-13,"Wasn't entirely whitespace!",row,col,start_r,start_c);
 				}
-				return new ChamlcToken("whitespace",tempBuffer.toString(),row,col,start_r,start_c);
+				return new ChamlcToken("whitespace","",row,col,start_r,start_c);
 			}case '~':{
 				if (len==1) return new ChamlcToken("overload","",row,col,start_r,start_c);
 				else return scopeTooWide;
