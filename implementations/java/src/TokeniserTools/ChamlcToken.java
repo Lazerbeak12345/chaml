@@ -35,6 +35,7 @@ public class ChamlcToken {
 	public String getVal() {
 		return val;
 	}
+	
 	/**
 	 * Convert a given name into the respective int.
 	 * 
@@ -42,12 +43,13 @@ public class ChamlcToken {
 	 * 
 	 * @param name
 	 * @return
+	 * @throws ChamlcTokenError
 	 */
-	public static int nameToInt(String name) {
+	public static int nameToInt(String name) throws ChamlcTokenError {
 		for (int i=0;i<tokens.length;++i) {
 			if (name.equals(tokens[i])) return i;
 		}
-		return -1;
+		throw new ChamlcTokenError("Could not find given name!");
 	}
 	public ChamlcToken(int number,String val,int row,int col,int start_r,int start_c) {
 		this.row=row;
@@ -57,16 +59,14 @@ public class ChamlcToken {
 		this.number=number;
 		this.val=val;
 	}
-	public ChamlcToken(String n,String val,int row, int col,int start_r,int start_c) {
+	public ChamlcToken(String n,String val,int row, int col,int start_r,int start_c) throws ChamlcTokenError {
 		this(nameToInt(n),val,row,col,start_r,start_c);
 	}
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		if (number<0) {
-			return "error";//A negative is an error code
-		}else return tokens[number];
+		return tokens[number];
 	}
 	/**
 	 * @return the number
@@ -84,8 +84,7 @@ public class ChamlcToken {
 	public void printAsXML() {
 		if (val.length()>0) {
 			//https://stackoverflow.com/a/46637835
-			if (number>=0)System.out.printf("<%s row=\"%d\" col=\"%d\" start_r=\"%d\" start_c=\"%d\">",getName(),row,col,start_r,start_c);
-			else System.out.printf("<%s code=\"%d\" row=\"%d\" col=\"%d\" start_r=\"%d\" start_c=\"%d\">",getName(),number*-1,row,col,start_r,start_c);
+			System.out.printf("<%s row=\"%d\" col=\"%d\" start_r=\"%d\" start_c=\"%d\">",getName(),row,col,start_r,start_c);
 			for (int i=0;i<val.length();++i) {
 				switch(val.charAt(i)) {
 					case '<':

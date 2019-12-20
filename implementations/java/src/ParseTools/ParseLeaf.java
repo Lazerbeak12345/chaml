@@ -1,9 +1,11 @@
 package ParseTools;
 import TokeniserTools.ChamlcToken;
+import TokeniserTools.ChamlcTokenError;
 
 public class ParseLeaf extends ParseNode {
 	String value;
-	public ParseLeaf(ChamlcToken value) {
+
+	public ParseLeaf(ChamlcToken value) throws ChamlcTokenError {
 		super(value.getName(),value.row,value.col,value.start_r,value.start_c);
 		this.value=value.getVal();
 	}

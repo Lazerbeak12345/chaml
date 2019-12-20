@@ -1,27 +1,29 @@
 package ParseTools;
 
 import TokeniserTools.ChamlcToken;
+import TokeniserTools.ChamlcTokenError;
 
 /**
  * A tree or leaf node
  */
-public abstract class ParseNode{
-	int row,col,start_r,start_c;
-	public static String[] nodes={
-		"_leaf_",
-		"ROOT"
-	};
-	public ParseNode(String name,int row,int col,int start_r,int start_c) {
-		this.row=row;
-		this.col=col;
-		this.start_r=start_r;
-		this.start_c=start_c;
-		this.number=nameToInt(name);
+public abstract class ParseNode {
+	int row, col, start_r, start_c;
+	public static String[] nodes = { "_leaf_", "ROOT" };
+
+	public ParseNode(String name, int row, int col, int start_r, int start_c) throws ChamlcTokenError {
+		this.row = row;
+		this.col = col;
+		this.start_r = start_r;
+		this.start_c = start_c;
+		this.number = nameToInt(name);
 	}
-	private int number;//,tokNumber=0;
+
+	private int number;// ,tokNumber=0;
+
 	public int getNumber() {
 		return number;
 	}
+
 	/**
 	 * Convert a given name into the respective int.
 	 * 
@@ -29,8 +31,9 @@ public abstract class ParseNode{
 	 * 
 	 * @param name
 	 * @return
+	 * @throws ChamlcTokenError
 	 */
-	public static int nameToInt(String name) {
+	public static int nameToInt(String name) throws ChamlcTokenError {
 		for (int i=0;i<nodes.length;++i) {
 			if (name.equals(nodes[i])) return i+ChamlcToken.tokens.length;
 		}
