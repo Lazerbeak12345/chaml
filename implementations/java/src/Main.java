@@ -1,19 +1,17 @@
-import java.io.IOException;
-
 public class Main {
 	//private static int[] version = {0,0,0};
 	public static void main(String[] args) {
 		//if (args.length==0) helpText();
 		//else{
-			String[]a={"tests/testLib.chaml"};
-			//String[]a={"implementations/chaml/lib/syntax-tree.chaml"};
+			//String[]a={"tests/inheritance.chaml"};
+			String[]a={"implementations/chaml/chamlc.chaml"};
 			//if(args.length==0||args[0]=="t")
-			char c;
-			try{c=(char) System.in.read();}catch(IOException e){e.printStackTrace();return;}
-			if(c=='t')
+			//char c;
+			//try{c=(char) System.in.read();}catch(IOException e){e.printStackTrace();return;}
+			//if(c=='t')
 				Tokeniser.main(a);
-			else
-				Parser.main(a);
+			//else
+				//Parser.main(a);
 			/*String filename=args[0];
 			try{
 				Tokeniser tok=new Tokeniser(filename);
