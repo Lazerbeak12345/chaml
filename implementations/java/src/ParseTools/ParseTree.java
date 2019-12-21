@@ -2,20 +2,17 @@ package ParseTools;
 
 import java.util.ArrayList;
 
-import TokeniserTools.ChamlcTokenError;
-
 public class ParseTree extends ParseNode {
 	private ArrayList<ParseNode> children;
 
-	public ParseTree(String name, ArrayList<ParseNode> children, int row, int col, int start_r, int start_c)
-			throws ChamlcTokenError {
+	public ParseTree(String name, ArrayList<ParseNode> children, int row, int col, int start_r, int start_c) {
 		super(name,row,col,start_r,start_c);
 		this.children=new ArrayList<>();
 		for(ParseNode node:children) {
 			add(node);
 		}
 	}
-	public ParseTree(String name,ArrayList<ParseNode> children) throws ChamlcTokenError {
+	public ParseTree(String name,ArrayList<ParseNode> children) {
 		this(name,children,
 			children.get(children.size()-1).row,
 			children.get(children.size()-1).col,

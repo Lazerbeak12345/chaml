@@ -4,10 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-
-import ParseTools.*;
 import TokeniserTools.ChamlcToken;
 import TokeniserTools.ChamlcTokenError;
+import ParseTools.ParseNode;
+import ParseTools.ParseTreeRoot;
+import ParseTools.ParseLeaf;
 
 class Parser {
 	public static void main(String[] args) {
@@ -32,6 +33,8 @@ class Parser {
 			System.out.printf("A file of the name \"%s\" could not be found!", args[0]);
 		} catch (IOException e) {
 			System.out.println("Failed to read characters from given file!");
+		} catch (ChamlcTokenError e) {
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -75,7 +78,7 @@ class Parser {
 	 * 
 	 * [ ["name"], ["","first","possible"], ["","second"], ["another"], ["","thing"]
 	 * ]
-	 */
+	 *///TODO: make local to init function
 	private final String[][] parseLogic = { { "ROOT" }, // Think of ROOT as a "STATEMENT_LIST"
 			{ "", "STATEMENT" }, { "", "ROOT", "statementSeparator", "STATEMENT" }, { "WS_OR_COMMENT" },
 			{ "", "whitespace" }, { "", "comment" }, { "", "multiComment" }, { "", "WS_OR_COMMENT", "WS_OR_COMMENT" },
@@ -116,6 +119,8 @@ class Parser {
 
 	/**
 	 * The one place to do 90% of constructor related stuff
+	 * 
+	 * @throws KeyException if there is an error in the string-based parse tree
 	 */
 	private void init() {
 		stack = new ArrayList<>();
@@ -143,8 +148,8 @@ class Parser {
 	 * Intentionally @Override-able
 	 * 
 	 * @return The next token.
-	 * @throws IOException
 	 * @throws ChamlcTokenError
+	 * @throws IOException
 	 */
 	public ChamlcToken getNextToken() throws IOException, ChamlcTokenError {
 		return tr.read();
@@ -215,8 +220,8 @@ class Parser {
 	/**
 	 * Move a token over
 	 * 
-	 * @throws IOException
 	 * @throws ChamlcTokenError
+	 * @throws IOException
 	 */
 	private void shift() throws IOException, ChamlcTokenError {
 		var n=new ParseLeaf(getNextToken());
@@ -224,12 +229,15 @@ class Parser {
 		stack.add(n);
 	}
 	boolean hitError=false;
+	
 	/**
 	 * Actually run the parser, completely
+	 * 
 	 * @return
+	 * @throws ChamlcTokenError
 	 * @throws IOException
 	 */
-	public ArrayList<ParseNode> parse() throws IOException {
+	public ArrayList<ParseNode> parse() throws IOException, ChamlcTokenError {
 		while(isNextTokenReady()&&!hitError) {
 			do{
 				shift();

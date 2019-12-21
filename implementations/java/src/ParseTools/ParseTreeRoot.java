@@ -2,12 +2,10 @@ package ParseTools;
 
 import java.util.ArrayList;
 
-import TokeniserTools.ChamlcTokenError;
-
 public class ParseTreeRoot extends ParseTree {
 	String src;
 
-	public ParseTreeRoot(String src, ArrayList<ParseNode> children) throws ChamlcTokenError {
+	public ParseTreeRoot(String src, ArrayList<ParseNode> children) {
 		super("ROOT",children);
 		this.src=src;
 	}

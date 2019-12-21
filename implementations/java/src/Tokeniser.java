@@ -4,42 +4,51 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
-
 import TokeniserTools.ChamlcToken;
 import TokeniserTools.ChamlcTokenError;
-
 import java.util.regex.*;
+import java.io.FileWriter;
+
 /**
  * Tokenize a file. Made for the Java CHAML Compiler (jchamlc)
  */
-class Tokeniser{
+class Tokeniser {
+	/**
+	 * 
+	 * @param args {@index 0} The name of the file to tokenize
+	 * {@index 1} The output file. (Will output in xml format)
+	 */
 	public static void main(String[] args) {
-		if (args.length<1) {
+		if (args.length < 2) {
 			System.out.println("Not enough args!");
 			return;
 		}
-		try{
-			Tokeniser tr=new Tokeniser(args[0]);
-			//Outputs xml
-			boolean hitErrorToken=false;
+		try {
+			Tokeniser tr = new Tokeniser(args[0]);
+			// Outputs xml
 			try {
-				System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='%s'>\n",args[0]);
-				while(!hitErrorToken) {
+				var out=new FileWriter(args[1]);
+				//System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='%s'>\n", args[0]);
+				while (!tr.isEnd()) {
 					ChamlcToken tok = tr.read();
-					if (!tr.isEnd()) tok.printAsXML();
-					hitErrorToken=tok.isErrorCode();
+					out.append(tok.getAsXMLString());
 				}
-				System.out.println("</tokenList>");
+				//System.out.println("</tokenList>");
 				tr.close();
+				out.close();
 			} catch (IOException e) {
-				if (hitErrorToken) System.out.println("Failed to close file after hitting Error token!");
-				else if (tr.isEnd()) System.out.println("Failed to close file after hitting EOF!");
-				else System.out.println("Failed to read character from file!");
+				if (tr.isEnd())
+					System.out.println("Failed to close file after hitting EOF!");
+				else
+					System.out.println("Failed to read or write character to or from file!");
+			} catch (ChamlcTokenError e) {
+				System.out.println(e.getMessage());
 			}
-		}catch(FileNotFoundException e) {
-			System.out.printf("There is no file by the name %s\n",args[0]);
+		} catch (FileNotFoundException e) {
+			System.out.printf("There is no file by the name %s\n", args[0]);
 		}
 	}
+
 	/**
 	 * The fileReader that this uses internally.
 	 */
@@ -48,34 +57,45 @@ class Tokeniser{
 	 * Characters that the program needs to get to
 	 */
 	private StringBuffer backlog;
+	/**
+	 * Make a {@link Tokeniser} off of a given file location.
+	 * @param fileName The name of the file
+	 * @throws FileNotFoundException If {@link FileReader} can't find the file
+	 */
 	public Tokeniser(String fileName) throws FileNotFoundException {
-		fr=new FileReader(fileName);
+		fr = new FileReader(fileName);
 		init();
 	}
+
 	public Tokeniser(File file) throws FileNotFoundException {
-		fr=new FileReader(file);
+		fr = new FileReader(file);
 		init();
 	}
+
 	public Tokeniser(FileDescriptor fd) {
-		fr=new FileReader(fd);
+		fr = new FileReader(fd);
 		init();
 	}
+
 	public Tokeniser(String fileName, Charset charset) throws IOException {
-		fr=new FileReader(fileName,charset);
+		fr = new FileReader(fileName, charset);
 		init();
 	}
+
 	public Tokeniser(File file, Charset charset) throws IOException {
-		fr=new FileReader(file, charset);
+		fr = new FileReader(file, charset);
 		init();
 	}
+
 	/**
 	 * One place to set all non-unique variables.
 	 */
 	private void init() {
-		backlog=new StringBuffer(0);
+		backlog = new StringBuffer(0);
 	}
-	boolean needsMoreChars=false;
-	
+
+	boolean needsMoreChars = false;
+
 	/**
 	 * Convert the current stack to a token, using no regexp.
 	 * 
@@ -85,21 +105,26 @@ class Tokeniser{
 	 */
 	private ChamlcToken stackToTok() throws ChamlcTokenError {
 		final int row=this.row,col=this.col;
-		if(Pattern.matches("//",backlog.toString())) {
-			return new ChamlcToken("comment",grabUntil('\n'),row,col,start_r,start_c);
+		if(Pattern.matches("#+",backlog.toString())) {
+			return new ChamlcToken("comment",grabUntil(2,"\n"),row,col,start_r,start_c);
 		}
-		throw new ChamlcTokenError("Special case!\nBacklog:'"+backlog.toString()+"'");
+		throw new ChamlcTokenError("Unknown character sequence!\nBacklog:'"+backlog.toString()+"'",row,col,start_r,start_c);
 	}
 	
-	private String grabUntil(char c) throws ChamlcTokenError {
+	private String grabUntil(int offset,String s) throws ChamlcTokenError {
 		var tempBuffer=new StringBuffer();
 		int len=backlog.length();
-		for (int i=2;i<len;++i) {
+		for (int i=offset;i<len;++i) {
 			char posC=backlog.charAt(i);
 			if (isCharEnd(posC)) throw prematureEOF();
-			if (posC==']'&&i+1<len) {//if there is a character after the ]
-				throw scopeTooWide();
+			//if (posC==']'&&i+1<len) {
+			//	throw scopeTooWide();
+			//}
+			boolean scopeTooWide=i+1>=len;
+			for(int j=0;j<s.length()&&j<=i&&!scopeTooWide;++j) {
+				scopeTooWide=backlog.charAt(j)==backlog.charAt(i);
 			}
+			if (scopeTooWide) throw scopeTooWide();
 			if (i<len-1) tempBuffer.append(posC);
 		}
 		return tempBuffer.toString();
@@ -152,6 +177,7 @@ class Tokeniser{
 	 * The row and col values will always be close to the first character of the
 	 * token.
 	 * 
+	 * @throws IOException
 	 * @throws ChamlcTokenError
 	 */
 	public ChamlcToken read() throws IOException, ChamlcTokenError {
@@ -161,21 +187,33 @@ class Tokeniser{
 			addAnotherToStack();
 			firstRun=false;
 		}
-		ChamlcToken tok=stackToTok();
+		ChamlcTokenError err=null;
+		ChamlcToken tok=null;
+		try {
+			tok = stackToTok();
+		} catch (ChamlcTokenError e) {
+			err=e;
+		}
 		boolean keepLooking=true;
 		needsMoreChars=false;
 		while (keepLooking) {
 			addAnotherToStack();
-			ChamlcToken temp=stackToTok();
-			keepLooking=needsMoreChars||!(temp.isErrorCode()||endOfFile);
+			ChamlcToken temp=null;
+			try {
+				temp = stackToTok();
+			} catch (ChamlcTokenError e) {
+				err=e;
+			}
+			keepLooking=needsMoreChars||!(err!=null||endOfFile);
 			if (keepLooking) {
-				if(!temp.isErrorCode()) tok=temp;
+				tok=temp;
 				needsMoreChars=false;
 			}
 			//System.out.print("<!--");temp.printAsXML();System.out.print("-->");
 		}
 		eat();
 		if (hitEarlyEOF) throw prematureEOF();
+		if (err!=null) throw err;
 		return tok;
 	}
 	public void close() throws IOException {
