@@ -79,44 +79,57 @@ class Parser {
 	 * [ ["name"], ["","first","possible"], ["","second"], ["another"], ["","thing"]
 	 * ]
 	 *///TODO: make local to init function
-	private final String[][] parseLogic = { { "ROOT" }, // Think of ROOT as a "STATEMENT_LIST"
-			{ "", "STATEMENT" }, { "", "ROOT", "statementSeparator", "STATEMENT" }, { "WS_OR_COMMENT" },
-			{ "", "whitespace" }, { "", "comment" }, { "", "multiComment" }, { "", "WS_OR_COMMENT", "WS_OR_COMMENT" },
-			{ "STATEMENT" }, { "", "import" }, { "", "syntaxExtension" }, { "", "WS_OR_COMMENT", "STATEMENT" }, // before
-																												// every
-																												// statement,
-																												// or
-																												// collection
-																												// of
-																												// statements,
-																												// allow
-																												// WS or
-																												// COMMENT
-			{ "", "identifier", "equals", "EXPRESSION" },
-			// {"", "identifier","equals","STATEMENT"},//Two or more vars can share a value
-			{ "EXPRESSION" }, { "", "string" }, { "", "char" }, { "", "char" }, { "", "number" }, { "", "FUNCTION" },
-			{ "", "EXPRESSION", "subitem", "identifier" }, { "", "EXPRESSION", "FUNCTION_CALL" },
-			{ "", "identifier", "FUNCTION_CALL" }, { "VALUE_LIST" }, { "", "EXPRESSION" },
-			{ "", "VALUE_LIST", "comma", "VALUE_LIST" }, { "", "VALUE_LIST", "comma", "IDENTIFIER_LIST" }, // If there
-																											// are
-																											// identifiers
-																											// mixed in,
-																											// grab them
-																											// too.
-			{ "", "IDENTIFIER_LIST", "comma", "VALUE_LIST" }, { "FUNCTION" }, { "", "INLINE_FUNCTION" },
-			{ "", "MULTILINE_FUNCTION" }, { "FUNCTION_CALL" }, { "", "openP", "VALUE_LIST", "closeP" },
-			{ "", "openP", "IDENTIFIER_LIST", "closeP" }, // A list of identifiers could still be a list of values.
-															// (conflict with MULTILINE FUNCTION[1])
-			{ "INLINE_FUNCTION" }, { "", "openP", "closeP", "lambda", "STATEMENT" },
-			{ "", "identifier", "lambda", "STATEMENT" },
-			{ "", "openP", "IDENTIFIER_LIST", "closeP", "lambda", "STATEMENT" }, { "MULTILINE_FUNCTION" },
-			{ "", "openC", "ROOT", "closeC" }, { "", "identifier", "MULTILINE_FUNCTION_BODY" },
-			{ "", "openP", "IDENTIFIER_LIST", "closeP", "MULTILINE_FUNCTION_BODY" }, { "MULTILINE_FUNCTION_BODY" },
-			{ "", "openC", "ROOT", "closeC" }, { "", "openC", "ROOT", "semicolon", "closeC" }, // Optional semicolon
-			{ "IDENTIFIER_LIST" }, // A list of _only_ identifiers (>=1)
-			{ "", "identifier" }, // Will require LA(1)
-			{ "", "IDENTIFIER_LIST", "comma", "identifier" }, { "", "IDENTIFIER_LIST", "comma", "IDENTIFIER_LIST" }, };
-
+	private final String[][] parseLogic = {
+		{"ROOT"},// Think of ROOT as a "STATEMENT_LIST"
+		{"",	"STATEMENT"},
+		{"",	"ROOT","statementSeparator","STATEMENT" },
+		{"WS_OR_COMMENT"},
+		{"",	"whitespace"},
+		{"",	"comment"},
+		{"",	"multiComment"},
+		{"",	"WS_OR_COMMENT","WS_OR_COMMENT"},
+		{"STATEMENT"},
+		{"",	"import"},
+		{"",	"syntaxExtension"},
+		{"",	"WS_OR_COMMENT","STATEMENT"},// before every statement, or collection of statements, allow WS or COMMENT
+		{"",	"identifier","equals","EXPRESSION" },
+		//{"", "identifier","equals","STATEMENT"},//Two or more vars can share a value
+		{"EXPRESSION"},
+		{"",	"string"},
+		{"",	"char"},
+		{"",	"char"},
+		{"",	"number"},
+		{"",	"FUNCTION"},
+		{"",	"EXPRESSION","subitem","identifier"},
+		{"",	"EXPRESSION","FUNCTION_CALL"},
+		{"",	"identifier","FUNCTION_CALL"},
+		{"VALUE_LIST"},
+		{"",	"EXPRESSION"},
+		{"",	"VALUE_LIST","comma","VALUE_LIST"},
+		{"",	"VALUE_LIST","comma","IDENTIFIER_LIST"},// If there are identifiers mixed in, grab them too.
+		{"",	"IDENTIFIER_LIST","comma","VALUE_LIST"},
+		{"FUNCTION"},
+		{"",	"INLINE_FUNCTION"},
+		{"",	"MULTILINE_FUNCTION"},
+		{"FUNCTION_CALL"},
+		{"",	"openP","VALUE_LIST","closeP"},
+		{"",	"openP","IDENTIFIER_LIST","closeP"}, // A list of identifiers could still be a list of values. (conflict with MULTILINE FUNCTION[1])
+		{"INLINE_FUNCTION"},
+		{"",	"openP","closeP","lambda","STATEMENT"},
+		{"",	"identifier","lambda","STATEMENT" },
+		{"",	"openP","IDENTIFIER_LIST","closeP","lambda","STATEMENT"},
+		{"MULTILINE_FUNCTION"},
+		{"",	"openC","ROOT","closeC"},
+		{"",	"identifier","MULTILINE_FUNCTION_BODY"},
+		{"",	"openP","IDENTIFIER_LIST","closeP","MULTILINE_FUNCTION_BODY"},
+		{"MULTILINE_FUNCTION_BODY"},
+		{"",	"openC","ROOT","closeC"},
+		{"",	"openC","ROOT","semicolon","closeC"},// Optional semicolon
+		{"IDENTIFIER_LIST"},// A list of _only_ identifiers (>=1)
+		{"",	"identifier"}, // Will require LA(1)
+		{"",	"IDENTIFIER_LIST","comma","identifier"},
+		{"","IDENTIFIER_LIST","comma","IDENTIFIER_LIST"},
+	};
 	/**
 	 * The one place to do 90% of constructor related stuff
 	 * 
