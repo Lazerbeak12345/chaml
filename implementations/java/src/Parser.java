@@ -64,19 +64,17 @@ class Parser {
 		tr = new Tokeniser(file, charset);
 		init();
 	}
-
-	/**
-	 * A datastructure shaped like this JSON:
-	 * 
-	 * { "name":[ ["first","possible"], ["second"], ], "another":[ ["thing"] ], }
-	 */
-	// private HashMap<String,ArrayList<ArrayList<String>>> parseLogic;
 	private int[][] parseTransforms;
 	private int[] parseNames;
 	/**
 	 * An easy to modify parseLogic. follows this JSON structure:
 	 * 
-	 * [ ["name"], ["","first","possible"], ["","second"], ["another"], ["","thing"]
+	 * [
+	 *   ["name"],
+	 *   ["",  "first","possible"],
+	 *   ["",  "second"],
+	 *   ["another"],
+	 *   ["",  "thing"]
 	 * ]
 	 *///TODO: make local to init function
 	private final String[][] parseLogic = {
