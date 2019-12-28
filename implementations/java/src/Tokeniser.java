@@ -25,27 +25,30 @@ class Tokeniser {
 		}
 		try {
 			Tokeniser tr = new Tokeniser(args[0]);
+			var out=new FileWriter(args[1]);
 			// Outputs xml
 			try {
-				var out=new FileWriter(args[1]);
-				//System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='%s'>\n", args[0]);
+				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='"+args[0]+"'>\n");
 				while (!tr.isEnd()) {
 					ChamlcToken tok = tr.read();
 					out.append(tok.getAsXMLString());
 				}
-				//System.out.println("</tokenList>");
+				out.append("</tokenList>\n");
 				tr.close();
-				out.close();
 			} catch (IOException e) {
 				if (tr.isEnd())
 					System.out.println("Failed to close file after hitting EOF!");
 				else
 					System.out.println("Failed to read or write character to or from file!");
-			} catch (ChamlcTokenError e) {
+			} catch (ChamlcTokenError e) {//Syntax error, or the like
 				System.out.println(e.getMessage());
+			}finally{
+				out.close();
 			}
 		} catch (FileNotFoundException e) {
 			System.out.printf("There is no file by the name %s\n", args[0]);
+		} catch (IOException e1) {
+			System.out.println("Failed to write character to file!");
 		}
 	}
 
@@ -99,48 +102,48 @@ class Tokeniser {
 	/**
 	 * Convert the current stack to a token, using no regexp.
 	 * 
-	 * @param start_c
-	 * @param start_r
-	 * @throws ChamlcTokenError
+	 * @throws ChamlcTokenError If the input from the file was malformed (EX: a
+	 * syntax error)
 	 */
 	private ChamlcToken stackToTok() throws ChamlcTokenError {
 		final int row=this.row,col=this.col;
-		if(Pattern.matches("#+",backlog.toString())) {
-			return new ChamlcToken("comment",grabUntil(2,"\n"),row,col,start_r,start_c);
-		}
-		throw new ChamlcTokenError("Unknown character sequence!\nBacklog:'"+backlog.toString()+"'",row,col,start_r,start_c);
+		String bl=backlog.toString();
+		if(bl.length()==0||Pattern.matches("\\s+",bl)) {
+			return new ChamlcToken("whitespace","",row,col,start_r,start_c);
+		}else if (isCharEnd(bl.charAt(bl.length()-1))) {
+			endOfFile=true;
+			if (bl.length()>1) {
+				hitEarlyEOF=true;
+				throw prematureEOF();
+			}else return new ChamlcToken("whitespace","",row,col,start_r,start_c);
+		}else if(Pattern.matches(";.",bl)) {
+			return new ChamlcToken("statementSeparator","",row,col,start_r,start_c);
+		}else if(Pattern.matches("//.*\\n.",bl)) {
+			return new ChamlcToken("comment",bl.substring(2,bl.length()-2),row,col,start_r,start_c);
+		}else if(Pattern.matches("[a-zA-Z_$][a-zA-Z0-9_$]?.",bl)) {
+			if(Pattern.matches("a[a-zA-Z0-9_$]","a"+bl.charAt(bl.length()-1))) needsMoreChars=true;
+			return new ChamlcToken("identifier",bl,row,col,start_r,start_c);
+		}else if(Pattern.matches("#",bl)) {
+			needsMoreChars=true;
+			throw new ChamlcTokenError("Unfinished '#' symbol!",row,col,start_r,start_c);
+		}else if(Pattern.matches("#\\+(\\[[^]]*)?",bl)) {
+			needsMoreChars=true;
+			throw new ChamlcTokenError("Syntax Extensions need information about what to import contained within a '[' and a ']' symbol!'",row,col,start_r,start_c);
+		}else if(Pattern.matches("#\\+\\[.*].",bl)) {
+			return new ChamlcToken("syntaxExtension",bl.substring(3,bl.length()-2),row,col,start_r,start_c);
+		}else throw new ChamlcTokenError("Unknown character sequence!\nBacklog:'"+backlog.toString()+"'",row,col,start_r,start_c);
 	}
-	
-	private String grabUntil(int offset,String s) throws ChamlcTokenError {
-		var tempBuffer=new StringBuffer();
-		int len=backlog.length();
-		for (int i=offset;i<len;++i) {
-			char posC=backlog.charAt(i);
-			if (isCharEnd(posC)) throw prematureEOF();
-			//if (posC==']'&&i+1<len) {
-			//	throw scopeTooWide();
-			//}
-			boolean scopeTooWide=i+1>=len;
-			for(int j=0;j<s.length()&&j<=i&&!scopeTooWide;++j) {
-				scopeTooWide=backlog.charAt(j)==backlog.charAt(i);
-			}
-			if (scopeTooWide) throw scopeTooWide();
-			if (i<len-1) tempBuffer.append(posC);
-		}
-		return tempBuffer.toString();
-	}
-
 	private Boolean isCharEnd(char c) {
 		return c==(char) 3||//EOF
 			c==(char) 0xFFFF;//I don't know what this is...
 	}
 	private Boolean hitEarlyEOF=false;
 	private ChamlcTokenError prematureEOF() {
-		return new ChamlcTokenError("Received an EOF too early! Was expecting the rest of a token!",row,col,start_r,start_c);
+		return new ChamlcTokenError("Received an EOF too early! Was expecting the rest of a token!\n\nHere's the code (all "+(backlog.length()-1)+" characters!):\n\n```chaml\n"+backlog.toString().substring(0,backlog.length()-1)+"\n```\n",row,col,start_r,start_c);
 	}
-	private ChamlcTokenError scopeTooWide() {
-		return new ChamlcTokenError("Too many characters were included in this scope",row,col,start_r,start_c);
-	}
+	//private ChamlcTokenError scopeTooWide() {
+	//	return new ChamlcTokenError("Too many characters were included in this scope",row,col,start_r,start_c);
+	//}
 	private Boolean endOfFile=false;
 	public Boolean isEnd() {
 		return endOfFile||hitEarlyEOF;
@@ -148,12 +151,16 @@ class Tokeniser {
 	/**
 	 * Clear all but the latest char of the stack
 	 */
-	private void eat() {
-		char temp=backlog.charAt(backlog.length()-1);
-		backlog.delete(0,backlog.length());
-		backlog.append(temp);
-	}
+	//private void eat() {
+	//	char temp=backlog.charAt(backlog.length()-1);
+	//	backlog.delete(0,backlog.length());
+	//	backlog.append(temp);
+	//}
 	private int row=1,col=1,start_c=1,start_r=1;
+	/**
+	 * Add another character to the "stack"
+	 * @throws IOException If an I/O error occurs
+	 */
 	private void addAnotherToStack() throws IOException {
 		char c=(char)fr.read();
 		if (backlog.length()>0&&backlog.charAt(backlog.length()-1)=='\n') {
@@ -177,8 +184,9 @@ class Tokeniser {
 	 * The row and col values will always be close to the first character of the
 	 * token.
 	 * 
-	 * @throws IOException
-	 * @throws ChamlcTokenError
+	 * @throws IOException If an I/O error occurs
+	 * @throws ChamlcTokenError If the input from the file was malformed (EX: a
+	 * syntax error)
 	 */
 	public ChamlcToken read() throws IOException, ChamlcTokenError {
 		this.start_r=row;
@@ -204,16 +212,20 @@ class Tokeniser {
 			} catch (ChamlcTokenError e) {
 				err=e;
 			}
-			keepLooking=needsMoreChars||!(err!=null||endOfFile);
+			keepLooking=(needsMoreChars||temp==null)&&!isEnd();
 			if (keepLooking) {
-				tok=temp;
 				needsMoreChars=false;
+			}
+			if(temp!=null) {
+				tok=temp;
+				err=null;
 			}
 			//System.out.print("<!--");temp.printAsXML();System.out.print("-->");
 		}
-		eat();
 		if (hitEarlyEOF) throw prematureEOF();
 		if (err!=null) throw err;
+		//eat();
+		backlog.delete(0,backlog.length()-1);
 		return tok;
 	}
 	public void close() throws IOException {

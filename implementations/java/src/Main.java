@@ -3,8 +3,8 @@ public class Main {
 	public static void main(String[] args) {
 		//if (args.length==0) helpText();
 		//else{
-			//String[]a={"tests/inheritance.chaml"};
-			String[]a={"implementations/chaml/chamlc.chaml"};
+			String[]a={"tests/testLib.chaml","/tmp/tokens.xml"};
+			//String[]a={"implementations/chaml/chamlc.chaml"};
 			//if(args.length==0||args[0]=="t")
 			//char c;
 			//try{c=(char) System.in.read();}catch(IOException e){e.printStackTrace();return;}
