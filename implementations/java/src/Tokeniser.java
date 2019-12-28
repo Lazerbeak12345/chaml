@@ -151,7 +151,24 @@ class Tokeniser {
 				needsMoreChars=true;
 				throw new ChamlcTokenError("Escaped `\"` character found in string! More chars expected!",row,col,start_r,start_c);
 			}
-			return new ChamlcToken("string",bl.substring(1,bl.length()-2),row,col,start_r,start_c);
+			var tempBuffer=new StringBuffer();
+			String contents=bl.substring(1,bl.length()-2);
+			for(int i=0;i<contents.length();++i) {
+				if (contents.charAt(i)=='\\') {
+					++i;
+					switch(contents.charAt(i)) {//TODO: move to sepeerate function for chars?
+						case 'b':tempBuffer.append('\b');break;
+						case 't':tempBuffer.append('\t');break;
+						case 'n':tempBuffer.append('\n');break;
+						case 'f':tempBuffer.append('\f');break;
+						case 'r':tempBuffer.append('\r');break;
+						case '"':tempBuffer.append('"');break;
+						case '\'':tempBuffer.append('\'');break;
+						case '\\':tempBuffer.append('\\');break;
+					}
+				}else tempBuffer.append(contents.charAt(i));
+			}
+			return new ChamlcToken("string",tempBuffer.toString(),row,col,start_r,start_c);
 		}else if(Pattern.matches("#(\\+|<)(\\[[^]]*)?",bl)) {
 			needsMoreChars=true;
 			throw new ChamlcTokenError("Syntax Extensions and File Imports need information about what to import contained within a '[' and a ']' symbol!",row,col,start_r,start_c);
