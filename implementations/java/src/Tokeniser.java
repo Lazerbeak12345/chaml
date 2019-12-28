@@ -108,30 +108,70 @@ class Tokeniser {
 	private ChamlcToken stackToTok() throws ChamlcTokenError {
 		final int row=this.row,col=this.col;
 		String bl=backlog.toString();
-		if(bl.length()==0||Pattern.matches("\\s+",bl)) {
+		if(bl.length()==0||Pattern.matches("\\s+(.|\\n)",bl)) {
+			if(bl.length()>1&&Pattern.matches("a\\s","a"+bl.charAt(bl.length()-1))) {
+				needsMoreChars=true;
+				throw new ChamlcTokenError("Whitespace needs more chars!",row,col,start_r,start_c);
+			}
 			return new ChamlcToken("whitespace","",row,col,start_r,start_c);
-		}else if (isCharEnd(bl.charAt(bl.length()-1))) {
-			endOfFile=true;
-			if (bl.length()>1) {
-				hitEarlyEOF=true;
-				throw prematureEOF();
-			}else return new ChamlcToken("whitespace","",row,col,start_r,start_c);
-		}else if(Pattern.matches(";.",bl)) {
+		}else if(Pattern.matches(";(.|\\n)",bl)) {
 			return new ChamlcToken("statementSeparator","",row,col,start_r,start_c);
-		}else if(Pattern.matches("//.*\\n.",bl)) {
+		}else if(Pattern.matches("=[^<>]",bl)) {
+			return new ChamlcToken("equals","",row,col,start_r,start_c);
+		}else if(Pattern.matches("\\[(.|\\n)",bl)) {
+			return new ChamlcToken("openS","",row,col,start_r,start_c);
+		}else if(Pattern.matches("\\](.|\\n)",bl)) {
+			return new ChamlcToken("closeS","",row,col,start_r,start_c);
+		}else if(Pattern.matches("\\((.|\\n)",bl)) {
+			return new ChamlcToken("openP","",row,col,start_r,start_c);
+		}else if(Pattern.matches("\\)(.|\\n)",bl)) {
+			return new ChamlcToken("closeP","",row,col,start_r,start_c);
+		}else if(Pattern.matches("\\{(.|\\n)",bl)) {
+			return new ChamlcToken("openC","",row,col,start_r,start_c);
+		}else if(Pattern.matches("\\}(.|\\n)",bl)) {
+			return new ChamlcToken("closeC","",row,col,start_r,start_c);
+		}else if(Pattern.matches("=>(.|\\n)",bl)) {
+			return new ChamlcToken("lambda","",row,col,start_r,start_c);
+		}else if(Pattern.matches("=<(.|\\n)",bl)) {
+			return new ChamlcToken("return","",row,col,start_r,start_c);
+		}else if(Pattern.matches("\\.(.|\\n)",bl)) {
+			return new ChamlcToken("subitem","",row,col,start_r,start_c);
+		}else if(Pattern.matches(",(.|\\n)",bl)) {
+			return new ChamlcToken("comma","",row,col,start_r,start_c);
+		}else if(Pattern.matches("//.*\\n(.|\\n)",bl)) {
 			return new ChamlcToken("comment",bl.substring(2,bl.length()-2),row,col,start_r,start_c);
-		}else if(Pattern.matches("[a-zA-Z_$][a-zA-Z0-9_$]?.",bl)) {
-			if(Pattern.matches("a[a-zA-Z0-9_$]","a"+bl.charAt(bl.length()-1))) needsMoreChars=true;
-			return new ChamlcToken("identifier",bl,row,col,start_r,start_c);
 		}else if(Pattern.matches("#",bl)) {
 			needsMoreChars=true;
 			throw new ChamlcTokenError("Unfinished '#' symbol!",row,col,start_r,start_c);
-		}else if(Pattern.matches("#\\+(\\[[^]]*)?",bl)) {
+		}else if(Pattern.matches("\"[^\"]*",bl)) {
 			needsMoreChars=true;
-			throw new ChamlcTokenError("Syntax Extensions need information about what to import contained within a '[' and a ']' symbol!'",row,col,start_r,start_c);
-		}else if(Pattern.matches("#\\+\\[.*].",bl)) {
+			throw new ChamlcTokenError("Strings need a closing `\"` character!",row,col,start_r,start_c);
+		}else if(Pattern.matches("\".*\"(.|\\n)",bl)) {
+			if (bl.length()>3&&bl.charAt(bl.length()-3)=='\\') {
+				needsMoreChars=true;
+				throw new ChamlcTokenError("Escaped `\"` character found in string! More chars expected!",row,col,start_r,start_c);
+			}
+			return new ChamlcToken("string",bl.substring(1,bl.length()-2),row,col,start_r,start_c);
+		}else if(Pattern.matches("#(\\+|<)(\\[[^]]*)?",bl)) {
+			needsMoreChars=true;
+			throw new ChamlcTokenError("Syntax Extensions and File Imports need information about what to import contained within a '[' and a ']' symbol!",row,col,start_r,start_c);
+		}else if(Pattern.matches("#\\+\\[.*](.|\\n)",bl)) {
 			return new ChamlcToken("syntaxExtension",bl.substring(3,bl.length()-2),row,col,start_r,start_c);
-		}else throw new ChamlcTokenError("Unknown character sequence!\nBacklog:'"+backlog.toString()+"'",row,col,start_r,start_c);
+		}else if(Pattern.matches("#\\<\\[.*](.|\\n)",bl)) {
+			return new ChamlcToken("import",bl.substring(3,bl.length()-2),row,col,start_r,start_c);
+		}else if(Pattern.matches("[a-zA-Z_$][a-zA-Z0-9_$]*(.|\\n)",bl)) {
+			if(Pattern.matches("a[a-zA-Z0-9_$]","a"+bl.charAt(bl.length()-1))) {
+				needsMoreChars=true;
+				throw new ChamlcTokenError("Identifier `"+bl.substring(0,bl.length()-1)+"` needs more chars!",row,col,start_r,start_c);
+			}
+			return new ChamlcToken("identifier",bl.substring(0,bl.length()-1),row,col,start_r,start_c);
+		}else if (isCharEnd(bl.charAt(bl.length()-1))) {
+			endOfFile=true;
+			if (bl.length()>2) {
+				hitEarlyEOF=true;
+				throw prematureEOF();
+			}else return new ChamlcToken("whitespace","",row,col,start_r,start_c);
+		}else throw new ChamlcTokenError("Unknown character sequence!\nBacklog:'"+bl+"'",row,col,start_r,start_c);
 	}
 	private Boolean isCharEnd(char c) {
 		return c==(char) 3||//EOF
@@ -220,10 +260,9 @@ class Tokeniser {
 				tok=temp;
 				err=null;
 			}
-			//System.out.print("<!--");temp.printAsXML();System.out.print("-->");
 		}
-		if (hitEarlyEOF) throw prematureEOF();
 		if (err!=null) throw err;
+		//if (hitEarlyEOF) throw prematureEOF();
 		//eat();
 		backlog.delete(0,backlog.length()-1);
 		return tok;
