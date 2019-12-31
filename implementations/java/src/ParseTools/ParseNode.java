@@ -1,5 +1,7 @@
 package ParseTools;
 
+import java.util.ArrayList;
+
 import TokeniserTools.ChamlcToken;
 
 /**
@@ -7,7 +9,7 @@ import TokeniserTools.ChamlcToken;
  */
 public abstract class ParseNode {
 	int row, col, start_r, start_c;
-	public static String[] nodes = { "_leaf_", "ROOT" };
+	public static ArrayList<String> nodes;
 
 	public ParseNode(String name, int row, int col, int start_r, int start_c) {
 		this.row = row;
@@ -32,21 +34,29 @@ public abstract class ParseNode {
 	 * @return
 	 */
 	public static int nameToInt(String name) {
-		for (int i=0;i<nodes.length;++i) {
-			if (name.equals(nodes[i])) return i+ChamlcToken.tokens.length;
+		for (int i=0;i<nodes.size();++i) {
+			if (name.equals(nodes.get(i))) return i+ChamlcToken.tokens.length;
 		}
-		return -1;
+		return ChamlcToken.nameToInt(name);
 	}
 	/**
 	 * Get the name
 	 */
 	public String getName() {
+		return intToName(number);
+	}
+	/**
+	 * Convert a given number into the corresponding name.
+	 * @param number The number representing the name.
+	 * @return The name.
+	 */
+	public static String intToName(int number) {
 		if (number<0) {
 			return "ERROR";//A negative is an error code
 		}else if(number<ChamlcToken.tokens.length){
 			//System.out.print("<!--??-->");
 			return ChamlcToken.tokens[number];
-		}else return nodes[number-ChamlcToken.tokens.length];
+		}else return nodes.get(number-ChamlcToken.tokens.length);
 	}
 	/**
 	 * Print this ParseNode as XML

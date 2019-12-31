@@ -156,7 +156,7 @@ class Tokeniser {
 			for(int i=0;i<contents.length();++i) {
 				if (contents.charAt(i)=='\\') {
 					++i;
-					switch(contents.charAt(i)) {//TODO: move to sepeerate function for chars?
+					switch(contents.charAt(i)) {//TODO: move to separate function for chars?
 						case 'b':tempBuffer.append('\b');break;
 						case 't':tempBuffer.append('\t');break;
 						case 'n':tempBuffer.append('\n');break;
