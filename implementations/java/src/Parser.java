@@ -25,7 +25,7 @@ class Parser {
 			var t=new ArrayList<ParseNode>();
 			try {
 				t = par.parse();// .get(0).printAsXML();
-				//TODO: par.close();
+				par.close();
 			} catch (IOException e){
 				//if (par.isEnd())
 				//	System.out.println("Failed to close file after hitting EOF!");
@@ -46,6 +46,14 @@ class Parser {
 			System.out.println("Failed to write character to file!");
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Close the input stream.
+	 * @throws IOException If an I/O error occurs
+	 */
+	private void close() throws IOException {
+		tr.close();
 	}
 
 	Tokeniser tr;

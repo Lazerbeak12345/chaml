@@ -286,6 +286,10 @@ class Tokeniser {
 		backlog.delete(0,backlog.length()-1);
 		return tok;
 	}
+	/**
+	 * Close the input stream.
+	 * @throws IOException If an I/O error occurs
+	 */
 	public void close() throws IOException {
 		fr.close();
 	}

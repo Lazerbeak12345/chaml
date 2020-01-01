@@ -4,7 +4,7 @@ public class Main {
 		//if (args.length==0) helpText();
 		//else{
 			String[]a={"tests/testLib.chaml","/tmp/parseNodes.xml"};
-			//String[]a={"implementations/chaml/chamlc.chaml"};
+			//String[]a={"tests/testLib.chaml","/tmp/tokens.xml"};
 			//if(args.length==0||args[0]=="t")
 			//char c;
 			//try{c=(char) System.in.read();}catch(IOException e){e.printStackTrace();return;}
