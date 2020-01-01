@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import TokeniserTools.ChamlcToken;
 import TokeniserTools.ChamlcTokenError;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 import java.io.FileWriter;
 
 /**
@@ -40,6 +40,7 @@ class Tokeniser {
 					System.out.println("Failed to close file after hitting EOF!");
 				else
 					System.out.println("Failed to read or write character to or from file!");
+				e.printStackTrace();
 			} catch (ChamlcTokenError e) {//Syntax error, or the like
 				System.out.println(e.getMessage());
 			}finally{
@@ -47,8 +48,9 @@ class Tokeniser {
 			}
 		} catch (FileNotFoundException e) {
 			System.out.printf("There is no file by the name %s\n", args[0]);
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			System.out.println("Failed to write character to file!");
+			e.printStackTrace();
 		}
 	}
 
