@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -13,29 +14,37 @@ import ParseTools.ParseLeaf;
 
 class Parser {
 	public static void main(String[] args) {
-		if (args.length < 1) {
+		if (args.length < 2) {
 			System.out.println("Not enough args!");
 			return;
 		}
 		try {
 			Parser par = new Parser(args[0]);
-			var t = par.parse();// .get(0).printAsXML();
-			System.out.printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<parseNodes src='%s'>\n", args[0]);
-			/*
-			 * if(t.size()!=1) {
-			 * System.out.printf("<parseError leftoverCount=\"%d\">",t.size()); for(int
-			 * i=0;i<t.size();++i){ t.get(i).printAsXML(); System.out.println(); }
-			 * System.out.print("</parseError>"); }else
-			 */
-			new ParseTreeRoot(args[0], t).printAsXML();
-			// t.get(t.size()-1).printAsXML();
-			System.out.println("</parseNodes>");
+			var out=new FileWriter(args[1]);
+			// Outputs xml
+			var t=new ArrayList<ParseNode>();
+			try {
+				t = par.parse();// .get(0).printAsXML();
+				//TODO: par.close();
+			} catch (IOException e){
+				//if (par.isEnd())
+				//	System.out.println("Failed to close file after hitting EOF!");
+				//else
+				System.out.println("Failed to read characters from file!");
+				e.printStackTrace();
+			} catch (ChamlcTokenError e) {//Token Syntax error, or the like
+				System.out.println(e.getMessage());
+			}finally{
+				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<parseNodes src='"+args[0]+"'>\n");
+				out.append(new ParseTreeRoot(args[0],t).getAsXML());
+				out.append("</parseNodes>");
+				out.close();
+			}
 		} catch (FileNotFoundException e) {
-			System.out.printf("A file of the name \"%s\" could not be found!", args[0]);
+			System.out.printf("There is no file by the name %s\n", args[0]);
 		} catch (IOException e) {
-			System.out.println("Failed to read characters from given file!");
-		} catch (ChamlcTokenError e) {
-			System.out.println(e.getMessage());
+			System.out.println("Failed to write character to file!");
+			e.printStackTrace();
 		}
 	}
 
@@ -123,6 +132,7 @@ class Parser {
 			{"",	"char"},
 			{"",	"char"},
 			{"",	"number"},
+			{"",	"syntaxExtension"},
 			{"",	"FUNCTION"},
 			{"",	"EXPRESSION","subitem","identifier"},
 			{"",	"EXPRESSION","FUNCTION_CALL"},
@@ -198,27 +208,30 @@ class Parser {
 	 * @return true when a reduction is made, false if nothing changed
 	 */
 	public boolean reduce(){
-		int largest=-1;
 		for(int bufferI=0;bufferI<buffer.size();++bufferI){
+			int largest=-1;
 			for(int parseTransformsI=0;parseTransformsI<parseTransforms.size();++parseTransformsI){
 				var transform=parseTransforms.get(parseTransformsI);
 				boolean doesTransformMatch=true;
-				for(int transformI=0;transformI<transform.size();++transformI) {
+				for(int transformI=0;transformI<transform.size();++transformI){
+					if (bufferI+transformI>=buffer.size()) continue;
 					if (buffer.get(bufferI+transformI).getNumber()!=
 					transform.get(transformI).intValue()){
 						doesTransformMatch=false;
 						break;
 					}
 				}
-				if (!doesTransformMatch) break;
+				if (!doesTransformMatch) continue;
 				if (largest==-1||transform.size()>parseTransforms.get(largest).size())
 					largest=parseTransformsI;
 			}
 			if (largest==-1) continue;
 			var transform=parseTransforms.get(largest);
 			var temp=new ArrayList<ParseNode>();
-			for(int transformI=0;transformI<transform.size();++transformI)
+			for(int transformI=0;transformI<transform.size();++transformI){
+				if (bufferI+transformI>=buffer.size()) continue;
 				temp.add(buffer.remove(bufferI+transformI));
+			}
 			buffer.add(new ParseTree(ParseNode.intToName(parseNames.get(largest).intValue()),temp));
 			return true;
 		}

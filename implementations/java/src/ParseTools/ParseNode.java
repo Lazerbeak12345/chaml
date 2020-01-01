@@ -59,7 +59,7 @@ public abstract class ParseNode {
 		}else return nodes.get(number-ChamlcToken.tokens.length);
 	}
 	/**
-	 * Print this ParseNode as XML
+	 * Get this ParseNode as an XML String
 	 */
-	abstract public void printAsXML();
+	abstract public String getAsXML();
 }

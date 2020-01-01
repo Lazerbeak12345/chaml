@@ -4,7 +4,6 @@ import TokeniserTools.ChamlcToken;
 
 public class ParseLeaf extends ParseNode {
 	String value;
-
 	public ParseLeaf(ChamlcToken value) {
 		super(value.getName(),value.row,value.col,value.start_r,value.start_c);
 		this.value=value.getVal();
@@ -14,10 +13,13 @@ public class ParseLeaf extends ParseNode {
 		return new ChamlcToken(getName(), value, row, col,start_r,start_c).getNumber();
 	}*/
 	@Override
-	public void printAsXML() {
-		System.out.printf("<_LEAF_ row=\"%s\" col=\"%s\"  start_r=\"%d\" start_c=\"%d\" name=\"%s\" number=\"%d\">",row,col,start_r,start_c,getName(),getNumber());
-		//new ChamlcToken(getName(), value, row, col,start_r,start_c).printAsXML();
-		System.out.print(value);
-		System.out.println("</_LEAF_>");
+	public String getAsXML() {
+		//TODO: handle for empty value
+		//TODO: filter out bad xml
+		return "<_LEAF_ row=\""+row+"\" col=\""+col+"\" start_r=\""+start_r
+		+"\" start_c=\""+start_c+"\" name=\""+getName()+
+		"\" number=\""+getNumber()+"\">"+
+			value+
+		"</_LEAF_>";
 	}
 }

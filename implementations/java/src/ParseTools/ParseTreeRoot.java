@@ -18,16 +18,18 @@ public class ParseTreeRoot extends ParseTree {
 		this.src=src;
 	}*/
 	@Override
-	public void printAsXML() {
+	public String getAsXML() {
+		var a=new StringBuffer();
 		//TODO: filter out bad xml
-		System.out.printf("<%s src=\"%s\" row=\"%d\" col=\"%d\" start_c=\"%d\" start_r=\"%d\"",getName(),src,row,col,start_r,start_c);
+		a.append("<"+getName()+" src=\""+src+"\" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\"");
 		if (size()==0) System.out.print("/>");
 		else{
-			System.out.print(">");
+			a.append(">");
 			for (int i=0;i<size();++i) {
-				getChild(i).printAsXML();
+				a.append(getChild(i).getAsXML());
 			}
-			System.out.print("</"+ getName() + ">");
+			a.append("</"+ getName() + ">");
 		}
+		return a.toString();
 	}
 }
