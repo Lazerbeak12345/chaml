@@ -102,58 +102,57 @@ class Parser {
 		 */
 		final String[][] parseLogic = {
 			{"WS_OR_COMMENT"},
-			{"",	"whitespace"},
+			//{"",	"whitespace"},
 			{"",	"comment"},
-			{"",	"multiComment"},
-			{"",	"WS_OR_COMMENT","WS_OR_COMMENT"},
-			{"IDENTIFIER_LIST"},// A list of _only_ identifiers (>=1)
-			{"",	"identifier"}, // Will require LA(1)
-			{"",	"IDENTIFIER_LIST","comma","identifier"},
-			{"","IDENTIFIER_LIST","comma","IDENTIFIER_LIST"},
-			{"STATEMENT"},//Like C, do this to get the reference when it hasn't been defined.
-			{"INLINE_FUNCTION"},
-			{"",	"openP","closeP","lambda","STATEMENT"},
-			{"",	"identifier","lambda","STATEMENT" },
-			{"",	"openP","IDENTIFIER_LIST","closeP","lambda","STATEMENT"},
-			{"ROOT"},//Root _must_ be defined, or else it is a parse error
-			{"MULTILINE_FUNCTION_BODY"},
-			{"",	"openC","ROOT","closeC"},
-			{"",	"openC","ROOT","statementSeparator","closeC"},// Optional semicolon
-			{"MULTILINE_FUNCTION"},
-			{"",	"openC","ROOT","closeC"},
-			{"",	"identifier","MULTILINE_FUNCTION_BODY"},
-			{"",	"openP","IDENTIFIER_LIST","closeP","MULTILINE_FUNCTION_BODY"},
-			{"FUNCTION"},
-			{"",	"INLINE_FUNCTION"},
-			{"",	"MULTILINE_FUNCTION"},
-			{"EXPRESSION"},
-			{"VALUE_LIST"},
-			{"",	"EXPRESSION"},
-			{"",	"VALUE_LIST","comma","VALUE_LIST"},
-			{"",	"VALUE_LIST","comma","IDENTIFIER_LIST"},// If there are identifiers mixed in, grab them too.
-			{"",	"IDENTIFIER_LIST","comma","VALUE_LIST"},
-			{"FUNCTION_CALL"},
-			{"",	"openP","VALUE_LIST","closeP"},
-			{"",	"openP","IDENTIFIER_LIST","closeP"}, // A list of identifiers could still be a list of values. (conflict with MULTILINE FUNCTION[1])
-			{"EXPRESSION"},
-			{"",	"string"},
-			{"",	"char"},
-			{"",	"char"},
-			{"",	"number"},
-			{"",	"syntaxExtension"},
-			{"",	"FUNCTION"},
-			{"",	"EXPRESSION","subitem","identifier"},
-			{"",	"EXPRESSION","FUNCTION_CALL"},
-			{"",	"identifier","FUNCTION_CALL"},
-			{"STATEMENT"},
-			{"",	"import"},
-			{"",	"syntaxExtension"},
-			{"",	"WS_OR_COMMENT","STATEMENT"},// before every statement, or collection of statements, allow WS or COMMENT
-			{"",	"identifier","equals","EXPRESSION" },
+			//{"",	"multiComment"},
+			//{"",	"WS_OR_COMMENT","WS_OR_COMMENT"},
+			//{"IDENTIFIER_LIST"},// A list of _only_ identifiers (>=1)
+			//{"",	"identifier"}, // Will require LA(1)
+			//{"",	"IDENTIFIER_LIST","comma","identifier"},
+			//{"","IDENTIFIER_LIST","comma","IDENTIFIER_LIST"},
+			//{"STATEMENT"},//Like C, do this to get the reference when it hasn't been defined.
+			//{"INLINE_FUNCTION"},
+			//{"",	"openP","closeP","lambda","STATEMENT"},
+			//{"",	"identifier","lambda","STATEMENT" },
+			//{"",	"openP","IDENTIFIER_LIST","closeP","lambda","STATEMENT"},
+			//{"ROOT"},//Root _must_ be defined, or else it is a parse error
+			//{"MULTILINE_FUNCTION_BODY"},
+			//{"",	"openC","ROOT","closeC"},
+			//{"",	"openC","ROOT","statementSeparator","closeC"},// Optional semicolon
+			//{"MULTILINE_FUNCTION"},
+			//{"",	"openC","ROOT","closeC"},
+			//{"",	"identifier","MULTILINE_FUNCTION_BODY"},
+			//{"",	"openP","IDENTIFIER_LIST","closeP","MULTILINE_FUNCTION_BODY"},
+			//{"FUNCTION"},
+			//{"",	"INLINE_FUNCTION"},
+			//{"",	"MULTILINE_FUNCTION"},
+			//{"EXPRESSION"},
+			//{"VALUE_LIST"},
+			//{"",	"EXPRESSION"},
+			//{"",	"VALUE_LIST","comma","VALUE_LIST"},
+			//{"",	"VALUE_LIST","comma","IDENTIFIER_LIST"},// If there are identifiers mixed in, grab them too.
+			//{"",	"IDENTIFIER_LIST","comma","VALUE_LIST"},
+			//{"FUNCTION_CALL"},
+			//{"",	"openP","VALUE_LIST","closeP"},
+			//{"",	"openP","IDENTIFIER_LIST","closeP"}, // A list of identifiers could still be a list of values. (conflict with MULTILINE FUNCTION[1])
+			//{"EXPRESSION"},
+			//{"",	"string"},
+			//{"",	"char"},
+			//{"",	"number"},
+			//{"",	"syntaxExtension"},
+			//{"",	"FUNCTION"},
+			//{"",	"EXPRESSION","subitem","identifier"},
+			//{"",	"EXPRESSION","FUNCTION_CALL"},
+			//{"",	"identifier","FUNCTION_CALL"},
+			//{"STATEMENT"},
+			//{"",	"import"},
+			//{"",	"EXPRESSION"},
+			//{"",	"WS_OR_COMMENT","STATEMENT"},// before every statement, or collection of statements, allow WS or COMMENT
+			//{"",	"identifier","equals","EXPRESSION" },
 			//{"", "identifier","equals","STATEMENT"},//Two or more vars can share a value
-			{"ROOT"},// Think of ROOT as a "STATEMENT_LIST"
-			{"",	"STATEMENT"},
-			{"",	"ROOT","statementSeparator","STATEMENT" },
+			//{"ROOT"},// Think of ROOT as a "STATEMENT_LIST"
+			//{"",	"STATEMENT"},
+			//{"",	"ROOT","statementSeparator","STATEMENT"},
 		};
 		parseTransforms=new ArrayList<>();
 		parseNames=new ArrayList<>();
@@ -172,7 +171,7 @@ class Parser {
 				reductionName = ParseNode.nameToInt(row[0]);
 				if(reductionName<0) {
 					ParseNode.nodes.add(row[0]);//Add this as a possible node type
-					reductionName = ParseNode.nameToInt(row[0]);
+					reductionName = ParseNode.nameToInt(row[0]);//This also handles for chamlctoks
 				}
 			}else {//otherwise, it's a transform to the last name
 				/** The new row */
@@ -234,13 +233,19 @@ class Parser {
 					largest=parseTransformsI;
 			}
 			if (largest==-1) continue;
+			//TODO: items changing orders
 			var transform=parseTransforms.get(largest);
 			var temp=new ArrayList<ParseNode>();
-			for(int transformI=0;transformI<transform.size();++transformI){
-				if (bufferI+transformI>=buffer.size()) continue;
+			for(int transformI=0;
+				transformI<transform.size();
+				++transformI
+			){
+				if (bufferI+transformI>=buffer.size()) break;
+				System.out.println("Removing:"+buffer.get(bufferI+transformI).getAsXML()+" for "+ParseNode.intToName(parseNames.get(largest).intValue()));
 				temp.add(buffer.remove(bufferI+transformI));
 			}
-			buffer.add(new ParseTree(ParseNode.intToName(parseNames.get(largest).intValue()),temp));
+			buffer.add(0,new ParseTree(ParseNode.intToName(parseNames.get(largest).intValue()),temp));
+			//buffer.add(new ParseTree(ParseNode.intToName(parseNames.get(largest).intValue()),temp));
 			return true;
 		}
 		return false;

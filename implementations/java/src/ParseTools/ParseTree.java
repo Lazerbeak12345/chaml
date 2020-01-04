@@ -37,9 +37,9 @@ public class ParseTree extends ParseNode {
 			return "<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\"/>";
 		else{
 			var a=new StringBuffer();
-			a.append("<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\">");
+			a.append("<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\">\n");
 			for (int i=0;i<children.size();++i) {
-				a.append(children.get(i).getAsXML());
+				a.append("\t"+children.get(i).getAsXML()+"\n");
 			}
 			a.append("</"+ getName() + ">");
 			return a.toString();
