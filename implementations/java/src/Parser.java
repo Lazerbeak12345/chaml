@@ -115,7 +115,8 @@ class Parser {
 				buffer.add(i,new ParseTree("STATEMENT",items));
 				return true;
 			}
-			if (matches(i,"WS_OR_COMMENT,STATEMENT")) {
+			if (matches(i,"WS_OR_COMMENT,STATEMENT")||
+				matches(i,"WS_OR_COMMENT,EXPRESSION")) {
 				buffer.remove(i);
 				return true;
 			}
@@ -173,7 +174,22 @@ class Parser {
 				buffer.add(i,new ParseTree("FUNCTION",items));
 				return true;
 			}
-
+			if (matches(i,"openC,ROOT,closeC")) {
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("MULTILINE_FUNCTION",items));
+			}
+			if (matches(i,"VALUE_LIST,comma,VALUE_LIST")||
+				matches(i,"VALUE_LIST,comma,IDENTIFIER_LIST")||// If there are identifiers mixed in, grab them too.
+				matches(i,"IDENTIFIER_LIST,comma,VALUE_LIST")||
+				matches(i,"VALUE_LIST,comma,EXPRESSION")||//Most of the time, they are just expressions
+				matches(i,"EXPRESSION,comma,EXPRESSION")){
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("VALUE_LIST",items));
+			}
 		}
 		return false;
 	}
