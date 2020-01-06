@@ -18,7 +18,7 @@ public class ParseLeaf extends ParseNode {
 		//TODO: filter out bad xml
 		return "<_LEAF_ row=\""+row+"\" col=\""+col+"\" start_r=\""+start_r
 		+"\" start_c=\""+start_c+"\" name=\""+getName()+
-		"\" number=\""+getNumber()+"\">"+
+		"\">"+
 			value+
 		"</_LEAF_>";
 	}

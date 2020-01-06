@@ -24,9 +24,9 @@ public class ParseTreeRoot extends ParseTree {
 		a.append("<"+getName()+" src=\""+src+"\" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\"");
 		if (size()==0) System.out.print("/>");
 		else{
-			a.append(">");
+			a.append(">");//TODO: stop adding ws (especially tabs)
 			for (int i=0;i<size();++i) {
-				a.append(getChild(i).getAsXML());
+				a.append("\n\t"+getChild(i).getAsXML().replaceAll("\\n","\n\t"));
 			}
 			a.append("</"+ getName() + ">");
 		}

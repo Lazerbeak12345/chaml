@@ -106,9 +106,34 @@ class Parser {
 	 * @return true when a reduction is made, false if nothing changed
 	 */
 	public boolean reduce(){
-		return false;//TODO: dummy function
+		var items=new ArrayList<ParseNode>();
+		for (int i=0;i<buffer.size();++i){
+			/*if (matches("syntaxExtension")) {
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("STATEMENT",items));
+				return true;
+			}*/
+			if (matches(i,"comment")) {
+				buffer.remove(i);
+				buffer.add(
+					i,
+					new ParseTree("WS_OR_COMMENT",items));
+				return true;
+			}
+		}
+		return false;
 	}
-	
+
+	private boolean matches(int offset,String str) {
+		String[] thingsToCheck=str.split(",");
+		for (
+			int i=0;
+			i<thingsToCheck.length && i+offset<buffer.size();
+			++i
+		) if (buffer.get(i+offset).getName()!=thingsToCheck[i]) return false;
+		return true;
+	}
+
 	/**
 	 * Move a token over
 	 * 
@@ -116,10 +141,7 @@ class Parser {
 	 * @throws IOException
 	 */
 	private void shift() throws IOException, ChamlcTokenError {
-		var c=getNextToken();
-		var n=new ParseLeaf(c);
-		hitError=n.getNumber()<0;
-		buffer.add(n);
+		buffer.add(new ParseLeaf(getNextToken()));
 	}
 	boolean hitError=false;
 	
