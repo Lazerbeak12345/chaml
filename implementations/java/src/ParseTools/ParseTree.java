@@ -39,7 +39,7 @@ public class ParseTree extends ParseNode {
 			var a=new StringBuffer();
 			a.append("<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\">\n");
 			for (int i=0;i<children.size();++i) {
-				a.append("\t"+children.get(i).getAsXML()+"\n");
+				a.append("\t"+children.get(i).getAsXML().replaceAll("\n","\n\t")+"\n");
 			}
 			a.append("</"+ getName() + ">");
 			return a.toString();

@@ -108,29 +108,85 @@ class Parser {
 	public boolean reduce(){
 		var items=new ArrayList<ParseNode>();
 		for (int i=0;i<buffer.size();++i){
-			/*if (matches("syntaxExtension")) {
+			if (matches(i,"syntaxExtension")||
+				matches(i,"SET_VARIABLE"))
+			{
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("STATEMENT",items));
 				return true;
-			}*/
-			if (matches(i,"comment")) {
+			}
+			if (matches(i,"WS_OR_COMMENT,STATEMENT")) {
 				buffer.remove(i);
-				buffer.add(
-					i,
-					new ParseTree("WS_OR_COMMENT",items));
 				return true;
 			}
+			if (matches(i,"STATEMENT,statementSeparator,STATEMENT")||
+				matches(i,"ROOT,statementSeparator,STATEMENT")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("ROOT",items));
+				return true;
+			}
+			if (matches(i,"identifier,equals,EXPRESSION")||
+				matches(i,"SUB_ITEM,equals,EXPRESSION")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("SET_VARIABLE",items));
+				return true;
+			}
+			if (matches(i,"EXPRESSION,subitem,identifier")||
+				matches(i,"identifier,subitem,identifier")||
+				matches(i,"SUB_ITEM,subitem,identifier")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("SUB_ITEM",items));
+				return true;
+			}
+			if (matches(i,"import")||
+				matches(i,"string")||
+				matches(i,"char")||
+				matches(i,"number")||
+				matches(i,"FUNCTION")||
+				matches(i,"SUB_ITEM")) {
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("EXPRESSION",items));
+				return true;
+			}
+			if (matches(i,"whitespace")||
+				matches(i,"comment")||
+				matches(i,"multiComment")) {
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("WS_OR_COMMENT",items));
+				return true;
+			}
+			if (matches(i,"WS_OR_COMMENT,WS_OR_COMMENT")) {
+				items.add(buffer.remove(i));
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("WS_OR_COMMENT",items));
+				return true;
+			}
+			if (matches(i,"INLINE_FUNCTION")||
+				matches(i,"MULTILINE_FUNCTION")) {
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("FUNCTION",items));
+				return true;
+			}
+
 		}
 		return false;
 	}
 
 	private boolean matches(int offset,String str) {
 		String[] thingsToCheck=str.split(",");
-		for (
-			int i=0;
-			i<thingsToCheck.length && i+offset<buffer.size();
-			++i
-		) if (buffer.get(i+offset).getName()!=thingsToCheck[i]) return false;
+		for (int i=0;i<thingsToCheck.length;++i){
+			if((i+offset)>=buffer.size()||
+				!buffer.get(i+offset).getName().equals(
+				thingsToCheck[i])){
+				return false;
+			}
+		}
 		return true;
 	}
 
