@@ -108,32 +108,10 @@ class Parser {
 	public boolean reduce(){
 		var items=new ArrayList<ParseNode>();
 		for (int i=0;i<buffer.size();++i){
-			if (matches(i,"syntaxExtension")||
-				matches(i,"SET_VARIABLE"))
-			{
-				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("STATEMENT",items));
-				return true;
-			}
-			if (matches(i,"WS_OR_COMMENT,STATEMENT")||
-				matches(i,"WS_OR_COMMENT,EXPRESSION")) {
+			if (matches(i,"whitespace")||
+				matches(i,"comment")||
+				matches(i,"multiComment")) {
 				buffer.remove(i);
-				return true;
-			}
-			if (matches(i,"STATEMENT,statementSeparator,STATEMENT")||
-				matches(i,"ROOT,statementSeparator,STATEMENT")) {
-				items.add(buffer.remove(i));
-				buffer.remove(i);
-				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("ROOT",items));
-				return true;
-			}
-			if (matches(i,"identifier,equals,EXPRESSION")||
-				matches(i,"SUB_ITEM,equals,EXPRESSION")) {
-				items.add(buffer.remove(i));
-				buffer.remove(i);
-				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("SET_VARIABLE",items));
 				return true;
 			}
 			if (matches(i,"EXPRESSION,subitem,identifier")||
@@ -145,27 +123,32 @@ class Parser {
 				buffer.add(i,new ParseTree("SUB_ITEM",items));
 				return true;
 			}
-			if (matches(i,"import")||
-				matches(i,"string")||
-				matches(i,"char")||
-				matches(i,"number")||
-				matches(i,"FUNCTION")||
-				matches(i,"SUB_ITEM")) {
+			if (matches(i,"syntaxExtension")||
+				matches(i,"SET_VARIABLE"))
+			{
 				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("EXPRESSION",items));
+				buffer.add(i,new ParseTree("STATEMENT",items));
 				return true;
 			}
-			if (matches(i,"whitespace")||
-				matches(i,"comment")||
-				matches(i,"multiComment")) {
+			if (matches(i,"STATEMENT,statementSeparator,STATEMENT")||
+				matches(i,"ROOT,statementSeparator,STATEMENT")) {
 				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("WS_OR_COMMENT",items));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("ROOT",items));
 				return true;
 			}
-			if (matches(i,"WS_OR_COMMENT,WS_OR_COMMENT")) {
+			if (matches(i,"ROOT,statementSeparator")){
+				var temp=buffer.remove(i);
+				buffer.remove(i);
+				buffer.add(i,temp);
+			}
+			if (matches(i,"identifier,equals,EXPRESSION")||
+				matches(i,"SUB_ITEM,equals,EXPRESSION")) {
 				items.add(buffer.remove(i));
+				buffer.remove(i);
 				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("WS_OR_COMMENT",items));
+				buffer.add(i,new ParseTree("SET_VARIABLE",items));
 				return true;
 			}
 			if (matches(i,"INLINE_FUNCTION")||
@@ -189,6 +172,25 @@ class Parser {
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("VALUE_LIST",items));
+			}
+			if (matches(i,"openP,identifier,closeP")||
+				matches(i,"openP,VALUE_LIST,closeP")||
+				matches(i,"openP,IDENTIFIER_LIST,closeP")){
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("EXPRESSION",items));
+				return true;
+			}
+			if (matches(i,"import")||
+				matches(i,"string")||
+				matches(i,"char")||
+				matches(i,"number")||
+				matches(i,"FUNCTION")||
+				matches(i,"SUB_ITEM")) {
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("EXPRESSION",items));
+				return true;
 			}
 		}
 		return false;
