@@ -5,6 +5,10 @@ package ParseTools;
  */
 public abstract class ParseNode {
 	int row, col, start_r, start_c;
+	public int getRow() {return row;}
+	public int getCol() {return col;}
+	public int getStart_r() {return start_r;}
+	public int getStart_c() {return start_c;}
 
 	public ParseNode(String name, int row, int col, int start_r, int start_c) {
 		this.row = row;

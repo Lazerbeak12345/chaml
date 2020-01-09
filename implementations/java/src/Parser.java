@@ -187,9 +187,21 @@ class Parser {
 				matches(i,"char")||
 				matches(i,"number")||
 				matches(i,"FUNCTION")||
+				matches(i,"ARRAY")||
 				matches(i,"SUB_ITEM")) {
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("EXPRESSION",items));
+				return true;
+			}
+			if (matches(i,"openS,closeS")) {
+				var first=buffer.remove(i);
+				var second=buffer.remove(i);
+				buffer.add(i,new ParseTree(
+					"ARRAY",
+					second.getRow(),
+					second.getCol(),
+					first.getStart_r(),
+					second.getStart_c()));
 				return true;
 			}
 		}

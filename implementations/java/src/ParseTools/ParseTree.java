@@ -24,10 +24,10 @@ public class ParseTree extends ParseNode {
 		children=new ArrayList<>();
 		this.add(child);
 	}*/
-	/*public ParseTree(String name,int row,int col,int start_r,int start_c) {
+	public ParseTree(String name,int row,int col,int start_r,int start_c) {
 		super(name,row,col,start_r,start_c);
 		children=new ArrayList<>();
-	}*/
+	}
 	/*public ParseTree(String name,ParseNode child) {
 		this(name,child,child.row,child.col,child.start_r,child.start_c);
 	}*/
