@@ -120,6 +120,8 @@ class Tokeniser {
 			return new ChamlcToken("statementSeparator","",row,col,start_r,start_c);
 		}else if(Pattern.matches("=[^<>]",bl)) {
 			return new ChamlcToken("equals","",row,col,start_r,start_c);
+		}else if(Pattern.matches("~(.|\\n)",bl)) {
+			return new ChamlcToken("overload","",row,col,start_r,start_c);
 		}else if(Pattern.matches("\\[(.|\\n)",bl)) {
 			return new ChamlcToken("openS","",row,col,start_r,start_c);
 		}else if(Pattern.matches("\\](.|\\n)",bl)) {
@@ -142,6 +144,10 @@ class Tokeniser {
 			return new ChamlcToken("comma","",row,col,start_r,start_c);
 		}else if(Pattern.matches("//.*\\n(.|\\n)",bl)) {
 			return new ChamlcToken("comment",bl.substring(2,bl.length()-2),row,col,start_r,start_c);
+		}else if(Pattern.matches("/\\*(.|\\n)*\\*/(.|\\n)",bl)) {
+			return new ChamlcToken("multiComment",bl.substring(2,bl.length()-3),row,col,start_r,start_c);
+		}else if(Pattern.matches("/\\*(.|\\n)*",bl)) {
+			throw new ChamlcTokenError("Multi-line comments need a closing '*/'!", row, col, start_r, start_c);
 		}else if(Pattern.matches("#",bl)) {
 			needsMoreChars=true;
 			throw new ChamlcTokenError("Unfinished '#' symbol!",row,col,start_r,start_c);
@@ -184,6 +190,8 @@ class Tokeniser {
 				throw new ChamlcTokenError("Identifier `"+bl.substring(0,bl.length()-1)+"` needs more chars!",row,col,start_r,start_c);
 			}
 			return new ChamlcToken("identifier",bl.substring(0,bl.length()-1),row,col,start_r,start_c);
+		}else if(Pattern.matches("-?[0-9_]+(\\.[0-9_]*)?(.|\\n)",bl)) {
+			return new ChamlcToken("number",bl,row,col,start_r,start_c);
 		}else if (isCharEnd(bl.charAt(bl.length()-1))) {
 			endOfFile=true;
 			if (bl.length()>2) {
