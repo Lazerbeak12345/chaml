@@ -95,8 +95,17 @@ much.
       - From inside a one-liner
       - From a block function
   - Operators
+  - Types
+    - Type inference
+    - Type constructors
   - Overloading
     - Overloading functions
+    - Overloading operators
+    - Overloading syntax
+  - Built-in tools
+    - `.ext`
+  - Libraries
+    - Using Libraries
   - Other features
   - Syntax
     - Comments
@@ -113,23 +122,17 @@ much.
 
 ### The future TOC
 
-- [8/12] The Chameleon Programming Language Standard
+- [10/12] The Chameleon Programming Language Standard
   - [x] Table of Contents
   - [x] The compiler
   - [x] Variables
   - [x] Functions
   - [x] Operators
   - [x] Types
-  - [2/5] Overloading
-    - [x] Overloading functions
-    - [ ] Overloading types
-    - [ ] Overloading operators
-    - [ ] Overloading syntax - (points to dedicated section)
-  - [ ] Built in
-    - [ ] `.ext`
-  - [ ] Libraries
-    - [ ] Using libraries
-      - [ ] `import`
+  - [x] Overloading
+  - [x] Built in
+  - [1/3] Libraries
+    - [1/2] Using libraries
       - [ ] Some example libraries
         - [ ] IO
         - [ ] Vector
@@ -472,25 +475,15 @@ Each variable, once initially set, retains type metadata, including the
 constructor, and requires that all values stored in that variable are either
 directly, or indirectly constructed by the constructor bound to the variable.
 
-The constructor bound to a value can be accessed with the `.constructor`
-property. Well-formed constructors will use `.ext` to "extend" the return of
-it's "parent" constructor. The return of `.ext` is the same as that it is called
-upon, but when a value is missing, it is looked for in the value passed in to
-`.ext`.
-
 ### Type constructors
 
-Type constructors are functions where have this behavior given the number of
-args;
+Type constructors are functions that return an object of said type.
 
-Zero returns the default value, if applicable. (Think of it like a default
-constructor)
-
-One argument returns a duplicate of this type if it is already this type.
-Or else, call that class's `class.to.` then whatever this class is.
-EX: `class.to.Foo` inside of a class called `Foo`.
-
-Any more arguments are type specific.
+The constructor bound to a value can be accessed with the `.constructor`
+property. Many constructors will use `.ext` to "extend" the return of its
+"parent" constructor. The return of `.ext` is the same as that it is called
+upon, but when a value is missing, it is looked for in the value passed in to
+`.ext`.
 
 #### `Func`
 
@@ -587,11 +580,54 @@ of this example)
 
 Examples of varieties include function overloading (most common), operator
 overloading (less common), and _syntax_ overloading (least common).
-CHAML supports all three.
+CHAML supports the first and last of the three. The second, however, can be
+implemented using syntax overloading.
 
 ### Overloading functions in CHAML
 
 go to [Functions/Overloading functions]
+
+### Overloading operators
+
+See [Overloading syntax] for more info, but, although chamlc supplies no quick
+way of operator overloading (as opposed to haskell), said overloads themselves,
+or even a syntax that would allow for said quick overloads, can be implemented
+using syntax overloading.
+
+### Overloading syntax
+
+go to [Syntax Extension] for more info.
+
+## Built-in tools
+
+There are several built-in tools that are included by default in CHAML. This
+section will cover those not already listed in detail in the [Type Constructors]
+section.
+
+### `.ext`
+
+`.ext` is a property of all objects/functions in CHAML where its return is a
+"mix" of the object it was called upon, and the object passed into it,
+properties of the latter replacing properties of the first.
+
+## Libraries
+
+Libraries are a convenient way of organizing one's code, and making use of
+already written code.
+
+### Using Libraries
+
+To use a library, simply include that library in the PATH (NOTE: path system yet
+to be determined), then do the following: (this assumes that you have a library
+called "foo", that you wish to store in the variable `bar`)
+
+```chaml
+bar=#<[foo];
+//Do stuff with bar
+```
+
+The library "foo" has no direct access to anything in this file, save for values
+passed into bar and it's sub-properties. (note that it still can't modify those)
 
 ## Other features
 
