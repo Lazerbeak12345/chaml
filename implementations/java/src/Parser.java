@@ -110,12 +110,13 @@ class Parser {
 	 */
 	public boolean reduce(){
 		var items=new ArrayList<ParseNode>();
+		boolean changed=false;
 		for (int i=0;i<buffer.size();++i){
 			if (matches(i,"whitespace")||
 				matches(i,"comment")||
 				matches(i,"multiComment")) {
 				buffer.remove(i);
-				return true;
+				changed=true;
 			}
 			if (matches(i,"EXPRESSION,subitem,identifier")||
 				matches(i,"identifier,subitem,identifier")||
@@ -124,27 +125,31 @@ class Parser {
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("SUB_ITEM",items));
-				return true;
+				changed=true;
+				items.clear();
 			}
 			if (matches(i,"syntaxExtension")||
 				matches(i,"SET_VARIABLE"))
 			{
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("STATEMENT",items));
-				return true;
+				changed=true;
+				items.clear();
 			}
-			if (matches(i,"STATEMENT,statementSeparator,STATEMENT")||
-				matches(i,"ROOT,statementSeparator,STATEMENT")) {
+			if (matches(i,"STATEMENT,statementSeparator,STATEMENT")) {
 				items.add(buffer.remove(i));
 				buffer.remove(i);
 				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("ROOT",items));
-				return true;
+				buffer.add(i,new ParseTreeRoot(items));
+				changed=true;
+				items.clear();
 			}
-			if (matches(i,"ROOT,statementSeparator")){
-				var temp=buffer.remove(i);
+			if (matches(i,"ROOT,statementSeparator,STATEMENT")) {
+				var tree=(ParseTreeRoot)buffer.remove(i);
 				buffer.remove(i);
-				buffer.add(i,temp);
+				tree.add(buffer.remove(i));
+				buffer.add(i,tree);
+				changed=true;
 			}
 			if (matches(i,"identifier,equals,EXPRESSION")||
 				matches(i,"SUB_ITEM,equals,EXPRESSION")) {
@@ -152,19 +157,23 @@ class Parser {
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("SET_VARIABLE",items));
-				return true;
+				changed=true;
+				items.clear();
 			}
 			if (matches(i,"INLINE_FUNCTION")||
 				matches(i,"MULTILINE_FUNCTION")) {
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("FUNCTION",items));
-				return true;
+				changed=true;
+				items.clear();
 			}
 			if (matches(i,"openC,ROOT,closeC")) {
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.remove(i);
 				buffer.add(i,new ParseTree("MULTILINE_FUNCTION",items));
+				changed=true;
+				items.clear();
 			}
 			if (matches(i,"VALUE_LIST,comma,VALUE_LIST")||
 				matches(i,"VALUE_LIST,comma,IDENTIFIER_LIST")||// If there are identifiers mixed in, grab them too.
@@ -175,6 +184,8 @@ class Parser {
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("VALUE_LIST",items));
+				changed=true;
+				items.clear();
 			}
 			if (matches(i,"openP,identifier,closeP")||
 				matches(i,"openP,VALUE_LIST,closeP")||
@@ -183,7 +194,8 @@ class Parser {
 				items.add(buffer.remove(i));
 				buffer.remove(i);
 				buffer.add(i,new ParseTree("EXPRESSION",items));
-				return true;
+				changed=true;
+				items.clear();
 			}
 			if (matches(i,"import")||
 				matches(i,"string")||
@@ -194,7 +206,8 @@ class Parser {
 				matches(i,"SUB_ITEM")) {
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("EXPRESSION",items));
-				return true;
+				changed=true;
+				items.clear();
 			}
 			if (matches(i,"openS,closeS")) {
 				var first=buffer.remove(i);
@@ -205,10 +218,11 @@ class Parser {
 					second.getCol(),
 					first.getStart_r(),
 					second.getStart_c()));
-				return true;
+				changed=true;
+				items.clear();
 			}
 		}
-		return false;
+		return changed;
 	}
 
 	private boolean matches(int offset,String str) {
