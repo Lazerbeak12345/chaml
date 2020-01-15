@@ -34,7 +34,8 @@ public class ParseTree extends ParseNode {
 	@Override
 	public String getAsXML() {
 		if (children.size()==0)
-			return "<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\"/>";
+			return "<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+
+			start_c+"\" start_r=\""+start_r+"\"/>";
 		else{
 			var a=new StringBuffer();
 			a.append("<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\">\n");
@@ -60,6 +61,21 @@ public class ParseTree extends ParseNode {
 		}
 		return children.add(node);
 	}
+	/**
+	 * Add multiple nodes to the list.
+	 * See {@link ParseTree#add(ParseNode)}
+	 */
+	public void add(ArrayList<ParseNode> items) {
+		for (int i=0;i<items.size();++i) {
+			add(items.get(i));
+		}
+	}
 	public int size() {return children.size();}
 	public ParseNode getChild(int i) {return children.get(i);}
+	public static ParseTree toTree(ParseNode node) {
+		if (node instanceof ParseTree) {
+			return (ParseTree) node;
+		}
+		return null;
+	}
 }

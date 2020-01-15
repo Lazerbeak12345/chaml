@@ -35,9 +35,12 @@ class Parser {
 			} catch (ChamlcTokenError e) {//Token Syntax error, or the like
 				System.out.println(e.getMessage());
 			}finally{
-				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<parseNodes src='"+args[0]+"'>\n");
-				out.append(new ParseTreeRoot(args[0],t).getAsXML());
-				out.append("</parseNodes>");
+				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+				//out.append(new ParseTreeRoot(args[0],t).getAsXML());
+				for(var i=0;i<t.size();++i){
+					out.append(t.get(i).getAsXML());
+				}
+				//out.append("</parseNodes>");
 				out.close();
 			}
 		} catch (FileNotFoundException e) {
