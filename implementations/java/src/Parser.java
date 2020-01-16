@@ -38,7 +38,7 @@ class Parser {
 				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 				//out.append(new ParseTreeRoot(args[0],t).getAsXML());
 				for(var i=0;i<t.size();++i){
-					out.append(t.get(i).getAsXML());
+					out.append(t.get(i).getAsXML()+"\n");
 				}
 				//out.append("</parseNodes>");
 				out.close();
