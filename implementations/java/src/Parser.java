@@ -128,9 +128,20 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
+			if (matches(i,"EXPRESSION,equals,EXPRESSION")||
+				matches(i,"EXPRESSION,equals,identifier")||
+				matches(i,"identifier,equals,EXPRESSION")||
+				matches(i,"identifier,equals,identifier")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("SET_VARIABLE",items));
+				changed=true;
+				items.clear();
+			}
 			if (matches(i,"syntaxExtension")||
-				matches(i,"SET_VARIABLE"))
-			{
+				matches(i,"SET_VARIABLE")||
+				matches(i,"EXPRESSION,statementSeparator")){//Keep the separator
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("STATEMENT",items));
 				changed=true;
@@ -151,19 +162,15 @@ class Parser {
 				buffer.add(i,tree);
 				changed=true;
 			}
-			if (matches(i,"identifier,equals,EXPRESSION")||
-				matches(i,"SUB_ITEM,equals,EXPRESSION")) {
-				items.add(buffer.remove(i));
-				buffer.remove(i);
-				items.add(buffer.remove(i));
-				buffer.add(i,new ParseTree("SET_VARIABLE",items));
-				changed=true;
-				items.clear();
-			}
 			if (matches(i,"INLINE_FUNCTION")||
 				matches(i,"MULTILINE_FUNCTION")) {
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("FUNCTION",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"statementSeparator,closeC")) {
+				buffer.remove(i);
 				changed=true;
 				items.clear();
 			}
@@ -187,13 +194,37 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
+			if (matches(i,"identifier,comma,identifier")||
+				matches(i,"IDENTIFIER_LIST,comma,identifier")){
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("IDENTIFIER_LIST",items));
+				changed=true;
+				items.clear();
+			}
 			if (matches(i,"openP,identifier,closeP")||
-				matches(i,"openP,VALUE_LIST,closeP")||
 				matches(i,"openP,IDENTIFIER_LIST,closeP")){
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.remove(i);
-				buffer.add(i,new ParseTree("EXPRESSION",items));
+				buffer.add(i,new ParseTree("ARGUMENT_NAMES",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"openP,VALUE_LIST,closeP")) {
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("ARGUMENT_VALUES",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"EXPRESSION,ARGUMENT_NAMES")||
+				matches(i,"EXPRESSION,ARGUMENT_VALUES")) {
+				items.add(buffer.remove(i));
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("CALL",items));
 				changed=true;
 				items.clear();
 			}
@@ -203,6 +234,7 @@ class Parser {
 				matches(i,"number")||
 				matches(i,"FUNCTION")||
 				matches(i,"ARRAY")||
+				matches(i,"CALL")||
 				matches(i,"SUB_ITEM")) {
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("EXPRESSION",items));
