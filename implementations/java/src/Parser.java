@@ -169,8 +169,28 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
-			if (matches(i,"statementSeparator,closeC")) {
+			if (matches(i,"statementSeparator,closeC")||
+				matches(i,"statementSeparator,statementSeparator")) {
 				buffer.remove(i);
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"openP,closeP,lambda,STATEMENT")||
+				matches(i,"openP,closeP,lambda,identifier")) {
+				buffer.remove(i);
+				buffer.remove(i);
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("INLINE_FUNCTION",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"ARGUMENT_NAMES,openC,ROOT,closeC")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("MULTILINE_FUNCTION",items));
 				changed=true;
 				items.clear();
 			}
