@@ -308,10 +308,14 @@ class Parser {
 	 * @throws IOException
 	 */
 	public ArrayList<ParseNode> parse() throws IOException, ChamlcTokenError {
+		boolean reduced;
 		while(isNextTokenReady()&&!hitError) {
 			do{
 				shift();
-			}while(!reduce()&&isNextTokenReady()&&!hitError);
+				do{
+					reduced=reduce();
+				}while(reduced);
+			}while(isNextTokenReady()&&!hitError);
 		}
 		return buffer;
 	}
