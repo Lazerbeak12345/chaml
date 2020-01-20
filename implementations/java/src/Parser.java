@@ -35,9 +35,12 @@ class Parser {
 			} catch (ChamlcTokenError e) {//Token Syntax error, or the like
 				System.out.println(e.getMessage());
 			}finally{
-				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<parseNodes src='"+args[0]+"'>\n");
-				out.append(new ParseTreeRoot(args[0],t).getAsXML());
-				out.append("</parseNodes>");
+				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+				//out.append(new ParseTreeRoot(args[0],t).getAsXML());
+				for(var i=0;i<t.size();++i){
+					out.append(t.get(i).getAsXML()+"\n");
+				}
+				//out.append("</parseNodes>");
 				out.close();
 			}
 		} catch (FileNotFoundException e) {
@@ -48,6 +51,7 @@ class Parser {
 		}
 	}
 
+	Tokeniser tr;
 	/**
 	 * Close the input stream.
 	 * @throws IOException If an I/O error occurs
@@ -56,142 +60,32 @@ class Parser {
 		tr.close();
 	}
 
-	Tokeniser tr;
-
 	public Parser(String fileName) throws FileNotFoundException {
 		tr = new Tokeniser(fileName);
 		init();
 	}
-
 	public Parser(File file) throws FileNotFoundException {
 		tr = new Tokeniser(file);
 		init();
 	}
-
 	public Parser(FileDescriptor fd) {
 		tr = new Tokeniser(fd);
 		init();
 	}
-
 	public Parser(String fileName, Charset charset) throws IOException {
 		tr = new Tokeniser(fileName, charset);
 		init();
 	}
-
 	public Parser(File file, Charset charset) throws IOException {
 		tr = new Tokeniser(file, charset);
 		init();
 	}
-	private ArrayList<ArrayList<Number>> parseTransforms;
-	private ArrayList<Number> parseNames;
+
 	/**
 	 * The one place to do 90% of constructor related stuff
 	 */
 	private void init() {
 		buffer = new ArrayList<>();
-		/**
-		 * An easy to modify parseLogic. follows this JSON structure:
-		 * 
-		 * [
-		 *   ["name"],
-		 *   ["",  "first","possible"],
-		 *   ["",  "second"],
-		 *   ["another"],
-		 *   ["",  "thing"]
-		 * ]
-		 */
-		final String[][] parseLogic = {
-			{"WS_OR_COMMENT"},
-			//{"",	"whitespace"},
-			{"",	"comment"},
-			//{"",	"multiComment"},
-			//{"",	"WS_OR_COMMENT","WS_OR_COMMENT"},
-			//{"IDENTIFIER_LIST"},// A list of _only_ identifiers (>=1)
-			//{"",	"identifier"}, // Will require LA(1)
-			//{"",	"IDENTIFIER_LIST","comma","identifier"},
-			//{"","IDENTIFIER_LIST","comma","IDENTIFIER_LIST"},
-			//{"STATEMENT"},//Like C, do this to get the reference when it hasn't been defined.
-			//{"INLINE_FUNCTION"},
-			//{"",	"openP","closeP","lambda","STATEMENT"},
-			//{"",	"identifier","lambda","STATEMENT" },
-			//{"",	"openP","IDENTIFIER_LIST","closeP","lambda","STATEMENT"},
-			//{"ROOT"},//Root _must_ be defined, or else it is a parse error
-			//{"MULTILINE_FUNCTION_BODY"},
-			//{"",	"openC","ROOT","closeC"},
-			//{"",	"openC","ROOT","statementSeparator","closeC"},// Optional semicolon
-			//{"MULTILINE_FUNCTION"},
-			//{"",	"openC","ROOT","closeC"},
-			//{"",	"identifier","MULTILINE_FUNCTION_BODY"},
-			//{"",	"openP","IDENTIFIER_LIST","closeP","MULTILINE_FUNCTION_BODY"},
-			//{"FUNCTION"},
-			//{"",	"INLINE_FUNCTION"},
-			//{"",	"MULTILINE_FUNCTION"},
-			//{"EXPRESSION"},
-			//{"VALUE_LIST"},
-			//{"",	"EXPRESSION"},
-			//{"",	"VALUE_LIST","comma","VALUE_LIST"},
-			//{"",	"VALUE_LIST","comma","IDENTIFIER_LIST"},// If there are identifiers mixed in, grab them too.
-			//{"",	"IDENTIFIER_LIST","comma","VALUE_LIST"},
-			//{"FUNCTION_CALL"},
-			//{"",	"openP","VALUE_LIST","closeP"},
-			//{"",	"openP","IDENTIFIER_LIST","closeP"}, // A list of identifiers could still be a list of values. (conflict with MULTILINE FUNCTION[1])
-			//{"EXPRESSION"},
-			//{"",	"string"},
-			//{"",	"char"},
-			//{"",	"number"},
-			//{"",	"syntaxExtension"},
-			//{"",	"FUNCTION"},
-			//{"",	"EXPRESSION","subitem","identifier"},
-			//{"",	"EXPRESSION","FUNCTION_CALL"},
-			//{"",	"identifier","FUNCTION_CALL"},
-			//{"STATEMENT"},
-			//{"",	"import"},
-			//{"",	"EXPRESSION"},
-			//{"",	"WS_OR_COMMENT","STATEMENT"},// before every statement, or collection of statements, allow WS or COMMENT
-			//{"",	"identifier","equals","EXPRESSION" },
-			//{"", "identifier","equals","STATEMENT"},//Two or more vars can share a value
-			//{"ROOT"},// Think of ROOT as a "STATEMENT_LIST"
-			//{"",	"STATEMENT"},
-			//{"",	"ROOT","statementSeparator","STATEMENT"},
-		};
-		parseTransforms=new ArrayList<>();
-		parseNames=new ArrayList<>();
-		/** the name of this reduction */
-		int reductionName = -1;
-		ParseNode.nodes=new ArrayList<>();
-		ParseNode.nodes.add("_leaf_");
-		//iterate through each row
-		for (int i = 0; i < parseLogic.length; ++i) {
-			/** The current row */
-			String[] row = parseLogic[i];
-			if (row.length < 1)//If it's empty, skip it
-				continue;
-			else if (row.length == 1){//if it is just one item, it's a name
-				//transform that name to a parse node number
-				reductionName = ParseNode.nameToInt(row[0]);
-				if(reductionName<0) {
-					ParseNode.nodes.add(row[0]);//Add this as a possible node type
-					reductionName = ParseNode.nameToInt(row[0]);//This also handles for chamlctoks
-				}
-			}else {//otherwise, it's a transform to the last name
-				/** The new row */
-				var newR = new ArrayList<Number>();
-				//iterate on each item in the current row, ignoring the first item (an empty string)
-				for (int j = 1; j < row.length; ++j) {
-					/* transform the name at the given index in this row, `j` 
-					into an int, and insert it into `newR` at that position
-					minus 1, to offset the empty string beginning each line */
-					//newR.set(j-1,ParseNode.nameToInt(row[j]));
-					int num=ParseNode.nameToInt(row[j]);
-					if (num<0) throw new Error("Error encountered while converting parseLogic!\nRow num: "+i+" Col num: "+j+"\nSection:"+ParseNode.intToName(reductionName)+" Node:"+row[j]);
-					newR.add(num);
-				}
-				/*As we are always adding to both at the same time, they are 
-				always going to be the same length*/
-				parseTransforms.add(newR);
-				parseNames.add(reductionName);
-			}
-		}
 	}
 
 	/**
@@ -215,42 +109,207 @@ class Parser {
 	 * @return true when a reduction is made, false if nothing changed
 	 */
 	public boolean reduce(){
-		for(int bufferI=0;bufferI<buffer.size();++bufferI){
-			int largest=-1;
-			for(int parseTransformsI=0;parseTransformsI<parseTransforms.size();++parseTransformsI){
-				var transform=parseTransforms.get(parseTransformsI);
-				boolean doesTransformMatch=true;
-				for(int transformI=0;transformI<transform.size();++transformI){
-					if (bufferI+transformI>=buffer.size()) continue;
-					if (buffer.get(bufferI+transformI).getNumber()!=
-					transform.get(transformI).intValue()){
-						doesTransformMatch=false;
-						break;
-					}
-				}
-				if (!doesTransformMatch) continue;
-				if (largest==-1||transform.size()>parseTransforms.get(largest).size())
-					largest=parseTransformsI;
+		var items=new ArrayList<ParseNode>();
+		boolean changed=false;
+		for (int i=0;i<buffer.size();++i){
+			if (matches(i,"whitespace")||
+				matches(i,"comment")||
+				matches(i,"multiComment")) {
+				buffer.remove(i);
+				changed=true;
 			}
-			if (largest==-1) continue;
-			//TODO: items changing orders
-			var transform=parseTransforms.get(largest);
-			var temp=new ArrayList<ParseNode>();
-			for(int transformI=0;
-				transformI<transform.size();
-				++transformI
-			){
-				if (bufferI+transformI>=buffer.size()) break;
-				System.out.println("Removing:"+buffer.get(bufferI+transformI).getAsXML()+" for "+ParseNode.intToName(parseNames.get(largest).intValue()));
-				temp.add(buffer.remove(bufferI+transformI));
+			if (matches(i,"EXPRESSION,subitem,identifier")||
+				matches(i,"identifier,subitem,identifier")||
+				matches(i,"SUB_ITEM,subitem,identifier")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("SUB_ITEM",items));
+				changed=true;
+				items.clear();
 			}
-			buffer.add(0,new ParseTree(ParseNode.intToName(parseNames.get(largest).intValue()),temp));
-			//buffer.add(new ParseTree(ParseNode.intToName(parseNames.get(largest).intValue()),temp));
-			return true;
+			if (matches(i,"EXPRESSION,equals,EXPRESSION")||
+				matches(i,"EXPRESSION,equals,identifier")||
+				matches(i,"identifier,equals,EXPRESSION")||
+				matches(i,"identifier,equals,identifier")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("SET_VARIABLE",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"syntaxExtension")||
+				matches(i,"SET_VARIABLE")||
+				matches(i,"RETURNVAL")||
+				matches(i,"EXPRESSION,statementSeparator")){//Keep the separator
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("STATEMENT",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"STATEMENT,statementSeparator,STATEMENT")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTreeRoot(items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"ROOT,statementSeparator,STATEMENT")) {
+				var tree=(ParseTreeRoot)buffer.remove(i);
+				buffer.remove(i);
+				tree.add(buffer.remove(i));
+				buffer.add(i,tree);
+				changed=true;
+			}
+			if (matches(i,"INLINE_FUNCTION")||
+				matches(i,"MULTILINE_FUNCTION")) {
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("FUNCTION",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"statementSeparator,closeC")||
+				matches(i,"statementSeparator,statementSeparator")) {
+				buffer.remove(i);
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"EMPTY_PARENS,lambda,STATEMENT")||
+				matches(i,"EMPTY_PARENS,lambda,identifier")) {
+				buffer.remove(i);
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("INLINE_FUNCTION",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"ARGUMENT_NAMES,openC,ROOT,closeC")||
+				matches(i,"ARGUMENT_NAMES,openC,STATEMENT,closeC")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("MULTILINE_FUNCTION",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"openC,ROOT,closeC")||
+				matches(i,"openC,STATEMENT,closeC")) {
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("MULTILINE_FUNCTION",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"VALUE_LIST,comma,VALUE_LIST")||
+				matches(i,"VALUE_LIST,comma,IDENTIFIER_LIST")||// If there are identifiers mixed in, grab them too.
+				matches(i,"IDENTIFIER_LIST,comma,VALUE_LIST")||
+				matches(i,"VALUE_LIST,comma,EXPRESSION")||//Most of the time, they are just expressions
+				matches(i,"EXPRESSION,comma,EXPRESSION")){
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("VALUE_LIST",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"identifier,comma,identifier")||
+				matches(i,"IDENTIFIER_LIST,comma,identifier")){
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("IDENTIFIER_LIST",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"openP,identifier,closeP")||
+				matches(i,"openP,IDENTIFIER_LIST,closeP")){
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("ARGUMENT_NAMES",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"openP,VALUE_LIST,closeP")||
+				matches(i,"openP,EXPRESSION,closeP")) {
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				buffer.add(i,new ParseTree("ARGUMENT_VALUES",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"openP,closeP")) {
+				var first=buffer.remove(i);
+				var second=buffer.remove(i);
+				buffer.add(i,new ParseTree("EMPTY_PARENS",second.getRow(),second.getCol(),first.getStart_r(),first.getStart_c()));
+			}
+			if (matches(i,"EXPRESSION,ARGUMENT_NAMES")||
+				matches(i,"identifier,ARGUMENT_NAMES")||
+				matches(i,"EXPRESSION,ARGUMENT_VALUES")||
+				matches(i,"identifier,ARGUMENT_VALUES")||
+				matches(i,"EXPRESSION,EMPTY_PARENS")||
+				matches(i,"identifier,EMPTY_PARENS")) {
+				items.add(buffer.remove(i));
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("CALL",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"return,identifier")||
+				matches(i,"return,EXPRESSION")/*||
+				matches(i,"return,STATEMENT")*/) {
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("RETURNVAL",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"import")||
+				matches(i,"string")||
+				matches(i,"char")||
+				matches(i,"number")||
+				matches(i,"FUNCTION")||
+				matches(i,"ARRAY")||
+				matches(i,"CALL")||
+				matches(i,"SUB_ITEM")) {
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("EXPRESSION",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"openS,closeS")) {
+				var first=buffer.remove(i);
+				var second=buffer.remove(i);
+				buffer.add(i,new ParseTree(
+					"ARRAY",
+					second.getRow(),
+					second.getCol(),
+					first.getStart_r(),
+					second.getStart_c()));
+				changed=true;
+				items.clear();
+			}
 		}
-		return false;
+		return changed;
 	}
-	
+
+	private boolean matches(int offset,String str) {
+		String[] thingsToCheck=str.split(",");
+		for (int i=0;i<thingsToCheck.length;++i){
+			if((i+offset)>=buffer.size()||
+				!buffer.get(i+offset).getName().equals(
+				thingsToCheck[i])){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Move a token over
 	 * 
@@ -258,10 +317,7 @@ class Parser {
 	 * @throws IOException
 	 */
 	private void shift() throws IOException, ChamlcTokenError {
-		var c=getNextToken();
-		var n=new ParseLeaf(c);
-		hitError=n.getNumber()<0;
-		buffer.add(n);
+		buffer.add(new ParseLeaf(getNextToken()));
 	}
 	boolean hitError=false;
 	
@@ -273,10 +329,17 @@ class Parser {
 	 * @throws IOException
 	 */
 	public ArrayList<ParseNode> parse() throws IOException, ChamlcTokenError {
+		boolean reduced;
 		while(isNextTokenReady()&&!hitError) {
 			do{
 				shift();
-			}while(!reduce()&&isNextTokenReady()&&!hitError);
+				do{
+					reduced=reduce();
+				}while(reduced);
+			}while(isNextTokenReady()&&!hitError);
+		}
+		if(!hitError&&buffer.size()==2&&matches(0,"ROOT,statementSeparator")) {
+			buffer.remove(1);
 		}
 		return buffer;
 	}

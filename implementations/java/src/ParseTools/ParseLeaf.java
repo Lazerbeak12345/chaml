@@ -16,10 +16,9 @@ public class ParseLeaf extends ParseNode {
 	public String getAsXML() {
 		//TODO: handle for empty value
 		//TODO: filter out bad xml
-		return "<_LEAF_ row=\""+row+"\" col=\""+col+"\" start_r=\""+start_r
-		+"\" start_c=\""+start_c+"\" name=\""+getName()+
-		"\" number=\""+getNumber()+"\">"+
+		return "<chamlc_token:"+getName()+" row=\""+row+"\" col=\""+col+
+		"\" start_r=\""+start_r+"\" start_c=\""+start_c+"\">"+
 			value+
-		"</_LEAF_>";
+		"</chamlc_token:"+getName()+">";
 	}
 }
