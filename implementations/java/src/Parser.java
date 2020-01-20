@@ -141,6 +141,7 @@ class Parser {
 			}
 			if (matches(i,"syntaxExtension")||
 				matches(i,"SET_VARIABLE")||
+				matches(i,"RETURNVAL")||
 				matches(i,"EXPRESSION,statementSeparator")){//Keep the separator
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("STATEMENT",items));
@@ -175,9 +176,8 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
-			if (matches(i,"openP,closeP,lambda,STATEMENT")||
-				matches(i,"openP,closeP,lambda,identifier")) {
-				buffer.remove(i);
+			if (matches(i,"EMPTY_PARENS,lambda,STATEMENT")||
+				matches(i,"EMPTY_PARENS,lambda,identifier")) {
 				buffer.remove(i);
 				buffer.remove(i);
 				items.add(buffer.remove(i));
@@ -185,7 +185,8 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
-			if (matches(i,"ARGUMENT_NAMES,openC,ROOT,closeC")) {
+			if (matches(i,"ARGUMENT_NAMES,openC,ROOT,closeC")||
+				matches(i,"ARGUMENT_NAMES,openC,STATEMENT,closeC")) {
 				items.add(buffer.remove(i));
 				buffer.remove(i);
 				items.add(buffer.remove(i));
@@ -194,7 +195,8 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
-			if (matches(i,"openC,ROOT,closeC")) {
+			if (matches(i,"openC,ROOT,closeC")||
+				matches(i,"openC,STATEMENT,closeC")) {
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.remove(i);
@@ -232,7 +234,8 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
-			if (matches(i,"openP,VALUE_LIST,closeP")) {
+			if (matches(i,"openP,VALUE_LIST,closeP")||
+				matches(i,"openP,EXPRESSION,closeP")) {
 				buffer.remove(i);
 				items.add(buffer.remove(i));
 				buffer.remove(i);
@@ -240,11 +243,29 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
+			if (matches(i,"openP,closeP")) {
+				var first=buffer.remove(i);
+				var second=buffer.remove(i);
+				buffer.add(i,new ParseTree("EMPTY_PARENS",second.getRow(),second.getCol(),first.getStart_r(),first.getStart_c()));
+			}
 			if (matches(i,"EXPRESSION,ARGUMENT_NAMES")||
-				matches(i,"EXPRESSION,ARGUMENT_VALUES")) {
+				matches(i,"identifier,ARGUMENT_NAMES")||
+				matches(i,"EXPRESSION,ARGUMENT_VALUES")||
+				matches(i,"identifier,ARGUMENT_VALUES")||
+				matches(i,"EXPRESSION,EMPTY_PARENS")||
+				matches(i,"identifier,EMPTY_PARENS")) {
 				items.add(buffer.remove(i));
 				items.add(buffer.remove(i));
 				buffer.add(i,new ParseTree("CALL",items));
+				changed=true;
+				items.clear();
+			}
+			if (matches(i,"return,identifier")||
+				matches(i,"return,EXPRESSION")/*||
+				matches(i,"return,STATEMENT")*/) {
+				buffer.remove(i);
+				items.add(buffer.remove(i));
+				buffer.add(i,new ParseTree("RETURNVAL",items));
 				changed=true;
 				items.clear();
 			}
@@ -316,6 +337,9 @@ class Parser {
 					reduced=reduce();
 				}while(reduced);
 			}while(isNextTokenReady()&&!hitError);
+		}
+		if(!hitError&&buffer.size()==2&&matches(0,"ROOT,statementSeparator")) {
+			buffer.remove(1);
 		}
 		return buffer;
 	}
