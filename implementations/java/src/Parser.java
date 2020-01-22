@@ -128,10 +128,10 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
-			if (matches(i,"EXPRESSION,equals,EXPRESSION")||
-				matches(i,"EXPRESSION,equals,identifier")||
-				matches(i,"identifier,equals,EXPRESSION")||
-				matches(i,"identifier,equals,identifier")) {
+			if (matches(i,"EXPRESSION,equals,EXPRESSION,statementSeparator")||
+				matches(i,"EXPRESSION,equals,identifier,statementSeparator")||
+				matches(i,"identifier,equals,EXPRESSION,statementSeparator")||
+				matches(i,"identifier,equals,identifier,statementSeparator")) {
 				items.add(buffer.remove(i));
 				buffer.remove(i);
 				items.add(buffer.remove(i));
@@ -139,8 +139,20 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
+			if (matches(i,"EXPRESSION,overload,EXPRESSION,statementSeparator")||
+				matches(i,"EXPRESSION,overload,identifier,statementSeparator")||
+				matches(i,"identifier,overload,EXPRESSION,statementSeparator")||
+				matches(i,"identifier,overload,identifier,statementSeparator")) {
+				items.add(buffer.remove(i));
+				buffer.remove(i);
+				items.add(buffer.remove(i));//Leave the statement separator be
+				buffer.add(i,new ParseTree("OVERLOAD_VARIABLE",items));
+				changed=true;
+				items.clear();
+			}
 			if (matches(i,"syntaxExtension")||
 				matches(i,"SET_VARIABLE")||
+				matches(i,"OVERLOAD_VARIABLE")||
 				matches(i,"RETURNVAL")||
 				matches(i,"EXPRESSION,statementSeparator")){//Keep the separator
 				items.add(buffer.remove(i));
@@ -195,6 +207,13 @@ class Parser {
 				changed=true;
 				items.clear();
 			}
+			if (matches(i,"openC,closeC")) {
+				var first=buffer.remove(i);
+				var second=buffer.remove(i);
+				buffer.add(i,new ParseTree("MULTILINE_FUNCTION",second.getRow(),second.getCol(),first.getStart_r(),first.getStart_c()));
+				changed=true;
+				items.clear();
+			}
 			if (matches(i,"openC,ROOT,closeC")||
 				matches(i,"openC,STATEMENT,closeC")) {
 				buffer.remove(i);
@@ -208,7 +227,8 @@ class Parser {
 				matches(i,"VALUE_LIST,comma,IDENTIFIER_LIST")||// If there are identifiers mixed in, grab them too.
 				matches(i,"IDENTIFIER_LIST,comma,VALUE_LIST")||
 				matches(i,"VALUE_LIST,comma,EXPRESSION")||//Most of the time, they are just expressions
-				matches(i,"EXPRESSION,comma,EXPRESSION")){
+				matches(i,"EXPRESSION,comma,EXPRESSION")||
+				matches(i,"EXPRESSION,comma,identifier")){
 				items.add(buffer.remove(i));
 				buffer.remove(i);
 				items.add(buffer.remove(i));
@@ -337,6 +357,9 @@ class Parser {
 					reduced=reduce();
 				}while(reduced);
 			}while(isNextTokenReady()&&!hitError);
+		}
+		if (!hitError&&(buffer.size()==2||buffer.size()==1)&&matches(0,"STATEMENT")) {
+			buffer.add(0,new ParseTreeRoot("",buffer.remove(0)));
 		}
 		if(!hitError&&buffer.size()==2&&matches(0,"ROOT,statementSeparator")) {
 			buffer.remove(1);

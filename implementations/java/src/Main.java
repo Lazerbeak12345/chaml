@@ -3,8 +3,9 @@ public class Main {
 	public static void main(String[] args) {
 		//if (args.length==0) helpText();
 		//else{
-			String[]a={"tests/testLib.chaml","/tmp/parseNodes.xml"};
+			//String[]a={"tests/testLib.chaml","/tmp/parseNodes.xml"};
 			//String[]a={"implementations/chaml/lib/elif.chaml","/tmp/parseNodes.xml"};
+			String[]a={"implementations/chaml/lib/bool.chaml","/tmp/parseNodes.xml"};
 			//String[]a={"implementations/chaml/chamlc.chaml","/tmp/tokens.xml"};
 			//String[]a={"tests/testLib.chaml","/tmp/tokens.xml"};
 			//if(args.length==0||args[0]=="t")

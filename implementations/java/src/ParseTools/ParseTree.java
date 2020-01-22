@@ -19,18 +19,17 @@ public class ParseTree extends ParseNode {
 			children.get(0).start_r,
 			children.get(0).start_c);
 	}
-	/*public ParseTree(String name,ParseNode child,int row, int col,int start_r,int start_c) {
-		super(name,row,col,start_r,start_c);
-		children=new ArrayList<>();
+	public ParseTree(String name,ParseNode child,int row, int col,int start_r,int start_c) {
+		this(name,child.row,child.col,child.start_r,child.start_c);
 		this.add(child);
-	}*/
+	}
 	public ParseTree(String name,int row,int col,int start_r,int start_c) {
 		super(name,row,col,start_r,start_c);
 		children=new ArrayList<>();
 	}
-	/*public ParseTree(String name,ParseNode child) {
+	public ParseTree(String name,ParseNode child) {
 		this(name,child,child.row,child.col,child.start_r,child.start_c);
-	}*/
+	}
 	@Override
 	public String getAsXML() {
 		if (children.size()==0)
