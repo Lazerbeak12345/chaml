@@ -12,6 +12,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -44,23 +46,31 @@ class Tokeniser {
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				Document doc = dBuilder.newDocument();
-				
-				Element rootElement = doc.createElement("cars");
+
+				Element rootElement = doc.createElement("tokenList");
 				doc.appendChild(rootElement);
-				//out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='"+args[0]+"'>\n");
-				
+
 				while (!tr.isEnd()) {
 					ChamlcToken tok = tr.read();
-					rootElement.appendChild(tok.getAsXML());
+					rootElement.appendChild(tok.getAsXML(doc));
 				}
-				//out.append("</tokenList>\n"); tr.close();
+
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(out);
+				transformer.transform(source, result);
+
+				// Output to console for testing
+				//StreamResult consoleResult = new StreamResult(System.out);
+				//transformer.transform(source, consoleResult);
 			} catch (IOException e) {
 				if (tr.isEnd())
 					System.out.println("Failed to close file after hitting EOF!");
 				else
 					System.out.println("Failed to read or write character to or from file!");
 				e.printStackTrace();
-			} catch (ChamlcTokenError | ParserConfigurationException e) {
+			} catch (ChamlcTokenError | ParserConfigurationException | TransformerException e) {
 				System.out.println(e.getMessage());
 			} finally {
 				out.close();

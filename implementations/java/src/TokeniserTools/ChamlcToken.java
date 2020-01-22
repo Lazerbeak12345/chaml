@@ -1,6 +1,9 @@
 package TokeniserTools;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Attr;
 
 //import org.w3c.dom.*;
 //import javax.xml.*;
@@ -124,10 +127,51 @@ public class ChamlcToken {
 	public static boolean equals(ChamlcToken obj1,ChamlcToken obj2) {
 		return obj1.equals(obj2);
 	}
-	public Node getAsXML() {
-		return null;
+	public Node getAsXML(Document doc) {
+		Element elm = doc.createElement(getName());
+		Attr attr = doc.createAttribute("row");
+		attr.setValue(String.valueOf(row));
+		elm.setAttributeNode(attr);
+		doc.createAttribute("col");
+		attr.setValue(String.valueOf(col));
+		elm.setAttributeNode(attr);
+		doc.createAttribute("start_r");
+		attr.setValue(String.valueOf(start_r));
+		elm.setAttributeNode(attr);
+		doc.createAttribute("start_c");
+		attr.setValue(String.valueOf(start_c));
+		elm.setAttributeNode(attr);
+
+		var out=new StringBuffer();
+		for (int i=0;i<val.length();++i) {
+			switch(val.charAt(i)) {//TODO: Apparently no escaping is done? I really don't like this...
+				case '<':
+					out.append("&lt;");
+					break;
+				case '>':
+					out.append("&gt;");
+					break;
+				case '"':
+				out.append("&quot;");
+					break;
+				case '\'':
+					out.append("&apos;");
+					break;
+				case '&':
+					out.append("&amp;");
+					break;
+				case '\n':
+					out.append("&#10;");
+				case '\r':
+					out.append("&#13;");
+				default:out.append(val.charAt(i));
+			}
+		}
+		elm.appendChild(doc.createTextNode(out.toString()));
+
+		return elm;
 	}
-	/** Get the token as an xml string */
+	/** Get the token as an xml string *
 	public String getAsXMLString() {
 		var out=new StringBuffer();
 		if (val.length()>0) {
