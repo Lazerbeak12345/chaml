@@ -5,16 +5,16 @@ public class Main {
 		//else{
 			//String[]a={"tests/testLib.chaml","/tmp/parseNodes.xml"};
 			//String[]a={"implementations/chaml/lib/elif.chaml","/tmp/parseNodes.xml"};
-			String[]a={"implementations/chaml/lib/bool.chaml","/tmp/parseNodes.xml"};
+			//String[]a={"implementations/chaml/lib/bool.chaml","/tmp/parseNodes.xml"};
 			//String[]a={"implementations/chaml/chamlc.chaml","/tmp/tokens.xml"};
-			//String[]a={"tests/testLib.chaml","/tmp/tokens.xml"};
+			String[]a={"tests/testLib.chaml","/tmp/tokens.xml"};
 			//if(args.length==0||args[0]=="t")
 			//char c;
 			//try{c=(char) System.in.read();}catch(IOException e){e.printStackTrace();return;}
 			//if(c=='t')
-				//Tokeniser.main(a);
+				Tokeniser.main(a);
 			//else
-				Parser.main(a);
+				//Parser.main(a);
 			/*String filename=args[0];
 			try{
 				Tokeniser tok=new Tokeniser(filename);

@@ -1,4 +1,7 @@
 package TokeniserTools;
+
+import org.w3c.dom.Node;
+
 //import org.w3c.dom.*;
 //import javax.xml.*;
 /**
@@ -120,6 +123,9 @@ public class ChamlcToken {
 	 */
 	public static boolean equals(ChamlcToken obj1,ChamlcToken obj2) {
 		return obj1.equals(obj2);
+	}
+	public Node getAsXML() {
+		return null;
 	}
 	/** Get the token as an xml string */
 	public String getAsXMLString() {

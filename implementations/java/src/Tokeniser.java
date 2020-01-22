@@ -8,6 +8,17 @@ import TokeniserTools.ChamlcToken;
 import TokeniserTools.ChamlcTokenError;
 import java.util.regex.Pattern;
 import java.io.FileWriter;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import java.io.File;
 
 /**
  * Tokenize a file. Made for the Java CHAML Compiler (jchamlc)
@@ -15,8 +26,8 @@ import java.io.FileWriter;
 class Tokeniser {
 	/**
 	 * 
-	 * @param args {@index 0} The name of the file to tokenize
-	 * {@index 1} The output file. (Will output in xml format)
+	 * @param args {@index 0} The name of the file to tokenize {@index 1} The output
+	 *             file. (Will output in xml format)
 	 */
 	public static void main(String[] args) {
 		if (args.length < 2) {
@@ -25,25 +36,33 @@ class Tokeniser {
 		}
 		try {
 			Tokeniser tr = new Tokeniser(args[0]);
-			var out=new FileWriter(args[1]);
+			var out = new FileWriter(args[1]);
 			// Outputs xml
 			try {
-				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='"+args[0]+"'>\n");
+				// Much of this new xml stuff is greatly helped by
+				// https://www.tutorialspoint.com/java_xml/java_dom_create_document.htm
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				Document doc = dBuilder.newDocument();
+				
+				Element rootElement = doc.createElement("cars");
+				doc.appendChild(rootElement);
+				//out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tokenList src='"+args[0]+"'>\n");
+				
 				while (!tr.isEnd()) {
 					ChamlcToken tok = tr.read();
-					out.append(tok.getAsXMLString());
+					rootElement.appendChild(tok.getAsXML());
 				}
-				out.append("</tokenList>\n");
-				tr.close();
+				//out.append("</tokenList>\n"); tr.close();
 			} catch (IOException e) {
 				if (tr.isEnd())
 					System.out.println("Failed to close file after hitting EOF!");
 				else
 					System.out.println("Failed to read or write character to or from file!");
 				e.printStackTrace();
-			} catch (ChamlcTokenError e) {//Syntax error, or the like
+			} catch (ChamlcTokenError | ParserConfigurationException e) {
 				System.out.println(e.getMessage());
-			}finally{
+			} finally {
 				out.close();
 			}
 		} catch (FileNotFoundException e) {
