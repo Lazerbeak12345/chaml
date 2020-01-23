@@ -141,7 +141,6 @@ public class ChamlcToken {
 		doc.createAttribute("start_c");
 		attr.setValue(String.valueOf(start_c));
 		elm.setAttributeNode(attr);
-
 		var out=new StringBuffer();
 		for (int i=0;i<val.length();++i) {
 			switch(val.charAt(i)) {//TODO: Apparently no escaping is done? I really don't like this...
@@ -170,36 +169,6 @@ public class ChamlcToken {
 		elm.appendChild(doc.createTextNode(out.toString()));
 
 		return elm;
-	}
-	/** Get the token as an xml string *
-	public String getAsXMLString() {
-		var out=new StringBuffer();
-		if (val.length()>0) {
-			//https://stackoverflow.com/a/46637835
-			out.append("<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_r=\""+start_r+"\" start_c=\""+start_c+"\">");
-			for (int i=0;i<val.length();++i) {
-				switch(val.charAt(i)) {
-					case '<':
-						out.append("&lt;");
-						break;
-					case '>':
-						out.append("&gt;");
-						break;
-					case '"':
-						out.append("&quot;");
-						break;
-					case '\'':
-						out.append("&apos;");
-						break;
-					case '&':
-						out.append("&amp;");
-						break;
-					default:out.append(val.charAt(i));
-				}
-			}
-			out.append("</"+getName()+">\n");
-		}else out.append("<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_r=\""+start_r+"\" start_c=\""+start_c+"\"/>\n");
-		return out.toString();
 	}
 	/** Print the token as it would show up in the source code */
 	public void printLiteral() {

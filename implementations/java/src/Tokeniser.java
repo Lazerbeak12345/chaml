@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -20,7 +19,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import java.io.File;
 
 /**
  * Tokenize a file. Made for the Java CHAML Compiler (jchamlc)
@@ -49,6 +47,9 @@ class Tokeniser {
 
 				Element rootElement = doc.createElement("tokenList");
 				doc.appendChild(rootElement);
+				Attr attr = doc.createAttribute("src");
+				attr.setValue(args[0]);
+				rootElement.setAttributeNode(attr);
 
 				while (!tr.isEnd()) {
 					ChamlcToken tok = tr.read();
@@ -60,10 +61,6 @@ class Tokeniser {
 				DOMSource source = new DOMSource(doc);
 				StreamResult result = new StreamResult(out);
 				transformer.transform(source, result);
-
-				// Output to console for testing
-				//StreamResult consoleResult = new StreamResult(System.out);
-				//transformer.transform(source, consoleResult);
 			} catch (IOException e) {
 				if (tr.isEnd())
 					System.out.println("Failed to close file after hitting EOF!");
