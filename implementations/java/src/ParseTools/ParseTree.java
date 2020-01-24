@@ -1,6 +1,9 @@
 package ParseTools;
 
 import java.util.ArrayList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Attr;
 
 public class ParseTree extends ParseNode {
 	private ArrayList<ParseNode> children;
@@ -31,19 +34,27 @@ public class ParseTree extends ParseNode {
 		this(name,child,child.row,child.col,child.start_r,child.start_c);
 	}
 	@Override
-	public String getAsXML() {
-		if (children.size()==0)
-			return "<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+
-			start_c+"\" start_r=\""+start_r+"\"/>";
-		else{
-			var a=new StringBuffer();
-			a.append("<"+getName()+" row=\""+row+"\" col=\""+col+"\" start_c=\""+start_c+"\" start_r=\""+start_r+"\">\n");
-			for (int i=0;i<children.size();++i) {
-				a.append("\t"+children.get(i).getAsXML().replaceAll("\n","\n\t")+"\n");
-			}
-			a.append("</"+ getName() + ">");
-			return a.toString();
+	public Element getAsXML(Document doc) {
+		//TODO: handle for empty value
+		//TODO: filter out bad xml
+		
+		Element elm = doc.createElement(getName());
+		Attr attr = doc.createAttribute("row");
+		attr.setValue(String.valueOf(row));
+		elm.setAttributeNode(attr);
+		doc.createAttribute("col");
+		attr.setValue(String.valueOf(col));
+		elm.setAttributeNode(attr);
+		doc.createAttribute("start_r");
+		attr.setValue(String.valueOf(start_r));
+		elm.setAttributeNode(attr);
+		doc.createAttribute("start_c");
+		attr.setValue(String.valueOf(start_c));
+		elm.setAttributeNode(attr);
+		for (int i=0;i<children.size();++i) {
+			elm.appendChild(children.get(i).getAsXML(doc));
 		}
+		return elm;
 	}
 	/**
 	 * Add a node to the list, updating the row,col,start_r,&start_col

@@ -5,6 +5,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import TokeniserTools.ChamlcToken;
 import TokeniserTools.ChamlcTokenError;
 import ParseTools.ParseNode;
@@ -35,18 +47,32 @@ class Parser {
 			} catch (ChamlcTokenError e) {//Token Syntax error, or the like
 				System.out.println(e.getMessage());
 			}finally{
-				out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-				//out.append(new ParseTreeRoot(args[0],t).getAsXML());
-				for(var i=0;i<t.size();++i){
-					out.append(t.get(i).getAsXML()+"\n");
-				}
-				//out.append("</parseNodes>");
-				out.close();
+				// Much of this new xml stuff is greatly helped by
+				// https://www.tutorialspoint.com/java_xml/java_dom_create_document.htm
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				Document doc = dBuilder.newDocument();
+				
+				Element rootElement = t.get(0).getAsXML(doc);
+				Attr attr = doc.createAttribute("src");
+				attr.setValue(args[0]);
+				rootElement.setAttributeNode(attr);
+
+				doc.appendChild(rootElement);
+
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(out);
+				transformer.transform(source, result);
 			}
 		} catch (FileNotFoundException e) {
 			System.out.printf("There is no file by the name %s\n", args[0]);
 		} catch (IOException e) {
 			System.out.println("Failed to write character to file!");
+			e.printStackTrace();
+		} catch (ParserConfigurationException | TransformerException e) {
+			System.out.println("Unknown error in parser!");
 			e.printStackTrace();
 		}
 	}
@@ -361,9 +387,9 @@ class Parser {
 		if (!hitError&&(buffer.size()==2||buffer.size()==1)&&matches(0,"STATEMENT")) {
 			buffer.add(0,new ParseTreeRoot("",buffer.remove(0)));
 		}
-		if(!hitError&&buffer.size()==2&&matches(0,"ROOT,statementSeparator")) {
-			buffer.remove(1);
-		}
+		// if(!hitError&&buffer.size()==2&&matches(0,"ROOT,statementSeparator")) {
+		// 	buffer.remove(1);
+		// }
 		return buffer;
 	}
 }

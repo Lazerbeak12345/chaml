@@ -1,4 +1,6 @@
 package ParseTools;
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 
 /**
  * A tree or leaf node
@@ -27,5 +29,5 @@ public abstract class ParseNode {
 	/**
 	 * Get this ParseNode as an XML String
 	 */
-	abstract public String getAsXML();
+	abstract public Element getAsXML(Document doc);
 }
